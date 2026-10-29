@@ -1,0 +1,843 @@
+{
+ "vienna": {
+  "food": [
+   {
+    "name": "Figlmüller Wollzeile",
+    "kind": "regional",
+    "tag": "Viennese",
+    "blurb": "Plate-sized Wiener schnitzel, pounded thin, served since 1905. Book a table; the queue is real.",
+    "url": "https://figlmueller.at",
+    "xy": [
+     264.4423,
+     133.1165
+    ]
+   },
+   {
+    "name": "Dom Schnitzel",
+    "kind": "regional",
+    "tag": "Wiener schnitzel",
+    "blurb": "Classic Wiener schnitzel a few steps from Stephansdom.",
+    "url": "https://domschnitzel.at/dom-schnitzel-stephansdom/",
+    "xy": [
+     263.8077,
+     133.1586
+    ]
+   },
+   {
+    "name": "Ramen Makotoya",
+    "kind": "world",
+    "tag": "Japanese ramen",
+    "blurb": "Ramen by the Rathaus, with more branches in Neubau and Landstraße.",
+    "url": "https://www.ramen-makotoya.at/",
+    "xy": [
+     262.5641,
+     132.5348
+    ]
+   },
+   {
+    "name": "Lola",
+    "kind": "world",
+    "tag": "Spanish tapas",
+    "blurb": "Spanish tapas in the old town. Order a lot of small plates and share.",
+    "url": "https://www.lolatapas.at/",
+    "xy": [
+     263.8714,
+     132.075
+    ]
+   }
+  ],
+  "cafe": {
+   "name": "Café Sperl",
+   "kind": "cafe",
+   "tag": "Coffee house, 1880",
+   "blurb": "Billiard tables, marble tops, newspapers on sticks. Order a Melange and an apple strudel and stay an hour.",
+   "url": "https://www.cafesperl.at",
+   "xy": [
+    262.8442,
+    134.6959
+   ]
+  },
+  "sights": [
+   {
+    "name": "Schönbrunn Palace",
+    "blurb": "The Habsburg summer palace. Climb to the Gloriette for the view.",
+    "xy": [
+     257.3226,
+     137.1756
+    ]
+   },
+   {
+    "name": "Stephansdom",
+    "blurb": "The cathedral at the center of everything. 343 steps up the south tower.",
+    "xy": [
+     264.1753,
+     133.2505
+    ]
+   },
+   {
+    "name": "Prunksaal, National Library",
+    "blurb": "The baroque State Hall of the Austrian National Library: frescoed dome, 200,000 old books, and one of the most beautiful rooms in Europe.",
+    "xy": [
+     263.4588,
+     133.6388
+    ]
+   },
+   {
+    "name": "Belvedere Palace",
+    "blurb": "Two baroque palaces facing each other across terraced gardens. Klimt's The Kiss hangs in the Upper Belvedere.",
+    "xy": [
+     265.0393,
+     136.0815
+    ]
+   }
+  ],
+  "trips": [
+   {
+    "name": "Wachau Valley",
+    "kind": "nature",
+    "time": "1 h 15 by train to Krems",
+    "blurb": "Terraced vineyards and apricot orchards along the Danube. Bike from Krems to Dürnstein and climb to the castle ruin.",
+    "detail": "wachau",
+    "xy": [
+     169.2403,
+     101.9742
+    ]
+   },
+   {
+    "name": "Kahlenberg & Vienna Woods",
+    "kind": "nature",
+    "time": "40 min by U4 + bus 38A",
+    "blurb": "Hike the vineyard trails above the city and finish with a view over all of Vienna.",
+    "detail": "kahlenberg",
+    "xy": [
+     259.7159,
+     121.9094
+    ]
+   },
+   {
+    "name": "Lednice–Valtice",
+    "kind": "daytrip",
+    "time": "1 h by train to Břeclav + 15 min bus",
+    "detail": "lednice",
+    "blurb": "A UNESCO landscape of palaces, follies and a minaret in the middle of Moravian wine country.",
+    "xy": [
+     312.2922,
+     33.5969
+    ]
+   },
+   {
+    "name": "Hallstatt & Salzkammergut",
+    "kind": "daytrip",
+    "time": "Full-day guided tour, about 3.5 h each way",
+    "url": "https://www.getyourguide.com/vienna-l7/from-vienna-full-day-tour-to-salzkammergut-hallstatt-t68367/",
+    "blurb": "The lakeside village in the Alps that looks like a postcard, plus the mountains and lakes of the Salzkammergut on the way.",
+    "detail": "hallstatt",
+    "xy": [
+     -44.6516,
+     245.0543
+    ]
+   }
+  ]
+ },
+ "prague": {
+  "food": [
+   {
+    "name": "Lokál Dlouhááá",
+    "kind": "regional",
+    "tag": "Czech pub",
+    "blurb": "Svíčková, fried cheese and the best-kept Pilsner Urquell in town, poured straight from the tank.",
+    "url": "https://lokal-dlouha.ambi.cz",
+    "xy": [
+     47.3951,
+     -187.1362
+    ]
+   },
+   {
+    "name": "U Tří jelínků",
+    "kind": "regional",
+    "tag": "Czech",
+    "blurb": "A traditional Czech restaurant on Nerudova, the steep lane up to the castle. Easy stop on the way up or down.",
+    "url": "https://www.tripadvisor.com/Restaurant_Review-g274707-d11808055-Reviews-U_Tri_Jelinku-Prague_Bohemia.html",
+    "xy": [
+     44.7223,
+     -186.786
+    ]
+   },
+   {
+    "name": "Oishi Praha",
+    "kind": "world",
+    "tag": "Japanese",
+    "blurb": "Sushi and Japanese dishes in the center, with branches on Spálená and V Celnici.",
+    "url": "https://oishipraha.com",
+    "xy": [
+     47.9119,
+     -186.6963
+    ]
+   },
+   {
+    "name": "Lore Malastrana",
+    "kind": "world",
+    "tag": "Italian",
+    "blurb": "Homemade Italian cooking from Chef Lore, on a quiet lane below the castle in Malá Strana.",
+    "url": "https://loremalastrana.cz",
+    "xy": [
+     44.7772,
+     -186.8675
+    ]
+   },
+   {
+    "name": "Pho Vietnam Tuan & Lan",
+    "kind": "world",
+    "tag": "Vietnamese",
+    "blurb": "A local favorite for steaming bowls of pho, a short walk from Vinohrady.",
+    "xy": [
+     48.2292,
+     -184.7315
+    ]
+   }
+  ],
+  "cafe": {
+   "name": "Café Savoy",
+   "kind": "cafe",
+   "tag": "Grand café, 1893",
+   "blurb": "Painted Neo-Renaissance ceiling, a pastry case worth the walk, and a great breakfast before the castle.",
+   "url": "https://cafesavoy.ambi.cz",
+   "xy": [
+    45.3311,
+    -185.4412
+   ]
+  },
+  "sights": [
+   {
+    "name": "Charles Bridge",
+    "blurb": "Go at sunrise before the crowds. It's empty, and the light is perfect.",
+    "xy": [
+     45.5274,
+     -186.4601
+    ]
+   },
+   {
+    "name": "Prague Castle",
+    "blurb": "The largest ancient castle complex in the world, plus St. Vitus Cathedral.",
+    "xy": [
+     44.586,
+     -187.1563
+    ]
+   },
+   {
+    "name": "Old Town Square",
+    "blurb": "The Astronomical Clock strikes the hour. Watch it once.",
+    "xy": [
+     46.8623,
+     -186.5722
+    ]
+   },
+   {
+    "name": "Letná Beer Garden",
+    "blurb": "Cheap beer under chestnut trees with the whole city below you. Best at sunset.",
+    "xy": [
+     47.5529,
+     -188.1357
+    ]
+   }
+  ],
+  "trips": [
+   {
+    "name": "Karlštejn Castle",
+    "kind": "daytrip",
+    "time": "40 min by train",
+    "blurb": "A Gothic castle on a wooded hill, built to guard Charles IV's crown jewels. Walk up from the village.",
+    "detail": "karlstejn",
+    "xy": [
+     20.9564,
+     -160.9195
+    ]
+   },
+   {
+    "name": "Kutná Hora",
+    "kind": "daytrip",
+    "time": "1 h by train",
+    "blurb": "An old silver-mining town with a soaring cathedral and the famous bone chapel at Sedlec.",
+    "detail": "kutnahora",
+    "xy": [
+     143.3898,
+     -164.7974
+    ]
+   },
+   {
+    "name": "Bohemian Switzerland",
+    "kind": "nature",
+    "time": "2 h by train + bus",
+    "blurb": "Sandstone towers and gorges. Hike to Pravčická brána, Europe's largest natural rock arch, and take a boat through the Kamenice gorge.",
+    "detail": "bohemian",
+    "xy": [
+     31.3089,
+     -325.8877
+    ]
+   }
+  ]
+ },
+ "munich": {
+  "food": [
+   {
+    "name": "Augustiner-Keller",
+    "kind": "regional",
+    "tag": "Beer garden",
+    "blurb": "5,000 seats under chestnut trees, beer from wooden barrels, half a roast chicken. A late-summer must.",
+    "url": "https://www.augustinerkeller.de",
+    "xy": [
+     -272.5585,
+     144.0995
+    ]
+   },
+   {
+    "name": "Wirtshaus in der Au",
+    "kind": "regional",
+    "tag": "Bavarian",
+    "blurb": "A Bavarian tavern known for its dumplings. They also run dumpling cooking classes.",
+    "url": "https://wirtshausinderau.de/de/feste-feiern/knoedelkochkurs/",
+    "xy": [
+     -268.6618,
+     146.5128
+    ]
+   },
+   {
+    "name": "Meraki",
+    "kind": "world",
+    "tag": "Greek",
+    "blurb": "Greek cooking in Haidhausen, across the Isar from the old town.",
+    "xy": [
+     -265.8318,
+     144.9964
+    ]
+   },
+   {
+    "name": "Indian Village",
+    "kind": "world",
+    "tag": "Indian",
+    "blurb": "Indian cooking out in Fasanerie, in the north of the city. Best paired with a trip out that way.",
+    "xy": [
+     -275.6006,
+     135.0023
+    ]
+   }
+  ],
+  "cafe": {
+   "name": "Café Frischhut",
+   "kind": "cafe",
+   "tag": "Schmalznudel",
+   "blurb": "One thing on the menu: fried dough, hot from the pan, next to the Viktualienmarkt. Opens early.",
+   "url": null,
+   "xy": [
+    -269.9996,
+    145.5365
+   ]
+  },
+  "sights": [
+   {
+    "name": "Marienplatz & Viktualienmarkt",
+    "blurb": "The Glockenspiel at 11, then graze the market stalls.",
+    "xy": [
+     -269.9054,
+     145.1603
+    ]
+   },
+   {
+    "name": "Nymphenburg Palace",
+    "blurb": "Baroque palace with huge gardens. Rent a gondola on the canal.",
+    "xy": [
+     -277.9323,
+     141.6264
+    ]
+   },
+   {
+    "name": "Asamkirche",
+    "blurb": "A tiny late-baroque church packed floor to ceiling with gold, stucco and frescoes, squeezed between townhouses on Sendlinger Straße.",
+    "xy": [
+     -270.5595,
+     145.4828
+    ]
+   }
+  ],
+  "trips": [
+   {
+    "name": "Lake Starnberg",
+    "kind": "nature",
+    "time": "30 min by S-Bahn S6",
+    "blurb": "Swim, paddle or ride a steamer across a lake with the Alps on the horizon.",
+    "detail": "starnberg",
+    "xy": [
+     -295.6888,
+     168.5675
+    ]
+   },
+   {
+    "name": "Neuschwanstein",
+    "kind": "daytrip",
+    "time": "2 h by train + bus",
+    "blurb": "The fairy-tale castle above the Alpsee. Book timed tickets well ahead.",
+    "detail": "neuschwanstein",
+    "xy": [
+     -361.8222,
+     241.301
+    ]
+   },
+   {
+    "name": "Partnach Gorge",
+    "kind": "nature",
+    "time": "1 h 20 by train to Garmisch",
+    "blurb": "A roaring gorge cut into the limestone, with the Zugspitze above it.",
+    "guide": "https://www.moonhoneytravel.com/partnach-gorge-hike/",
+    "guideLabel": "Hike guide",
+    "detail": "partnach",
+    "xy": [
+     -320.3641,
+     256.6123
+    ]
+   },
+   {
+    "name": "Salzburg",
+    "kind": "daytrip",
+    "time": "1 h 30 by train, or stop on the way back to Vienna",
+    "detail": "salzburg",
+    "blurb": "Mozart's baroque hometown under a clifftop fortress, right across the Austrian border.",
+    "xy": [
+     -106.4711,
+     201.2246
+    ]
+   }
+  ]
+ },
+ "lednice": {
+  "detail": true,
+  "parent": "vienna",
+  "local": "Lednice–Valtice",
+  "en": "Lednice–Valtice",
+  "sights": [
+   {
+    "name": "Lednice Chateau",
+    "blurb": "A neo-Gothic palace with a huge glasshouse and an English park you can explore by boat.",
+    "xy": [
+     312.2922,
+     33.5969
+    ]
+   },
+   {
+    "name": "The Minaret",
+    "blurb": "A 60 m minaret folly in the park. Climb it for views across the whole estate.",
+    "xy": [
+     313.108,
+     31.4667
+    ]
+   },
+   {
+    "name": "Valtice Chateau & wine salon",
+    "blurb": "Baroque palace whose cellars hold the National Wine Salon: taste the best 100 Czech wines.",
+    "xy": [
+     306.78,
+     44.1133
+    ]
+   },
+   {
+    "name": "Colonnade on Reistna",
+    "blurb": "A hilltop colonnade above Valtice with views over the vineyards toward Austria.",
+    "xy": [
+     304.5899,
+     44.5092
+    ]
+   }
+  ]
+ },
+ "salzburg": {
+  "detail": true,
+  "parent": "munich",
+  "local": "Salzburg",
+  "en": "Salzburg",
+  "sights": [
+   {
+    "name": "Getreidegasse & Mozart's birthplace",
+    "blurb": "The old-town shopping street with wrought-iron signs, and the yellow house where Mozart was born.",
+    "xy": [
+     -106.4711,
+     201.2246
+    ]
+   },
+   {
+    "name": "Hohensalzburg Fortress",
+    "blurb": "One of Europe's largest medieval castles. Take the funicular up for the view.",
+    "xy": [
+     -105.9653,
+     202.0089
+    ]
+   },
+   {
+    "name": "Mirabell Gardens",
+    "blurb": "Formal baroque gardens with the fortress framed behind the fountains.",
+    "xy": [
+     -106.6837,
+     200.4435
+    ]
+   },
+   {
+    "name": "Augustiner Bräu Mülln",
+    "blurb": "A monastery brewery with a huge chestnut-shaded beer garden. Beer poured from wooden barrels into stone mugs.",
+    "xy": [
+     -107.6116,
+     200.2398
+    ]
+   }
+  ]
+ },
+ "neuschwanstein": {
+  "detail": true,
+  "parent": "munich",
+  "local": "Neuschwanstein",
+  "en": "Neuschwanstein",
+  "sights": [
+   {
+    "name": "Neuschwanstein Castle",
+    "blurb": "King Ludwig II's fairy-tale castle on a crag above the gorge. Inside visits are by timed ticket only.",
+    "xy": [
+     -361.8222,
+     241.301
+    ]
+   },
+   {
+    "name": "Marienbrücke",
+    "blurb": "The iron footbridge over the Pöllat gorge with the classic postcard view of the castle.",
+    "xy": [
+     -361.8547,
+     241.7291
+    ]
+   },
+   {
+    "name": "Hohenschwangau Castle",
+    "blurb": "The yellow castle where Ludwig grew up, on the hill facing Neuschwanstein.",
+    "xy": [
+     -363.3386,
+     241.63
+    ]
+   },
+   {
+    "name": "Alpsee",
+    "blurb": "A clear mountain lake right below the castles. Rent a rowboat or swim from the beach.",
+    "xy": [
+     -364.981,
+     242.7189
+    ]
+   }
+  ]
+ },
+ "wachau": {
+  "detail": true,
+  "parent": "vienna",
+  "local": "Wachau",
+  "en": "Wachau",
+  "sights": [
+   {
+    "name": "Dürnstein Abbey",
+    "blurb": "The blue-and-white baroque tower on the riverbank, the postcard of the whole valley.",
+    "xy": [
+     169.1001,
+     101.9834
+    ]
+   },
+   {
+    "name": "Kuenringer Castle ruin",
+    "blurb": "A short steep climb to the ruin where Richard the Lionheart was held, with the best view of the Danube.",
+    "xy": [
+     169.4197,
+     101.5663
+    ]
+   },
+   {
+    "name": "Weißenkirchen",
+    "blurb": "A wine village of fortified churches and Heurigen, surrounded by terraced Riesling vineyards.",
+    "xy": [
+     163.5918,
+     101.6618
+    ]
+   },
+   {
+    "name": "Krems old town",
+    "blurb": "The gateway town of the valley: rent bikes here, then ride the river path to Dürnstein.",
+    "xy": [
+     177.7205,
+     99.5542
+    ]
+   }
+  ]
+ },
+ "kahlenberg": {
+  "detail": true,
+  "parent": "vienna",
+  "local": "Kahlenberg",
+  "en": "Kahlenberg",
+  "sights": [
+   {
+    "name": "Kahlenberg viewpoint",
+    "blurb": "The terrace above the vineyards with all of Vienna and the Danube laid out below.",
+    "xy": [
+     259.7159,
+     121.9094
+    ]
+   },
+   {
+    "name": "Leopoldsberg",
+    "blurb": "The neighbouring hilltop with a small castle church and an even steeper drop to the river.",
+    "xy": [
+     261.0681,
+     121.5999
+    ]
+   },
+   {
+    "name": "Kahlenbergerdorf",
+    "blurb": "A tiny wine village at the foot of the hill. The Nussberg trail runs from here through the vineyards.",
+    "xy": [
+     262.1631,
+     122.1822
+    ]
+   },
+   {
+    "name": "Grinzing",
+    "blurb": "The classic Heuriger village. Walk down here and end the hike with wine in a garden.",
+    "xy": [
+     260.557,
+     125.2606
+    ]
+   }
+  ]
+ },
+ "hallstatt": {
+  "detail": true,
+  "parent": "vienna",
+  "local": "Hallstatt",
+  "en": "Hallstatt",
+  "sights": [
+   {
+    "name": "Marktplatz",
+    "blurb": "The tiny market square of painted houses between the lake and the mountain.",
+    "xy": [
+     -39.068,
+     240.5021
+    ]
+   },
+   {
+    "name": "Skywalk World Heritage View",
+    "blurb": "A platform hanging off the cliff 350 m above the village. Take the funicular up.",
+    "xy": [
+     -39.6816,
+     240.6986
+    ]
+   },
+   {
+    "name": "Salt mine",
+    "blurb": "The world's oldest salt mine, with miners' slides between levels.",
+    "xy": [
+     -40.1561,
+     240.5634
+    ]
+   },
+   {
+    "name": "Bone House",
+    "blurb": "A chapel of painted skulls, a local tradition from when the churchyard ran out of space.",
+    "xy": [
+     -39.1079,
+     240.2971
+    ]
+   }
+  ]
+ },
+ "karlstejn": {
+  "detail": true,
+  "parent": "prague",
+  "local": "Karlštejn",
+  "en": "Karlštejn",
+  "sights": [
+   {
+    "name": "Karlštejn Castle",
+    "blurb": "Charles IV's treasure castle. Book the tour of the Great Tower to see the gilded chapel.",
+    "xy": [
+     20.9564,
+     -160.9195
+    ]
+   },
+   {
+    "name": "Karlštejn village",
+    "blurb": "The walk up from the station through the village is half the fun, past cafés and a wax museum.",
+    "xy": [
+     20.4039,
+     -159.9592
+    ]
+   },
+   {
+    "name": "Velká Amerika quarry",
+    "blurb": "A flooded limestone quarry nicknamed the Czech Grand Canyon, an hour's hike from the castle.",
+    "xy": [
+     22.0385,
+     -164.4146
+    ]
+   }
+  ]
+ },
+ "kutnahora": {
+  "detail": true,
+  "parent": "prague",
+  "local": "Kutná Hora",
+  "en": "Kutná Hora",
+  "sights": [
+   {
+    "name": "Sedlec Ossuary",
+    "blurb": "A chapel decorated with the bones of some 40,000 people, including a bone chandelier.",
+    "xy": [
+     143.3898,
+     -164.7974
+    ]
+   },
+   {
+    "name": "St. Barbara's Church",
+    "blurb": "A soaring Gothic cathedral built by the silver miners, with tent-like roofs.",
+    "xy": [
+     140.6685,
+     -161.8826
+    ]
+   },
+   {
+    "name": "Italian Court",
+    "blurb": "The old royal mint where the silver Prague groschen was struck.",
+    "xy": [
+     141.176,
+     -162.4489
+    ]
+   },
+   {
+    "name": "Sedlec Cathedral",
+    "blurb": "A bright Gothic-baroque cathedral next to the ossuary, often skipped and well worth it.",
+    "xy": [
+     143.5337,
+     -164.4434
+    ]
+   }
+  ]
+ },
+ "bohemian": {
+  "detail": true,
+  "parent": "prague",
+  "local": "Bohemian Switzerland",
+  "en": "Bohemian Switzerland",
+  "sights": [
+   {
+    "name": "Pravčická brána",
+    "blurb": "Europe's largest natural sandstone arch, a steady 1.5 h hike from Hřensko.",
+    "xy": [
+     31.3089,
+     -325.8877
+    ]
+   },
+   {
+    "name": "Edmund's Gorge boats",
+    "blurb": "Wooden boats poled through a narrow gorge by boatmen who tell jokes in Czech.",
+    "xy": [
+     31.9279,
+     -323.5198
+    ]
+   },
+   {
+    "name": "Hřensko",
+    "blurb": "The village squeezed into the canyon where the Kamenice meets the Elbe. Start here.",
+    "xy": [
+     26.7451,
+     -324.1617
+    ]
+   },
+   {
+    "name": "Mezní Louka",
+    "blurb": "The trail junction on the ridge between the arch and the gorges, with a lodge for lunch.",
+    "xy": [
+     35.3345,
+     -324.1226
+    ]
+   }
+  ]
+ },
+ "starnberg": {
+  "detail": true,
+  "parent": "munich",
+  "local": "Lake Starnberg",
+  "en": "Lake Starnberg",
+  "sights": [
+   {
+    "name": "Starnberg lakefront",
+    "blurb": "Step off the S-Bahn onto the promenade. Boats leave from here for the round-the-lake trip.",
+    "xy": [
+     -296.1928,
+     169.2008
+    ]
+   },
+   {
+    "name": "Roseninsel",
+    "blurb": "King Ludwig's little island hideaway with a rose garden, reached by a tiny ferry.",
+    "xy": [
+     -299.5467,
+     177.7516
+    ]
+   },
+   {
+    "name": "Possenhofen Castle",
+    "blurb": "Empress Sisi's childhood summer home, next to a lakeside park and swimming spot.",
+    "xy": [
+     -299.1749,
+     174.8672
+    ]
+   },
+   {
+    "name": "Votive Chapel, Berg",
+    "blurb": "A chapel on the shore where King Ludwig II drowned, with a cross standing in the water.",
+    "xy": [
+     -295.1956,
+     174.0184
+    ]
+   }
+  ]
+ },
+ "partnach": {
+  "detail": true,
+  "parent": "munich",
+  "local": "Garmisch-Partenkirchen",
+  "en": "Garmisch-Partenkirchen",
+  "sights": [
+   {
+    "name": "Partnach Gorge",
+    "blurb": "The trail runs through tunnels cut into the rock beside the roaring water.",
+    "xy": [
+     -320.3641,
+     256.6123
+    ]
+   },
+   {
+    "name": "Olympic Ski Stadium",
+    "blurb": "The giant ski jump at the trailhead, home of the New Year's jump.",
+    "xy": [
+     -320.862,
+     253.8346
+    ]
+   },
+   {
+    "name": "Eckbauer cable car",
+    "blurb": "Ride up and walk down to the gorge for a gentler loop with Alpine views.",
+    "xy": [
+     -319.7508,
+     255.0341
+    ]
+   },
+   {
+    "name": "Ludwigstraße, Partenkirchen",
+    "blurb": "A street of painted Bavarian houses and beer halls for after the hike.",
+    "xy": [
+     -321.3916,
+     252.0288
+    ]
+   }
+  ]
+ }
+}

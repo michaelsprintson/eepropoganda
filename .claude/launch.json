@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "deck", "runtimeExecutable": ".venv/bin/python", "runtimeArgs": ["-m", "http.server", "8765", "--directory", "deck"], "port": 8765 }
+  ]
+}

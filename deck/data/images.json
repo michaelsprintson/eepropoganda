@@ -1,0 +1,468 @@
+{
+ "Café Sperl": {
+  "img": "img/vienna-c0.jpg",
+  "credit": "Bahnfrend · CC BY-SA 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Caf%C3%A9_Sperl,_front,_2006.JPG"
+ },
+ "Charles Bridge": {
+  "img": "img/prague-s0.jpg",
+  "credit": "A.Savin · FAL · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Prague_07-2016_view_from_Lesser_Town_Tower_of_Charles_Bridge_img3.jpg"
+ },
+ "Prague Castle": {
+  "img": "img/prague-s1.jpg",
+  "credit": "Tilman2007 · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Karl%C5%AFv_most_Praha,_Star%C3%A9_M%C4%9Bsto_20170810_007.jpg"
+ },
+ "Old Town Square": {
+  "img": "img/prague-s2.jpg",
+  "credit": "A.Savin · FAL · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Prague_07-2016_View_from_Old_Town_Hall_Tower_img3.jpg"
+ },
+ "Letná Beer Garden": {
+  "img": "img/prague-s3.jpg",
+  "credit": "User:Aktron · CC BY-SA 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Praha,_Letn%C3%A1,_sad.jpg"
+ },
+ "airbnb:1310287467431170567": {
+  "img": "img/munich-h0.jpg",
+  "credit": "Photo: Airbnb listing",
+  "link": "https://www.airbnb.com/rooms/1310287467431170567?adults=11&check_in=2027-08-22&check_out=2027-08-25"
+ },
+ "airbnb:1310243951941088025": {
+  "img": "img/munich-h1.jpg",
+  "credit": "Photo: Airbnb listing",
+  "link": "https://www.airbnb.com/rooms/1310243951941088025?adults=11&check_in=2027-08-22&check_out=2027-08-25"
+ },
+ "airbnb:1725284730887614758": {
+  "img": "img/munich-h2.jpg",
+  "credit": "Photo: Airbnb listing",
+  "link": "https://www.airbnb.com/rooms/1725284730887614758?adults=11&check_in=2027-08-22&check_out=2027-08-25"
+ },
+ "airbnb:1745161347578867362": {
+  "img": "img/vienna-h0.jpg",
+  "credit": "Photo: Airbnb listing",
+  "link": "https://www.airbnb.com/rooms/1745161347578867362?adults=11&check_in=2027-08-22&check_out=2027-08-25"
+ },
+ "airbnb:13197084": {
+  "img": "img/vienna-h1.jpg",
+  "credit": "Photo: Airbnb listing",
+  "link": "https://www.airbnb.com/rooms/13197084?adults=11&check_in=2027-08-22&check_out=2027-08-25"
+ },
+ "airbnb:1719411451369133624": {
+  "img": "img/vienna-h2.jpg",
+  "credit": "Photo: Airbnb listing",
+  "link": "https://www.airbnb.com/rooms/1719411451369133624?adults=11&check_in=2027-08-22&check_out=2027-08-25"
+ },
+ "airbnb:1386835277812331092": {
+  "img": "img/prague-h0.jpg",
+  "credit": "Photo: Airbnb listing",
+  "link": "https://www.airbnb.com/rooms/1386835277812331092?adults=11&check_in=2027-08-22&check_out=2027-08-25"
+ },
+ "airbnb:1579636998901268603": {
+  "img": "img/prague-h1.jpg",
+  "credit": "Photo: Airbnb listing",
+  "link": "https://www.airbnb.com/rooms/1579636998901268603?adults=11&check_in=2027-08-22&check_out=2027-08-25"
+ },
+ "airbnb:1579618341912167734": {
+  "img": "img/prague-h2.jpg",
+  "credit": "Photo: Airbnb listing",
+  "link": "https://www.airbnb.com/rooms/1579618341912167734?adults=11&check_in=2027-08-22&check_out=2027-08-25"
+ },
+ "Schönbrunn Palace": {
+  "img": "img/vienna-s0.jpg",
+  "credit": "C.Stadler/Bwag · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Wien_-_Schloss_Sch%C3%B6nbrunn.JPG"
+ },
+ "Stephansdom": {
+  "img": "img/vienna-s1.jpg",
+  "credit": "Photo: rikitza on DeviantArt",
+  "link": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/9968a872-fd9f-494c-8015-0b6525e73f18/dh11fo3-79f28317-8337-41c5-8530-97e4b5c0c1e7.jpg/v1/fill/w_1095,h_730,q_70,strp/stephansdom_square_by_rikitza_dh11fo3-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NjAwMCIsInBhdGgiOiJcL2ZcLzk5NjhhODcyLWZkOWYtNDk0Yy04MDE1LTBiNjUyNWU3M2YxOFwvZGgxMWZvMy03OWYyODMxNy04MzM3LTQxYzUtODUzMC05N2U0YjVjMGMxZTcuanBnIiwid2lkdGgiOiI8PTkwMDAifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.spmJcM6grBJ5rRip3V1WN02qC6Zk_8pOL_n-DoyOB5g",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages-wixmp-ed30a86b8c4ca887773594c2.wixmp.com%2Ff%2F9968a872-fd9f-494c-8015-0b6525e73f18%2Fdh11fo3-79f28317-8337-41c5-8530-97e4b5c0c1e7.jpg%2Fv1%2Ffill%2Fw_1095%2Ch_730%2Cq_70%2Cstrp%2Fstephansdom_square_by_rikitza_dh11fo3-pre.jpg%3Ftoken%3DeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NjAwMCIsInBhdGgiOiJcL2ZcLzk5NjhhODcyLWZkOWYtNDk0Yy04MDE1LTBiNjUyNWU3M2YxOFwvZGgxMWZvMy03OWYyODMxNy04MzM3LTQxYzUtODUzMC05N2U0YjVjMGMxZTcuanBnIiwid2lkdGgiOiI8PTkwMDAifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.spmJcM6grBJ5rRip3V1WN02qC6Zk_8pOL_n-DoyOB5g&f=1&nofb=1&ipt=590b201c808f3cfefec2fda951c07ac3be7e561f81a4bb93fe565b6eb19b2d25&ipo=images"
+ },
+ "Café Savoy": {
+  "img": "img/prague-c0.jpg",
+  "credit": "ŠJů (cs:ŠJů) · CC BY-SA 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:V%C3%ADt%C4%9Bzn%C3%A1_-_Zborovsk%C3%A1,_Caf%C3%A9_Savoy.jpg"
+ },
+ "Café Frischhut": {
+  "img": "img/munich-c0.jpg",
+  "credit": "Philip Mallis · CC BY-SA 2.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Galaktoboureko_doughnut_from_Oakleigh_Doughnut_Company,_Richmond.jpg"
+ },
+ "Marienplatz & Viktualienmarkt": {
+  "img": "img/munich-s0.jpg",
+  "credit": "Photo: ratgeber-wissen.com",
+  "link": "https://www.ratgeber-wissen.com/wp-content/uploads/2024/02/Viktualienmarkt-1024x585.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.ratgeber-wissen.com%2Fwp-content%2Fuploads%2F2024%2F02%2FViktualienmarkt-1024x585.jpg&f=1&nofb=1&ipt=9820e58a57c301fbf5fe02e339aeaebe64a163ab501895660c3837d560bc1abc&ipo=images"
+ },
+ "Nymphenburg Palace": {
+  "img": "img/munich-s1.jpg",
+  "credit": "Photo: Kempinski",
+  "link": "https://storage.kempinski.com/cdn-cgi/image/w=1920,f=auto,g=auto,fit=scale-down/ki-cms-prod/images/5/1/3/6/18936315-1-eng-GB/3df5716d1599-MUC3_0000_Castle.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstorage.kempinski.com%2Fcdn-cgi%2Fimage%2Fw%3D1920%2Cf%3Dauto%2Cg%3Dauto%2Cfit%3Dscale-down%2Fki-cms-prod%2Fimages%2F5%2F1%2F3%2F6%2F18936315-1-eng-GB%2F3df5716d1599-MUC3_0000_Castle.jpg&f=1&nofb=1&ipt=c9e07e0d74c711a9eaa4ee80e01d1a61f9fbe628b73b62518a91cdf1d2488c45&ipo=images"
+ },
+ "Wachau Valley": {
+  "img": "img/vienna-t0.jpg",
+  "credit": "C.Stadler/Bwag · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:D%C3%BCrnstein_-_Luftaufnahme.JPG"
+ },
+ "Kutná Hora": {
+  "img": "img/prague-t1.jpg",
+  "credit": "al.trcka · CC BY-SA 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Kutn%C3%A1_Hora_(003).jpg"
+ },
+ "Neuschwanstein": {
+  "img": "img/munich-t1.jpg",
+  "credit": "Thomas Wolf, www.foto-tw.de · CC BY-SA 3.0 de · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Schloss_Neuschwanstein_2013.jpg"
+ },
+ "Partnach Gorge": {
+  "img": "img/munich-t2.jpg",
+  "credit": "Photo: moonhoneytravel.com",
+  "link": "https://www.moonhoneytravel.com/wp-content/uploads/2022/07/moonhoneytravel_partnach-gorge-trail-2-1024x683.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.moonhoneytravel.com%2Fwp-content%2Fuploads%2F2022%2F07%2Fmoonhoneytravel_partnach-gorge-trail-2-1024x683.jpg&f=1&nofb=1&ipt=019fa594e3c34037c7a6882fde9a4f326b1a4622240d667c552a39adcad6b0be&ipo=images"
+ },
+ "Valtice Chateau & wine salon": {
+  "img": "img/lednice-s2.jpg",
+  "credit": "VitVit · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Z%C3%A1mek_Valtice_3.jpg"
+ },
+ "Mirabell Gardens": {
+  "img": "img/salzburg-s2.jpg",
+  "credit": "Photo: Windows Spotlight",
+  "link": "https://windows10spotlight.com/wp-content/uploads/2023/02/1fa05b134ea6198a6ff44a5c53a147d3.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwindows10spotlight.com%2Fwp-content%2Fuploads%2F2023%2F02%2F1fa05b134ea6198a6ff44a5c53a147d3.jpg&f=1&nofb=1&ipt=a5ab623cc9d475c3a17f2284ed67b40d88bc347661b3fa6344fb838fc2120d7b&ipo=images"
+ },
+ "Augustiner Bräu Mülln": {
+  "img": "img/salzburg-s3.jpg",
+  "credit": "Photo: servus.com",
+  "link": "https://www.servus.com/storage/article/ausfluege-wirtshaus-augustinerbraeu-stockhammersaal.jpg?impolicy=article_short_header",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.servus.com%2Fstorage%2Farticle%2Fausfluege-wirtshaus-augustinerbraeu-stockhammersaal.jpg%3Fimpolicy%3Darticle_short_header&f=1&nofb=1&ipt=88c68184b477f594bb09bac7dafdba6272d608307ae8341f684cfc83af8d3eb0&ipo=images"
+ },
+ "Bohemian Switzerland": {
+  "img": "img/prague-t2.jpg",
+  "credit": "Pudelek · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Prav%C4%8Dick%C3%A1_br%C3%A1na_(Prebischtor)_-_by_Pudelek.jpg"
+ },
+ "Salzburg": {
+  "img": "img/munich-t3.jpg",
+  "credit": "Jorge Franganillo · CC BY 2.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Salzburg_(48489551981).jpg"
+ },
+ "Karlštejn Castle": {
+  "img": "img/prague-t0.jpg",
+  "credit": "Jürgen Regel, Marian… · CC BY 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Burg_Karlstein_-_Karl%C5%A1tejn_-_panoramio.jpg"
+ },
+ "Colonnade on Reistna": {
+  "img": "img/lednice-s3.jpg",
+  "credit": "Pudelek (Marcin Szala) · CC BY-SA 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Kolon%C3%A1da_na_Rajstn%C4%9B_(Reistenkolonnade)_-_by_Pudelek.JPG"
+ },
+ "Hohensalzburg Fortress": {
+  "img": "img/salzburg-s1.jpg",
+  "credit": "Photo: historyhit.com",
+  "link": "https://www.historyhit.com/app/uploads/2020/11/hohensalzburg-fortress.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.historyhit.com%2Fapp%2Fuploads%2F2020%2F11%2Fhohensalzburg-fortress.jpg&f=1&nofb=1&ipt=1d997da18364e072d126132dec7019e2bdb3c00a64376e0fd6bbeee9acbdec21&ipo=images"
+ },
+ "Lednice–Valtice": {
+  "img": "img/lednice-s0.jpg",
+  "credit": "Pudelek (Marcin Szala) · CC BY-SA 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Lednice_(Eisgrub)_-_z%C3%A1mek.JPG"
+ },
+ "Lednice Chateau": {
+  "img": "img/lednice-s0.jpg",
+  "credit": "Pudelek (Marcin Szala) · CC BY-SA 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Lednice_(Eisgrub)_-_z%C3%A1mek.JPG"
+ },
+ "Kahlenberg & Vienna Woods": {
+  "img": "img/vienna-t1.jpg",
+  "credit": "Karlunun · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Wien_III_Belvedereaussicht_Kahlenberg_Stephansdom_Leopoldsberg_7317_201703.jpg"
+ },
+ "Getreidegasse & Mozart's birthplace": {
+  "img": "img/salzburg-s0.jpg",
+  "credit": "Isiwal · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Salzburg_Getreidegasse_3_Schatz_Durchhaus-9151.jpg"
+ },
+ "Lake Starnberg": {
+  "img": "img/munich-t0.jpg",
+  "credit": "Photo: via Pinterest",
+  "link": "https://i.pinimg.com/originals/a5/8a/f1/a58af1d88a6a561b07ab34d674b762f3.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Fa5%2F8a%2Ff1%2Fa58af1d88a6a561b07ab34d674b762f3.jpg&f=1&nofb=1&ipt=2c37741ffc992e5bd08fb0d6e3f6620a841355192e2f8d2ba821f2fe1430a729&ipo=images"
+ },
+ "The Minaret": {
+  "img": "img/lednice-s1.jpg",
+  "credit": "Karel x · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Lednice_minaret_from_castle.jpg"
+ },
+ "Prunksaal, National Library": {
+  "img": "img/vienna-s2.jpg",
+  "credit": "Photo: insideinside.org",
+  "link": "https://insideinside.org/wp-content/uploads/2014/03/vienna-library-11.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Finsideinside.org%2Fwp-content%2Fuploads%2F2014%2F03%2Fvienna-library-11.jpg&f=1&nofb=1&ipt=ef7378c4254eaad68c7fce0f0a6edf9e72217f11266eb7c011732e65201ef3d8&ipo=images"
+ },
+ "Belvedere Palace": {
+  "img": "img/vienna-s3.jpg",
+  "credit": "Photo: supplied",
+  "link": "https://2gbzzxp7mkrqpgpz.public.blob.vercel-storage.com/vienna-belvedere/long_view_00.webp",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2F2gbzzxp7mkrqpgpz.public.blob.vercel-storage.com%2Fvienna-belvedere%2Flong_view_00.webp&f=1&nofb=1&ipt=a0a01c7b9f078754e608d91af4ac37fe58e0c2fce55b696948a7a8635af56e28&ipo=images"
+ },
+ "Hallstatt & Salzkammergut": {
+  "img": "img/vienna-t3.jpg",
+  "credit": "C.Stadler/Bwag · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Hallstatt_-_Zentrum_.JPG"
+ },
+ "Asamkirche": {
+  "img": "img/munich-s2.jpg",
+  "credit": "Photos: Flickr",
+  "link": "https://live.staticflickr.com/3306/4612992672_154056f8e4_b.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flive.staticflickr.com%2F3306%2F4612992672_154056f8e4_b.jpg&f=1&nofb=1&ipt=9517623f2ac2fec5e7cf04baa38b957f8814532c3fd954f3f04c28a8677ce349&ipo=images",
+  "imgs": [
+   "img/munich-s2.jpg",
+   "img/munich-s2-2.jpg"
+  ]
+ },
+ "Neuschwanstein Castle": {
+  "img": "img/neuschwanstein-s0.jpg",
+  "credit": "Thomas Wolf, www.foto-tw.de · CC BY-SA 3.0 de · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Schloss_Neuschwanstein_2013.jpg"
+ },
+ "Marienbrücke": {
+  "img": "img/neuschwanstein-s1.jpg",
+  "credit": "Llez · CC BY-SA 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Neuschwanstein_Castle_07.jpg"
+ },
+ "Hohenschwangau Castle": {
+  "img": "img/neuschwanstein-s2.jpg",
+  "credit": "Thomas Wolf, www.foto-tw.de · CC BY-SA 3.0 de · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Schloss_Hohenschwangau_2021.jpg"
+ },
+ "Alpsee": {
+  "img": "img/neuschwanstein-s3.jpg",
+  "credit": "Llez · CC BY-SA 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Alpsee_-_Pindarplatz_-_Hohenschwangau_Castle_-_Alpenrose_-_Neuschwanstein_Castle_01.jpg"
+ },
+ "Kuenringer Castle ruin": {
+  "img": "img/wachau-s1.jpg",
+  "credit": "Uoaei1 · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:D%C3%BCrnstein_Panorama_02.jpg"
+ },
+ "Weißenkirchen": {
+  "img": "img/wachau-s2.jpg",
+  "credit": "C.Stadler/Bwag · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Wei%C3%9Fenkirchen_in_der_Wachau.JPG"
+ },
+ "Krems old town": {
+  "img": "img/wachau-s3.jpg",
+  "credit": "Haeferl · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Krems_an_der_Donau_-_Ortsansicht.jpg"
+ },
+ "Kahlenberg viewpoint": {
+  "img": "img/kahlenberg-s0.jpg",
+  "credit": "Steffen Flor · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Blick_auf_Wien_vom_Kahlenberg_bei_Nacht.jpg"
+ },
+ "Leopoldsberg": {
+  "img": "img/kahlenberg-s1.jpg",
+  "credit": "C.Stadler/Bwag · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:D%C3%B6bling_(Wien)_-_Leopoldsberg_(2).JPG"
+ },
+ "Grinzing": {
+  "img": "img/kahlenberg-s3.jpg",
+  "credit": "Geiserich77 · CC BY-SA 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Karte_Wien-Grinzing.png"
+ },
+ "Marktplatz": {
+  "img": "img/hallstatt-s0.jpg",
+  "credit": "C.Stadler/Bwag · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Hallstatt_-_Zentrum_.JPG"
+ },
+ "Salt mine": {
+  "img": "img/hallstatt-s2.jpg",
+  "credit": "Balou46 · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:A-Hallstatt-salzw-eingang-stollen.jpg"
+ },
+ "Bone House": {
+  "img": "img/hallstatt-s3.jpg",
+  "credit": "Wolfgang Sauber · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Hallstatt_-_Beinhaus_4a.jpg"
+ },
+ "Karlštejn village": {
+  "img": "img/karlstejn-s1.jpg",
+  "credit": "Josef Kreuz (PEPan) · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Karl%C5%A1tejn_(z%C3%A1mek),_CZ140506-186.jpg"
+ },
+ "Velká Amerika quarry": {
+  "img": "img/karlstejn-s2.jpg",
+  "credit": "Pavel Koběrský · CC BY-SA 2.5 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Amerika_Quarry_HDR.jpg"
+ },
+ "Sedlec Ossuary": {
+  "img": "img/kutnahora-s0.jpg",
+  "credit": "Pudelek (Marcin Szala) · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Kostnice_Sedlec.JPG"
+ },
+ "St. Barbara's Church": {
+  "img": "img/kutnahora-s1.jpg",
+  "credit": "Jerzy Strzelecki · CC BY 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:KUTNA_HORA_(js)_11.jpg"
+ },
+ "Sedlec Cathedral": {
+  "img": "img/kutnahora-s3.jpg",
+  "credit": "Lynx1211 · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Kostel_Nanebevzet%C3%AD_Panny_Marie_(exteri%C3%A9r).jpg"
+ },
+ "Pravčická brána": {
+  "img": "img/bohemian-s0.jpg",
+  "credit": "Pudelek · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Prav%C4%8Dick%C3%A1_br%C3%A1na_(Prebischtor)_-_by_Pudelek.jpg"
+ },
+ "Edmund's Gorge boats": {
+  "img": "img/bohemian-s1.jpg",
+  "credit": "Zinneke · CC BY-SA 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Edmundova_Sout%C4%9Bska_(Edmundsklamm)_2015-08_--2.JPG"
+ },
+ "Hřensko": {
+  "img": "img/bohemian-s2.jpg",
+  "credit": "Jiří Komárek · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:H%C5%99ensko,_okres_D%C4%9B%C4%8D%C3%ADn.jpg"
+ },
+ "Mezní Louka": {
+  "img": "img/bohemian-s3.jpg",
+  "credit": "Mangan · CC BY 2.5 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Mezn%C3%AD_Louka_1.jpg"
+ },
+ "Starnberg lakefront": {
+  "img": "img/starnberg-s0.jpg",
+  "credit": "Boschfoto · CC BY-SA 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Starnberg,_Stadt_und_Schloss.jpg"
+ },
+ "Roseninsel": {
+  "img": "img/starnberg-s1.jpg",
+  "credit": "Reinraum · Public domain · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Roseninsel_vom_Feldafinger_Park.jpg"
+ },
+ "Possenhofen Castle": {
+  "img": "img/starnberg-s2.jpg",
+  "credit": "Unknown · CC BY-SA 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:SchlossPossenhofen01.jpg"
+ },
+ "Votive Chapel, Berg": {
+  "img": "img/starnberg-s3.jpg",
+  "credit": "Flocci Nivis · CC BY 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:20221009_Votivkapelle_Berg_04.jpg"
+ },
+ "Olympic Ski Stadium": {
+  "img": "img/partnach-s1.jpg",
+  "credit": "Garmisch · CC BY-SA 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Neujahrsskispringen2008.jpg"
+ },
+ "Eckbauer cable car": {
+  "img": "img/partnach-s2.jpg",
+  "credit": "Vizinal · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Eckbauerbahn-Bergstation.jpg"
+ },
+ "Ludwigstraße, Partenkirchen": {
+  "img": "img/partnach-s3.jpg",
+  "credit": "-wuppertaler · CC BY 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:GER_Garmisch-Partenkirchen,_Ludwigstra%C3%9Fe_021.jpg"
+ },
+ "Figlmüller Wollzeile": {
+  "img": "img/vienna-f0.jpg",
+  "credit": "Brücke-Osteuropa · CC0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Figlm%C3%BCller_Wollzeile_Wien.JPG"
+ },
+ "Dom Schnitzel": {
+  "img": "img/vienna-f1.jpg",
+  "credit": "Photo: Tripadvisor",
+  "link": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2a/b9/1c/43/wiener-schnitzel.jpg?w=800&h=600&s=1",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fdynamic-media-cdn.tripadvisor.com%2Fmedia%2Fphoto-o%2F2a%2Fb9%2F1c%2F43%2Fwiener-schnitzel.jpg%3Fw%3D800%26h%3D600%26s%3D1&f=1&nofb=1&ipt=4a73697b9da935edd1d47e05627764688346f72088cbe4748792359970cd93f1&ipo=images"
+ },
+ "Ramen Makotoya": {
+  "img": "img/vienna-f2.jpg",
+  "credit": "Photo: Ramen Makotoya",
+  "link": "https://static.wixstatic.com/media/3b7bfd_d6bc0fbca6054e44952f12d6d5236683~mv2.jpg/v1/fill/w_838,h_1682,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/3b7bfd_d6bc0fbca6054e44952f12d6d5236683~mv2.jpg",
+  "user": "https://static.wixstatic.com/media/3b7bfd_d6bc0fbca6054e44952f12d6d5236683~mv2.jpg/v1/fill/w_838,h_1682,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/3b7bfd_d6bc0fbca6054e44952f12d6d5236683~mv2.jpg"
+ },
+ "Lola": {
+  "img": "img/vienna-f3.jpg",
+  "credit": "Photo: Tripadvisor",
+  "link": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/24/7c/46/1c/caption.jpg?w=1100&h=-1&s=1",
+  "user": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/24/7c/46/1c/caption.jpg?w=1100&h=-1&s=1"
+ },
+ "Lokál Dlouhááá": {
+  "img": "img/prague-f0.jpg",
+  "credit": "Photo: Tripadvisor",
+  "link": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/08/ad/1b/4d/photo0jpg.jpg?w=2000&h=-1&s=1",
+  "user": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/08/ad/1b/4d/photo0jpg.jpg?w=2000&h=-1&s=1"
+ },
+ "U Tří jelínků": {
+  "img": "img/prague-f1.jpg",
+  "credit": "Photo: Tripadvisor",
+  "link": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/7b/a1/98/caption.jpg?w=1400&h=-1&s=1",
+  "user": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/7b/a1/98/caption.jpg?w=1400&h=-1&s=1"
+ },
+ "Oishi Praha": {
+  "img": "img/prague-f2.jpg",
+  "credit": "Photo: Oishi Praha",
+  "link": "https://oishipraha.com/wp-content/uploads/2026/10/catering-20261026-27.webp",
+  "user": "https://oishipraha.com/wp-content/uploads/2026/10/catering-20261026-27.webp"
+ },
+ "Lore Malastrana": {
+  "img": "img/prague-f3.jpg",
+  "credit": "Photo: Lore Malastrana",
+  "link": "https://static.wixstatic.com/media/62a3ca_ab6fa02a2d8e4050a1ea286817ff7ec2~mv2.jpg/v1/fill/w_980,h_653,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/62a3ca_ab6fa02a2d8e4050a1ea286817ff7ec2~mv2.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.wixstatic.com%2Fmedia%2F62a3ca_ab6fa02a2d8e4050a1ea286817ff7ec2~mv2.jpg%2Fv1%2Ffill%2Fw_980%2Ch_653%2Cal_c%2Cq_85%2Cusm_0.66_1.00_0.01%2Cenc_avif%2Cquality_auto%2F62a3ca_ab6fa02a2d8e4050a1ea286817ff7ec2~mv2.jpg&f=1&nofb=1&ipt=8387df08b4d432728d17464f922dccedd9a6301bf6e2eac926730f5333f233ab&ipo=images"
+ },
+ "Pho Vietnam Tuan & Lan": {
+  "img": "img/prague-f4.jpg",
+  "credit": "Photo: Tripadvisor",
+  "link": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2d/9f/0a/ae/pho-bo-tai.jpg?w=1200&h=1200&s=1",
+  "user": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2d/9f/0a/ae/pho-bo-tai.jpg?w=1200&h=1200&s=1"
+ },
+ "Augustiner-Keller": {
+  "img": "img/munich-f0.jpg",
+  "credit": "Takeaway · CC BY-SA 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:2013_Augustiner_beermat.JPG"
+ },
+ "Wirtshaus in der Au": {
+  "img": "img/munich-f1.jpg",
+  "credit": "Photo: Wirtshaus in der Au",
+  "link": "https://wirtshausinderau.de/wp-content/uploads/2026/04/Knoedeltrio-e1727628982726.png",
+  "user": "https://wirtshausinderau.de/wp-content/uploads/2026/04/Knoedeltrio-e1727628982726.png"
+ },
+ "Meraki": {
+  "img": "img/munich-f2.jpg",
+  "credit": "Photo: Tripadvisor",
+  "link": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/20/b1/e3/7d/meraki-restaurant.jpg?w=1100&h=-1&s=1",
+  "user": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/20/b1/e3/7d/meraki-restaurant.jpg?w=1100&h=-1&s=1"
+ },
+ "Indian Village": {
+  "img": "img/munich-f3.jpg",
+  "credit": "Photo: Tripadvisor",
+  "link": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2c/c3/7f/c1/food.jpg?w=1100&h=-1&s=1",
+  "user": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2c/c3/7f/c1/food.jpg?w=1100&h=-1&s=1"
+ },
+ "Dürnstein Abbey": {
+  "img": "img/wachau-s0.jpg",
+  "credit": "Conny Duck · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:D%C3%BCrnstein_Herbst_2022.jpg"
+ },
+ "Kahlenbergerdorf": {
+  "img": "img/kahlenberg-s2.jpg",
+  "credit": "Paterpattor · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Haltestelle_Kahlenbergerdorf.jpg"
+ },
+ "Skywalk World Heritage View": {
+  "img": "img/hallstatt-s1.jpg",
+  "credit": "C.Stadler/Bwag · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Hallstatt_-_Rudolfsturm.JPG"
+ },
+ "Italian Court": {
+  "img": "img/kutnahora-s2.jpg",
+  "credit": "Palickap · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Kutn%C3%A1_Hora,_Vla%C5%A1sk%C3%BD_dv%C5%AFr,_n%C3%A1dvo%C5%99%C3%AD.jpg"
+ }
+}

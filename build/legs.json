@@ -1,0 +1,16 @@
+{
+  "vp": {"from": "vienna", "to": "prague", "stations": [
+    ["Wien Hbf", 16.3762, 48.1852, 1], ["Wien Simmering", 16.4205, 48.1700], ["Wien Stadlau", 16.4485, 48.2194], ["Süßenbrunn", 16.4880, 48.2850], ["Gänserndorf", 16.7213, 48.3400],
+    ["Hohenau", 16.9050, 48.6040], ["Břeclav", 16.8890, 48.7590, 1], ["Brno hl.n.", 16.6128, 49.1903, 1], ["Blansko", 16.6460, 49.3630],
+    ["Letovice", 16.5730, 49.5470], ["Svitavy", 16.4680, 49.7560], ["Česká Třebová", 16.4470, 49.9020], ["Ústí n. Orlicí", 16.3930, 49.9740],
+    ["Choceň", 16.2230, 50.0010], ["Pardubice", 15.7570, 50.0320, 1], ["Kolín", 15.2070, 50.0270], ["Praha-Libeň", 14.4836, 50.1009], ["Praha hl.n.", 14.4350, 50.0831, 1]]},
+  "pm": {"from": "prague", "to": "munich", "stations": [
+    ["Praha hl.n.", 14.4350, 50.0831, 1], ["Praha-Smíchov", 14.4085, 50.0606], ["Beroun", 14.0730, 49.9630], ["Rokycany", 13.5960, 49.7400],
+    ["Plzeň hl.n.", 13.3880, 49.7430, 1], ["Domažlice", 12.9300, 49.4430], ["Furth im Wald", 12.8460, 49.3080], ["Cham", 12.6600, 49.2210],
+    ["Schwandorf", 12.1020, 49.3250], ["Regensburg Hbf", 12.0990, 49.0115, 1], ["Landshut", 12.1360, 48.5470], ["Freising", 11.7450, 48.3950],
+    ["München-Moosach", 11.5072, 48.1797], ["München Hbf", 11.5600, 48.1402, 1]]},
+  "mv": {"from": "munich", "to": "vienna", "optional": true, "stations": [
+    ["München Hbf", 11.5600, 48.1402, 1], ["München Ost", 11.6047, 48.1275], ["Berg am Laim", 11.6323, 48.1238], ["Rosenheim", 12.1190, 47.8500], ["Salzburg Hbf", 13.0460, 47.8130, 1],
+    ["Attnang-Puchheim", 13.7230, 48.0090], ["Wels", 14.0270, 48.1660], ["Linz Hbf", 14.2920, 48.2900, 1], ["Amstetten", 14.8730, 48.1230],
+    ["St. Pölten Hbf", 15.6240, 48.2080, 1], ["Wien Meidling", 16.3335, 48.1747], ["Wien Hbf", 16.3762, 48.1852, 1]]}
+}

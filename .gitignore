@@ -1,0 +1,15 @@
+# Python virtual environment (recreate with: python3 -m venv .venv && .venv/bin/pip install shapely requests Pillow)
+.venv/
+
+# Raw downloads (OSM, Natural Earth, geocodes, original photos): ~500 MB, rebuilt by the build/ scripts
+data/raw/
+
+# Python caches
+__pycache__/
+*.pyc
+
+# Local Claude Code settings
+.claude/settings.local.json
+
+# macOS
+.DS_Store

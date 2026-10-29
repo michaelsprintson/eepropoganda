@@ -1,0 +1,89 @@
+{
+ "munich": [
+  {
+   "url": "https://www.airbnb.com/rooms/1310287467431170567?adults=11&check_in=2027-08-22&check_out=2027-08-25",
+   "title": "Rental unit in Munich · ★4.86 · 6 bedrooms · 12 beds · 3 baths",
+   "desc": "LTA Apartment South No.2 / 12P / Parking / S-Bahn",
+   "xy": [
+    -263.638,
+    152.654
+   ]
+  },
+  {
+   "url": "https://www.airbnb.com/rooms/1310243951941088025?adults=11&check_in=2027-08-22&check_out=2027-08-25",
+   "title": "Rental unit in Munich · ★4.87 · 5 bedrooms · 12 beds · 3 baths",
+   "desc": "LTA Apartment South No.1 / 12P / Parking / S-Bahn",
+   "xy": [
+    -263.638,
+    152.654
+   ]
+  },
+  {
+   "url": "https://www.airbnb.com/rooms/1725284730887614758?adults=11&check_in=2027-08-22&check_out=2027-08-25",
+   "title": "Rental unit in Munich · 4 bedrooms · 12 beds · 1 bath",
+   "desc": "Munich 160 sqm in a top location - 4 bedrooms",
+   "xy": [
+    -272.6994,
+    145.0342
+   ]
+  }
+ ],
+ "vienna": [
+  {
+   "url": "https://www.airbnb.com/rooms/1745161347578867362?adults=11&check_in=2027-08-22&check_out=2027-08-25",
+   "title": "Rental unit in Vienna · ★New · 6 bedrooms · 7 beds · 4 baths",
+   "desc": "Sky Garden Vienna",
+   "xy": [
+    260.9106,
+    132.982
+   ]
+  },
+  {
+   "url": "https://www.airbnb.com/rooms/13197084?adults=11&check_in=2027-08-22&check_out=2027-08-25",
+   "title": "Rental unit in Vienna · ★5.0 · 5 bedrooms · 6 beds · 3.5 baths",
+   "desc": "Good vibes in Ottakring - for up to 12 guests",
+   "xy": [
+    258.9403,
+    132.7648
+   ]
+  },
+  {
+   "url": "https://www.airbnb.com/rooms/1719411451369133624?adults=11&check_in=2027-08-22&check_out=2027-08-25",
+   "title": "Rental unit in Vienna · ★4.96 · 5 bedrooms · 6 beds · 4 baths",
+   "desc": "City Center 5BR • Balcony •AC • Perfect for Groups",
+   "xy": [
+    262.0416,
+    135.681
+   ]
+  }
+ ],
+ "prague": [
+  {
+   "url": "https://www.airbnb.com/rooms/1386835277812331092?adults=11&check_in=2027-08-22&check_out=2027-08-25",
+   "title": "Rental unit in Prague 2 · ★4.94 · 7 bedrooms · 9 beds · 3.5 baths",
+   "desc": "7BR+4.5Bath Palace near Museum + Pool",
+   "xy": [
+    47.7895,
+    -184.6041
+   ]
+  },
+  {
+   "url": "https://www.airbnb.com/rooms/1579636998901268603?adults=11&check_in=2027-08-22&check_out=2027-08-25",
+   "title": "Rental unit in Prague 1 · ★5.0 · 6 bedrooms · 8 beds · 3 baths",
+   "desc": "6BR+3Bath SOHO Suites Old Town | AC & PS5 | #C402",
+   "xy": [
+    46.1865,
+    -185.7316
+   ]
+  },
+  {
+   "url": "https://www.airbnb.com/rooms/1579618341912167734?adults=11&check_in=2027-08-22&check_out=2027-08-25",
+   "title": "Rental unit in Prague 1 · ★5.0 · 4 bedrooms · 8 beds · 3 baths",
+   "desc": "4BR SOHO Suites Old Town |Terrace|Billiards| #B505",
+   "xy": [
+    46.2599,
+    -185.9225
+   ]
+  }
+ ]
+}
