@@ -21,11 +21,11 @@
   --ink: #1d282d;
   --ink-2: #57646b;
   --panel: rgba(255, 255, 255, 0.94);
+  --stage: rgba(8, 12, 14, 0.92); --stage-ink: #dfe6e8;
   --line: #dbe1e0;
   --chip: #eef1f0;
   --vienna: #c9920c;
   --prague: #c23a2e;
-  --munich: #2a64ad;
   --split: #12857f;
   --tram: #d4483c;
   --bus: #7d5cc0;
@@ -43,14 +43,14 @@
     --bg: #0b1114; --land: #172026; --land-hi: #1e2930; --border: #3a4952; --water: #173343;
     --green: #1b2d24; --road: #3b4850; --casing: #10171b; --building: #283239; --rail: #6d7b82;
     --ink: #e7ecec; --ink-2: #9ba8ae; --panel: rgba(20, 27, 32, 0.94); --line: #2b373e; --chip: #222d33;
-    --vienna: #f0b630; --prague: #e8584c; --munich: #5b95dc; --split: #2fb8b0; --tram: #f06a5c; --bus: #a98be6; color-scheme: dark;
+    --vienna: #f0b630; --prague: #e8584c; --split: #2fb8b0; --tram: #f06a5c; --bus: #a98be6; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0b1114; --land: #172026; --land-hi: #1e2930; --border: #3a4952; --water: #173343;
   --green: #1b2d24; --road: #3b4850; --casing: #10171b; --building: #283239; --rail: #6d7b82;
   --ink: #e7ecec; --ink-2: #9ba8ae; --panel: rgba(20, 27, 32, 0.94); --line: #2b373e; --chip: #222d33;
-  --vienna: #f0b630; --prague: #e8584c; --munich: #5b95dc; --split: #2fb8b0; --tram: #f06a5c; --bus: #a98be6; color-scheme: dark;
+  --vienna: #f0b630; --prague: #e8584c; --split: #2fb8b0; --tram: #f06a5c; --bus: #a98be6; color-scheme: dark;
 }
 html, body { height: 100%; overflow: hidden; }
 [hidden] { display: none !important; }
@@ -305,6 +305,23 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 #pop .x { position: absolute; top: 6px; right: 6px; width: 32px; height: 32px; border: 0; background: none; color: var(--ink-2); font-size: 20px; cursor: pointer; border-radius: 4px; }
 #pop .x:hover { background: var(--chip); }
 
+/* photo viewer: always a dark stage, whatever the theme */
+#viewer { position: fixed; inset: 0; z-index: 20; background: var(--stage); display: grid; place-items: center; padding: 16px; }
+#viewer figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; max-width: 100%; max-height: 100%; }
+#viewer img { display: block; max-width: min(100%, calc(100vw - 32px)); max-height: calc(100vh - 110px); max-height: calc(100dvh - 110px); object-fit: contain; border-radius: 4px; background: rgba(255,255,255,.04); }
+#viewer figcaption { color: var(--stage-ink); font-size: 13px; text-align: center; max-width: 720px; }
+#viewer figcaption b { font-family: var(--f-display); font-size: 18px; font-weight: 700; margin-right: 6px; }
+#viewer figcaption .n { font-family: var(--f-mono); font-size: 11px; opacity: .8; margin-right: 6px; }
+#viewer figcaption a { color: var(--stage-ink); }
+#viewer button { position: absolute; width: 44px; height: 44px; border: 0; border-radius: 6px; background: rgba(255,255,255,.1); color: #fff; font-size: 26px; line-height: 1; cursor: pointer; }
+#viewer button:hover, #viewer button:focus-visible { background: rgba(255,255,255,.22); outline: none; }
+#viewer .vx { top: calc(12px + env(safe-area-inset-top, 0px)); right: 12px; }
+#viewer .vnav { top: 50%; transform: translateY(-50%); }
+#viewer .prev { left: 12px; } #viewer .next { right: 12px; }
+#viewer .vload { position: absolute; top: calc(22px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); font: 500 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--stage-ink); opacity: 0; transition: opacity .2s; pointer-events: none; }
+#viewer.loading .vload { opacity: .85; }
+.thumb[src], #pop .ph, #pop .phs img { cursor: zoom-in; }
+
 #loading { position: fixed; inset: 0; display: grid; place-items: center; font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); pointer-events: none; z-index: 4; }
 
 @media (max-width: 759px) {
@@ -329,7 +346,7 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 }
 </style>
 
-<canvas id="map" aria-label="Map of Vienna, Prague and Munich with train routes"></canvas>
+<canvas id="map" aria-label="Map of Prague, Vienna and Split with train routes"></canvas>
 <div id="loading">Loading map…</div>
 <aside id="panel" aria-live="polite"><div id="card"></div></aside>
 <div id="tools">
@@ -361,10 +378,26 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
   <button class="btn primary" id="next" title="Next (→)" aria-label="Next slide"><span class="lbl">Next</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
 </nav>
 <div id="pop" hidden></div>
+<div id="viewer" role="dialog" aria-modal="true" aria-label="Photo viewer" hidden>
+  <figure><img id="vImg" alt=""><figcaption id="vCap"></figcaption></figure>
+  <button class="vx" aria-label="Close photo">×</button>
+  <button class="vnav prev" aria-label="Previous photo">‹</button>
+  <button class="vnav next" aria-label="Next photo">›</button>
+  <div class="vload" aria-hidden="true">Loading full size…</div>
+</div>
 <div id="calPanel" class="calpanel" role="dialog" aria-label="Trip planner" hidden></div>
 <div id="tip" role="tooltip" hidden></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<!-- only the d3 modules the camera uses (zoom and its dependencies), about a quarter of the full bundle -->
+<script src="https://cdn.jsdelivr.net/npm/d3-color@3.1.0/dist/d3-color.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-dispatch@3.0.1/dist/d3-dispatch.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-ease@3.0.1/dist/d3-ease.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-interpolate@3.0.1/dist/d3-interpolate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-selection@3.0.0/dist/d3-selection.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-timer@3.0.1/dist/d3-timer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-transition@3.0.1/dist/d3-transition.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-drag@3.0.0/dist/d3-drag.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-zoom@3.0.0/dist/d3-zoom.min.js"></script>
 <script>
 "use strict";
 // ---------- projection (matches build/process.py) ----------
@@ -395,6 +428,7 @@ function buildLegs(data) {
   for (const l of Object.values(LEGS)) {
     l.spts = l.stations.map(s => P(s[1], s[2]));
     l.pts = l.path;
+    l.path2d = new Path2D(); addAbs(l.path2d, l.pts.flat(), false);
     l.cum = [0];
     for (let i = 1; i < l.pts.length; i++) l.cum.push(l.cum[i - 1] + Math.hypot(l.pts[i][0] - l.pts[i - 1][0], l.pts[i][1] - l.pts[i - 1][1]));
   }
@@ -407,21 +441,14 @@ const BOARDS = {
       ["", "OPTION B · FLY", "", ""], ["1h 15", "Flight VIE → SPU · Austrian / Croatia Airlines", "daily in summer", "€80+"]],
     via: "<b>Semmering</b> · Graz · Maribor · <b>Zagreb</b> · Knin",
     stop: "<b>Option A:</b> about 6.5 h awake on the day train over the UNESCO-listed Semmering railway, an evening in Zagreb, then sleep through Lika and wake up on the coast. <b>Option B:</b> fly in 1h15 and skip Zagreb. The dashed arc on the map is the flight." },
-  vp: { rows: [["4h 00", "Railjet · ÖBB / ČD", "every 2 h", "€20+"], ["4h 15", "RegioJet train", "several daily", "€15+"], ["4h 30", "FlixBus coach", "several daily", "€15+"]],
-    via: "Břeclav · <b>Brno</b> · Pardubice", stop: "<b>Worth a stop:</b> Brno, a lively student city right at the halfway point. Easy lunch break." },
-  pm: { rows: [["5h 45", "Direct EC · ČD / DB", "every 2 h", "€25+"], ["4h 45", "FlixBus coach", "many daily", "€20+"]],
-    via: "<b>Plzeň</b> · Furth im Wald · <b>Regensburg</b> · Landshut", stop: "<b>Worth a stop:</b> Plzeň, home of Pilsner Urquell. The brewery tour is 1.5 h from Prague." },
-  mv: { rows: [["4h 00", "Railjet · ÖBB", "every 1–2 h", "€30+"], ["1h 00", "Or fly home from MUC", "—", "—"]],
-    via: "Rosenheim · <b>Salzburg</b> · Linz · St. Pölten", stop: "<b>Worth a stop:</b> Salzburg, Mozart's old town under the Alps, 1.5 h from Munich." },
 };
 
 const SEASON = {
   vienna: "In late August the locals head out and the city moves outdoors: wine taverns in the vineyards, long evenings in palace gardens, swimming in the Alte Donau. Expect 25–30°C.",
   prague: "Late summer means long evenings: beer gardens up on the hills, sunsets from the bridges, boats on the Vltava. Warm days around 25°C.",
-  munich: "Beer gardens at their peak, and we beat the Oktoberfest crowds, which arrive in September. The lakes and the Alps are an hour away for a day trip.",
   split: "Late August is peak beach season: a warm sea around 24°C, long evenings on the Riva, and islands an hour away by boat. Expect 28–32°C.",
 };
-const EAT_TITLE = { vienna: "Schnitzel, ramen & tapas", prague: "Pilsner, pho & pasta", munich: "Beer, dumplings & more", split: "Fish, octopus & Croatian wine" };
+const EAT_TITLE = { vienna: "Schnitzel, ramen & tapas", prague: "Pilsner, pho & pasta", split: "Fish, octopus & Croatian wine" };
 
 let PLACES = [];        // flattened places with code + city
 const DETAIL = {};      // day-trip zoom-in areas (salzburg, lednice) -> {en, local, parent}
@@ -484,7 +511,7 @@ function badge(p) {
   return `<span class="badge ${p.type}"><span>${p.label || p.code}</span></span>`;
 }
 function thumb(p) {
-  return p.img ? `<img class="thumb" src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy">` : `<span class="thumb"></span>`;
+  return p.img ? `<img class="thumb" src="${esc(p.thumb || p.img)}" alt="${esc(p.name)}" loading="lazy" decoding="async">` : `<span class="thumb"></span>`;
 }
 function li(p, extra = "") {
   const chip = p.kind ? `<span class="chip ${p.kind === "regional" ? "regional" : ""}">${KIND[p.kind]} · ${esc(p.tag)}</span>` : "";
@@ -560,7 +587,7 @@ function stayHTML(city) {
 }
 function legHTML(leg, n) {
   const L = LEGS[leg], B = BOARDS[leg], from = L.stations[0][0], to = L.stations[L.stations.length - 1][0];
-  const title = leg === "mv" ? "Home, or back to Vienna" : leg === "vs" ? `Vienna to Split, by ${PLAN.legs.vs.opt === "flight" ? "plane" : "sleeper"}` : `${CITIES[L.from].en} to ${CITIES[L.to].en}`;
+  const title = leg === "vs" ? `Vienna to Split, by ${PLAN.legs.vs.opt === "flight" ? "plane" : "sleeper"}` : `${CITIES[L.from].en} to ${CITIES[L.to].en}`;
   const ld = legDay(leg), planned = ld && PLAN.legs[leg] ? `<p class="planned"><span>Planned</span> ${fmtDay(ld.date)} · ${esc(LEG_INFO[leg][PLAN.legs[leg].opt].label)} · ${esc(legSummary(leg).text)} <a href="#" data-plan="1">Change</a></p>` : "";
   return `<p class="eyebrow" style="--c:var(--${L.from})"><span class="dot"></span>Leg ${n}${L.optional ? " · optional" : ""} · ${from} → ${to}</p>
   <h2>${title}</h2>
@@ -785,7 +812,10 @@ function wrapHTML() {
 }
 
 // ---------- canvas + state ----------
-const cv = document.getElementById("map"), ctx = cv.getContext("2d");
+// the scene is drawn into a back buffer only when something changes; each frame copies it to the screen,
+// so the moving train on a leg slide costs one blit instead of a full redraw
+const cv = document.getElementById("map"), vc = cv.getContext("2d");
+const base = document.createElement("canvas"), ctx = base.getContext("2d");
 const off = document.createElement("canvas"), oc = off.getContext("2d");
 let dpr = 1, W = 0, H = 0, T = d3.zoomIdentity, dirty = true, C = {};
 const S = { countries: [], lakes: null, riversMajor: null, riversMinor: null, cities: {} };
@@ -797,10 +827,10 @@ function readTheme() {
   const g = n => cs.getPropertyValue(n).trim();
   C = { bg: g("--bg"), land: g("--land"), landHi: g("--land-hi"), border: g("--border"), water: g("--water"), green: g("--green"),
     road: g("--road"), casing: g("--casing"), building: g("--building"), rail: g("--rail"), ink: g("--ink"), ink2: g("--ink-2"),
-    vienna: g("--vienna"), prague: g("--prague"), munich: g("--munich"), split: g("--split"), halo: g("--land-hi") };
+    vienna: g("--vienna"), prague: g("--prague"), split: g("--split"), halo: g("--land-hi") };
   C.tram = g("--tram"); C.bus = g("--bus");
   for (const [k, d] of Object.entries(DETAIL)) C[k] = C[d.parent]; // day trips take their base city's color
-  dirty = true;
+  invalidate();
 }
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", readTheme);
 new MutationObserver(readTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
@@ -808,12 +838,12 @@ new MutationObserver(readTheme).observe(document.documentElement, { attributes: 
 function resize() {
   dpr = Math.min(window.devicePixelRatio || 1, 2);
   W = innerWidth; H = innerHeight;
-  for (const c of [cv, off]) { c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); }
-  dirty = true;
+  for (const c of [cv, base, off]) { c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); }
+  invalidate();
 }
 let refit = 0;
 addEventListener("resize", () => {
-  resize();
+  resize(); uiCache = null;
   clearTimeout(refit);
   refit = setTimeout(() => { if (slides[cur] && !openPlace) cvSel.interrupt().call(zoom.transform, slides[cur].view()); }, 150);
 });
@@ -824,21 +854,73 @@ function addDelta(p, a, close) { let x = a[0], y = a[1]; p.moveTo(x, y); for (le
 
 function buildRegion(r) {
   S.countries = r.countries.map(c => { const p = new Path2D(); for (const poly of c.polys) for (const ring of poly) addAbs(p, ring, true); return { ...c, path: p }; });
+  // borders are dashed, and a canvas lays out dashes along the whole path even off screen, which gets very
+  // slow zoomed in; so the outlines are also kept as short chunks, and only the chunks in view are stroked
+  S.borders = [];
+  for (const c of r.countries) for (const poly of c.polys) for (const ring of poly) {
+    const pts = [...ring, ring[0], ring[1]];
+    for (let i = 0; i < pts.length - 2; i += 2 * 48) {
+      const part = pts.slice(i, i + 2 * 49), p = new Path2D(); addAbs(p, part, false);
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      for (let j = 0; j < part.length; j += 2) { x0 = Math.min(x0, part[j]); x1 = Math.max(x1, part[j]); y0 = Math.min(y0, part[j + 1]); y1 = Math.max(y1, part[j + 1]); }
+      S.borders.push({ p, bb: [x0, y0, x1, y1] });
+    }
+  }
   S.lakes = new Path2D(); for (const l of r.lakes) for (const ring of l) addAbs(S.lakes, ring, true);
   S.riversMajor = new Path2D(); S.riversMinor = new Path2D();
   for (const rv of r.rivers) addAbs(rv.rank <= 5 ? S.riversMajor : S.riversMinor, rv.line, false);
 }
 const POLY = new Set(["wa", "gr", "bd", "sea"]);
+const TILE = 2000, LOD_K = 100, LOD_M = 20; // tiles in metres; below zoom LOD_K draw copies thinned to LOD_M
+const LOD_LAYERS = new Set(["sea", "gr", "wa", "wl", "r1", "r2", "r3", "rl"]);
+// one delta-encoded line as absolute points, plus its bounding box
+function decode(a) {
+  const pts = new Float64Array(a.length); let x = a[0], y = a[1], x0 = x, y0 = y, x1 = x, y1 = y;
+  pts[0] = x; pts[1] = y;
+  for (let i = 2; i < a.length; i += 2) {
+    x += a[i]; y += a[i + 1]; pts[i] = x; pts[i + 1] = y;
+    if (x < x0) x0 = x; else if (x > x1) x1 = x;
+    if (y < y0) y0 = y; else if (y > y1) y1 = y;
+  }
+  return { pts, bb: [x0, y0, x1, y1] };
+}
+// the same line with vertices closer than LOD_M to the last kept one dropped
+function addThin(p, pts, close) {
+  let lx = pts[0], ly = pts[1], n = 1; p.moveTo(lx, ly);
+  for (let i = 2; i < pts.length; i += 2) {
+    const x = pts[i], y = pts[i + 1], last = i === pts.length - 2;
+    if (last || Math.abs(x - lx) + Math.abs(y - ly) >= LOD_M) { p.lineTo(x, y); lx = x; ly = y; n++; }
+  }
+  if (close) p.closePath();
+  return n;
+}
 function buildCity(name, c) {
-  const paths = {};
+  // every layer is split into TILE-sized cells (by each feature's top-left corner), so a zoomed-in view
+  // strokes only the cells it can see; each cell's box grows to cover its features
+  const tiles = new Map(), lo = {};
+  const cell = (bb) => {
+    const key = `${Math.floor(bb[0] / TILE)},${Math.floor(bb[1] / TILE)}`;
+    let t = tiles.get(key);
+    if (!t) tiles.set(key, t = { bb: bb.slice(), paths: {} });
+    else { t.bb[0] = Math.min(t.bb[0], bb[0]); t.bb[1] = Math.min(t.bb[1], bb[1]); t.bb[2] = Math.max(t.bb[2], bb[2]); t.bb[3] = Math.max(t.bb[3], bb[3]); }
+    return t;
+  };
   for (const [layer, items] of Object.entries(c.layers)) {
-    const p = new Path2D();
-    for (const it of items) { if (POLY.has(layer)) for (const ring of it) addDelta(p, ring, true); else addDelta(p, it, false); }
-    paths[layer] = p;
+    const poly = POLY.has(layer), thin = LOD_LAYERS.has(layer) ? (lo[layer] = new Path2D()) : null;
+    for (const it of items) {
+      const lines = (poly ? it : [it]).map(decode);
+      const bb = lines[0].bb.slice();
+      for (const l of lines) { bb[0] = Math.min(bb[0], l.bb[0]); bb[1] = Math.min(bb[1], l.bb[1]); bb[2] = Math.max(bb[2], l.bb[2]); bb[3] = Math.max(bb[3], l.bb[3]); }
+      const t = cell(bb), p = t.paths[layer] || (t.paths[layer] = new Path2D());
+      for (const l of lines) addAbs(p, l.pts, poly);
+      // the thinned copy skips features smaller than a couple of pixels at LOD_K
+      if (thin && (bb[2] - bb[0]) + (bb[3] - bb[1]) >= 2 * LOD_M) for (const l of lines) addThin(thin, l.pts, poly);
+    }
   }
   const [ox, oy] = c.origin, [w, n, e, s] = c.bounds;
-  S.cities[name] = { origin: c.origin, paths, bounds: c.bounds, box: [ox + w / 1000, oy + n / 1000, ox + e / 1000, oy + s / 1000] };
-  dirty = true;
+  S.cities[name] = { origin: c.origin, tiles: [...tiles.values()], lo, bounds: c.bounds, box: [ox + w / 1000, oy + n / 1000, ox + e / 1000, oy + s / 1000] };
+  ensureTransit();
+  invalidate();
 }
 // ---------- transit lines ----------
 const TRANSIT = { subway: false, tram: false, bus: false };
@@ -857,15 +939,15 @@ function buildTransit(name, t) {
       return { ref: l.ref, color: l.color, path: mk(l.paths), at: [x, y] };
     }),
   };
-  dirty = true;
+  invalidate();
 }
-let transitLoading = false;
+// transit lines load once a mode is switched on, for each city whose map has loaded (buildCity calls this too)
+const transitReq = {};
 function ensureTransit() {
-  if (transitLoading || !Object.values(TRANSIT).some(Boolean)) return;
-  transitLoading = true;
+  if (!Object.values(TRANSIT).some(Boolean)) return;
   for (const name of Object.keys(CITIES)) {
-    const load = () => S.cities[name] ? fetch(`data/transit_${name}.json?v=${DATA_V}`).then(r => r.json()).then(t => buildTransit(name, t)).catch(() => {}) : setTimeout(load, 400);
-    load();
+    if (!S.cities[name] || transitReq[name]) continue;
+    transitReq[name] = fetch(`data/transit_${name}.json?v=${DATA_V}`).then(r => r.json()).then(t => buildTransit(name, t)).catch(() => {}); // Split has no transit file
   }
 }
 function drawTransit(name, alpha) {
@@ -901,7 +983,7 @@ function drawTransit(name, alpha) {
 function buildPlaces(data, stays, images) {
   PLACES = [];
   for (const [city, d] of Object.entries(data)) {
-    if (d.detail) DETAIL[city] = { en: d.en, local: d.local, parent: d.parent };
+    if (d.detail) DETAIL[city] = { en: d.en, local: d.local, parent: d.parent, stop: d.stop, time: d.time, blurb: d.blurb };
     (d.food || []).forEach((p, i) => PLACES.push({ ...p, city, code: String(i + 1), type: "food" }));
     if (d.cafe) PLACES.push({ ...d.cafe, city, code: "CF", label: "C", type: "cafe" }); // own code: sight "C" would collide
     d.sights.forEach((p, i) => PLACES.push({ ...p, city, code: "ABCDEFG"[i], type: "sight" }));
@@ -922,12 +1004,14 @@ function buildPlaces(data, stays, images) {
     Object.assign(p, images[key] || {});
     if (p.img) p.img += `?v=${DATA_V}`;
     if (p.imgs) p.imgs = p.imgs.map(u => `${u}?v=${DATA_V}`);
+    for (const f of ["thumb", "full"]) if (p[f]) p[f] += `?v=${DATA_V}`;
+    if (p.fulls) p.fulls = p.fulls.map(u => `${u}?v=${DATA_V}`);
   }
 }
 function cityPts(city, codes) { return codes.map(c => placeBy[`${city}:${c}`]).filter(Boolean).map(p => p.xy); }
 
 // ---------- camera ----------
-const zoom = d3.zoom().scaleExtent([0.35, 8000]).on("zoom", e => { T = e.transform; dirty = true; });
+const zoom = d3.zoom().scaleExtent([0.35, 8000]).on("zoom", e => { T = e.transform; invalidate(); });
 const cvSel = d3.select(cv).call(zoom);
 
 function viewRect() {
@@ -975,44 +1059,66 @@ function text(str, x, y, { size = 12, weight = 600, fam = "--f-body", color = C.
   if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
 }
 
+// paint a city's layers onto g, which is already in the city's metre frame; view is the visible part in metres
+function paintCity(g, c, k, view) {
+  const px = 1000 / k, lo = k < LOD_K;
+  const vis = c.tiles.filter(t => t.bb[0] < view[2] && t.bb[2] > view[0] && t.bb[1] < view[3] && t.bb[3] > view[1]);
+  const fill = (layer, rule = "nonzero") => { if (lo && c.lo[layer]) g.fill(c.lo[layer], rule); else for (const t of vis) if (t.paths[layer]) g.fill(t.paths[layer], rule); };
+  const stroke = layer => { if (lo && c.lo[layer]) g.stroke(c.lo[layer]); else for (const t of vis) if (t.paths[layer]) g.stroke(t.paths[layer]); };
+  g.lineCap = "round"; g.lineJoin = "round";
+  if (c.lo.sea) { // coastal map: land everywhere, then the sea cut from the real coastline
+    const [bw, bn, be, bs] = c.bounds;
+    g.fillStyle = C.landHi; g.fillRect(bw, bn, be - bw, bs - bn);
+    g.fillStyle = C.water; fill("sea", "evenodd");
+  }
+  g.fillStyle = C.green; fill("gr");
+  g.fillStyle = C.water; fill("wa", "evenodd");
+  g.strokeStyle = C.water; g.lineWidth = Math.max(1.5 * px, 12); stroke("wl");
+  const bA = smooth(140, 320, k);
+  if (bA > 0) { g.globalAlpha = bA; g.fillStyle = C.building; fill("bd", "evenodd"); g.globalAlpha = 1; }
+  const r3 = smooth(40, 120, k);
+  if (r3 > 0) { g.globalAlpha = r3; g.strokeStyle = C.casing; g.lineWidth = Math.max(1.4 * px, 8 + 1.2 * px); stroke("r3"); g.strokeStyle = C.road; g.lineWidth = Math.max(0.8 * px, 8); stroke("r3"); g.globalAlpha = 1; }
+  g.strokeStyle = C.casing; g.lineWidth = Math.max(2.4 * px, 13 + 1.6 * px); stroke("r2");
+  g.strokeStyle = C.road; g.lineWidth = Math.max(1.4 * px, 13); stroke("r2");
+  g.strokeStyle = C.casing; g.lineWidth = Math.max(3.4 * px, 18 + 2 * px); stroke("r1");
+  g.strokeStyle = C.road; g.lineWidth = Math.max(2.2 * px, 18); stroke("r1");
+  g.strokeStyle = C.rail; g.lineWidth = Math.max(1 * px, 3); g.setLineDash([5 * px, 3 * px]); stroke("rl"); g.setLineDash([]);
+}
 function drawCity(name, alpha) {
   const c = S.cities[name], k = T.k;
   const [a, b] = [toS([c.box[0], c.box[1]]), toS([c.box[2], c.box[3]])];
   if (b[0] < 0 || b[1] < 0 || a[0] > W || a[1] > H) return;
-  const s = k / 1000, px = 1 / s, P2 = c.paths;
-  oc.setTransform(1, 0, 0, 1, 0, 0); oc.globalCompositeOperation = "source-over"; oc.globalAlpha = 1;
-  oc.clearRect(0, 0, off.width, off.height);
-  oc.setTransform(dpr * s, 0, 0, dpr * s, dpr * (T.x + c.origin[0] * k), dpr * (T.y + c.origin[1] * k));
-  oc.lineCap = "round"; oc.lineJoin = "round";
-  if (P2.sea) { // coastal map: land everywhere, then the sea cut from the real coastline
-    const [bw, bn, be, bs] = c.bounds;
-    oc.fillStyle = C.landHi; oc.fillRect(bw, bn, be - bw, bs - bn);
-    oc.fillStyle = C.water; oc.fill(P2.sea, "evenodd");
+  const s = k / 1000, px = 1 / s, [ox, oy] = c.origin;
+  const pad = 4 * px + 24; // the widest stroke, in metres
+  const view = [((-T.x) / k - ox) * 1000 - pad, ((-T.y) / k - oy) * 1000 - pad, ((W - T.x) / k - ox) * 1000 + pad, ((H - T.y) / k - oy) * 1000 + pad];
+  const f = Math.min(70, (b[0] - a[0]) * 0.08, (b[1] - a[1]) * 0.08); // feather width, css px
+  const tf = [dpr * s, 0, 0, dpr * s, dpr * (T.x + ox * k), dpr * (T.y + oy * k)];
+  // zoomed in past every feathered edge: paint straight onto the map
+  if (alpha >= 1 && a[0] + f <= 0 && a[1] + f <= 0 && b[0] - f >= W && b[1] - f >= H) {
+    ctx.save(); ctx.setTransform(...tf); paintCity(ctx, c, k, view); ctx.restore(); return;
   }
-  oc.fillStyle = C.green; oc.fill(P2.gr);
-  oc.fillStyle = C.water; oc.fill(P2.wa, "evenodd");
-  oc.strokeStyle = C.water; oc.lineWidth = Math.max(1.5 * px, 12); oc.stroke(P2.wl);
-  const bA = smooth(140, 320, k);
-  if (bA > 0) { oc.globalAlpha = bA; oc.fillStyle = C.building; oc.fill(P2.bd, "evenodd"); oc.globalAlpha = 1; }
-  const r3 = smooth(40, 120, k);
-  if (r3 > 0) { oc.globalAlpha = r3; oc.strokeStyle = C.casing; oc.lineWidth = Math.max(1.4 * px, 8 + 1.2 * px); oc.stroke(P2.r3); oc.strokeStyle = C.road; oc.lineWidth = Math.max(0.8 * px, 8); oc.stroke(P2.r3); oc.globalAlpha = 1; }
-  oc.strokeStyle = C.casing; oc.lineWidth = Math.max(2.4 * px, 13 + 1.6 * px); oc.stroke(P2.r2);
-  oc.strokeStyle = C.road; oc.lineWidth = Math.max(1.4 * px, 13); oc.stroke(P2.r2);
-  oc.strokeStyle = C.casing; oc.lineWidth = Math.max(3.4 * px, 18 + 2 * px); oc.stroke(P2.r1);
-  oc.strokeStyle = C.road; oc.lineWidth = Math.max(2.2 * px, 18); oc.stroke(P2.r1);
-  oc.strokeStyle = C.rail; oc.lineWidth = Math.max(1 * px, 3); oc.setLineDash([5 * px, 3 * px]); oc.stroke(P2.rl); oc.setLineDash([]);
+  // otherwise paint offscreen, only inside the part of the box on screen, feather the edges and composite
+  const x0 = a[0] * dpr, y0 = a[1] * dpr, x1 = b[0] * dpr, y1 = b[1] * dpr;
+  const cx0 = Math.max(0, Math.floor(x0)), cy0 = Math.max(0, Math.floor(y0));
+  const cw = Math.min(off.width, Math.ceil(x1)) - cx0, ch = Math.min(off.height, Math.ceil(y1)) - cy0;
+  if (cw <= 0 || ch <= 0) return;
+  oc.save();
+  oc.setTransform(1, 0, 0, 1, 0, 0); oc.globalCompositeOperation = "source-over"; oc.globalAlpha = 1;
+  oc.clearRect(cx0, cy0, cw, ch);
+  oc.beginPath(); oc.rect(cx0, cy0, cw, ch); oc.clip();
+  oc.setTransform(...tf);
+  paintCity(oc, c, k, view);
   // feather the box edges so the detail blends into the region map
   oc.setTransform(1, 0, 0, 1, 0, 0); oc.globalCompositeOperation = "destination-out";
-  const x0 = a[0] * dpr, y0 = a[1] * dpr, x1 = b[0] * dpr, y1 = b[1] * dpr;
-  const f = Math.min(70 * dpr, (x1 - x0) * 0.08, (y1 - y0) * 0.08);
+  const fd = f * dpr;
   for (const [gx0, gy0, gx1, gy1, rx, ry, rw, rh] of [
-    [x0, 0, x0 + f, 0, x0, y0, f, y1 - y0], [x1, 0, x1 - f, 0, x1 - f, y0, f, y1 - y0],
-    [0, y0, 0, y0 + f, x0, y0, x1 - x0, f], [0, y1, 0, y1 - f, x0, y1 - f, x1 - x0, f]]) {
+    [x0, 0, x0 + fd, 0, x0, y0, fd, y1 - y0], [x1, 0, x1 - fd, 0, x1 - fd, y0, fd, y1 - y0],
+    [0, y0, 0, y0 + fd, x0, y0, x1 - x0, fd], [0, y1, 0, y1 - fd, x0, y1 - fd, x1 - x0, fd]]) {
     const g = oc.createLinearGradient(gx0, gy0, gx1, gy1); g.addColorStop(0, "#000"); g.addColorStop(1, "rgba(0,0,0,0)");
     oc.fillStyle = g; oc.fillRect(rx, ry, rw, rh);
   }
-  oc.globalCompositeOperation = "source-over";
-  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = alpha; ctx.drawImage(off, 0, 0); ctx.globalAlpha = 1;
+  oc.restore();
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = alpha; ctx.drawImage(off, cx0, cy0, cw, ch, cx0, cy0, cw, ch); ctx.globalAlpha = 1;
 }
 
 function legAt(L, f) {
@@ -1044,27 +1150,28 @@ function drawFlights() {
     ctx.globalAlpha = 1;
   }
 }
-function drawLegs(now) {
-  const sl = slides[cur] || {}, k = T.k, cityFade = 1;
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+function drawLegs() {
+  const sl = slides[cur] || {}, k = T.k;
   ctx.lineCap = "round"; ctx.lineJoin = "round";
   const order = Object.keys(LEGS).sort((a, b) => (a === sl.leg) - (b === sl.leg));
   for (const id of order) {
     const L = LEGS[id], active = sl.leg === id, dim = sl.leg && !active;
-    const pts = L.pts.map(toS), sp = L.spts.map(toS);
-    const g = ctx.createLinearGradient(pts[0][0], pts[0][1], pts[pts.length - 1][0], pts[pts.length - 1][1]);
+    // the line is a world-space path, stroked under the map transform with widths in screen pixels
+    ctx.setTransform(dpr * k, 0, 0, dpr * k, dpr * T.x, dpr * T.y);
+    const a = L.pts[0], b = L.pts[L.pts.length - 1];
+    const g = ctx.createLinearGradient(a[0], a[1], b[0], b[1]);
     g.addColorStop(0.1, C[L.from]); g.addColorStop(0.9, C[L.to]);
-    ctx.globalAlpha = (dim ? 0.5 : 1) * cityFade;
+    ctx.globalAlpha = dim ? 0.5 : 1;
     const w = active ? 5 : 3;
-    ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]));
     ctx.setLineDash([]);
-    ctx.strokeStyle = C.halo; ctx.lineWidth = w + 4; ctx.stroke();
-    ctx.strokeStyle = g; ctx.lineWidth = w;
-    if (L.optional && !active) ctx.setLineDash([7, 6]);
-    ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle = C.halo; ctx.lineWidth = (w + 4) / k; ctx.stroke(L.path2d);
+    ctx.strokeStyle = g; ctx.lineWidth = w / k;
+    if (L.optional && !active) ctx.setLineDash([7 / k, 6 / k]);
+    ctx.stroke(L.path2d); ctx.setLineDash([]);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     if ((active && k > 1.2) || k > 3) {
       for (let i = 1; i < L.stations.length - 1; i++) {
-        const st = L.stations[i], p = sp[i];
+        const st = L.stations[i], p = toS(L.spts[i]);
         if (!inView(p[0], p[1])) continue;
         const major = st[3];
         if (!major && !active && k < 6) continue;
@@ -1074,15 +1181,6 @@ function drawLegs(now) {
       }
     }
     ctx.globalAlpha = 1;
-    if (active && !reduce && legT0) {
-      const ph = ((now - legT0) / 6500) % 1.25;
-      if (ph < 1) {
-        const e = ph < 0.5 ? 2 * ph * ph : 1 - Math.pow(-2 * ph + 2, 2) / 2;
-        const p = toS(legAt(L, e));
-        ctx.beginPath(); ctx.arc(p[0], p[1], 9, 0, Math.PI * 2); ctx.fillStyle = C.ink; ctx.fill();
-        ctx.beginPath(); ctx.arc(p[0], p[1], 4, 0, Math.PI * 2); ctx.fillStyle = C.halo; ctx.fill();
-      }
-    }
   }
 }
 
@@ -1100,6 +1198,22 @@ function fontFor(o) {
   const fams = { "--f-body": '"Barlow", "Helvetica Neue", Arial, sans-serif', "--f-display": '"Barlow Condensed", "Arial Narrow", sans-serif', "--f-mono": '"IBM Plex Mono", Menlo, monospace' };
   return `${o.weight || 600} ${o.size || 12}px ${fams[o.fam || "--f-body"]}`;
 }
+// screen boxes of the card, nav and buttons, measured only when their layout can have changed
+let uiCache = null;
+function uiBoxes() {
+  if (uiCache) return uiCache;
+  uiCache = [];
+  for (const id of ["card", "nav", "tools"]) {
+    const el = document.getElementById(id);
+    if (!el || (id === "card" && document.body.classList.contains("roam"))) continue;
+    const b = el.getBoundingClientRect();
+    if (b.width) uiCache.push([b.left - 6, b.top - 6, b.right + 6, b.bottom + 6]);
+  }
+  return uiCache;
+}
+function remeasure() { uiCache = null; invalidate(); }
+const uiWatch = new ResizeObserver(remeasure);
+for (const id of ["card", "nav", "tools"]) uiWatch.observe(document.getElementById(id));
 const overlaps = (a, b) => a[0] < b[2] && a[2] > b[0] && a[1] < b[3] && a[3] > b[1];
 
 function drawPins() {
@@ -1108,25 +1222,17 @@ function drawPins() {
   const show = smooth(28, 45, k), tripShow = smooth(1.2, 2.5, k);
   if (show <= 0 && tripShow <= 0) return;
   const focus = new Set(sl.city ? (sl.focus || []).map(c => `${sl.city}:${c}`) : []);
-  const taken = [], labels = [];
-  // keep labels out from under the card, nav and buttons
-  for (const id of ["card", "nav", "tools"]) {
-    const el = document.getElementById(id);
-    if (!el || (id === "card" && document.body.classList.contains("roam"))) continue;
-    const b = el.getBoundingClientRect();
-    if (b.width) taken.push([b.left - 6, b.top - 6, b.right + 6, b.bottom + 6]);
-  }
+  const taken = uiBoxes().slice(), labels = []; // keep labels out from under the card, nav and buttons
   // the suggested neighborhood: only on its stay slide, or when opened
   // historic neighborhoods: on a city's sights and stay slides, or anywhere while exploring
   for (const [city, hs] of Object.entries(HOODS)) {
     const on = sl.id === city || sl.id === `${city}-stay` || (!sl.city && !sl.leg) || document.body.classList.contains("roam");
     if (!on) continue;
     for (const h of hs) {
-      ctx.globalAlpha = show;
-      ctx.beginPath();
-      for (const ring of h.rings) ring.forEach((pt, i) => { const [x, y] = toS(pt); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
-      ctx.fillStyle = C[city]; ctx.globalAlpha = show * 0.1; ctx.fill("evenodd");
-      ctx.globalAlpha = show * 0.85; ctx.lineWidth = 1.8; ctx.strokeStyle = C[city]; ctx.lineJoin = "round"; ctx.stroke();
+      ctx.setTransform(dpr * k, 0, 0, dpr * k, dpr * T.x, dpr * T.y);
+      ctx.fillStyle = C[city]; ctx.globalAlpha = show * 0.1; ctx.fill(h.path, "evenodd");
+      ctx.globalAlpha = show * 0.85; ctx.lineWidth = 1.8 / k; ctx.strokeStyle = C[city]; ctx.lineJoin = "round"; ctx.stroke(h.path);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const [x, y] = toS(h.label);
       ctx.font = fontFor({ size: 10.5, weight: 600, fam: "--f-mono" });
       const w = ctx.measureText(h.name.toUpperCase()).width + 10;
@@ -1139,8 +1245,7 @@ function drawPins() {
   }
   const isF = p => focus.has(`${p.city}:${p.code}`) || openPlace === p;
   const isTrip = p => p.type === "nature" || p.type === "daytrip";
-  const list = PLACES.slice().sort((a, b) => isF(a) - isF(b));
-  for (const p of list) {
+  for (const p of [...PLACES.filter(q => !isF(q)), ...PLACES.filter(isF)]) { // focused pins on top
     const [x, y] = toS(p.xy);
     if (!inView(x, y)) continue;
     const vis = isTrip(p) ? tripShow : show;
@@ -1234,8 +1339,10 @@ function draw(now) {
     ctx.globalAlpha = 1;
   }
   ctx.strokeStyle = C.border; ctx.lineWidth = 1.1 / k; ctx.setLineDash([4 / k, 3 / k]);
-  for (const c of S.countries) ctx.stroke(c.path);
+  const vx0 = -T.x / k, vy0 = -T.y / k, vx1 = (W - T.x) / k, vy1 = (H - T.y) / k;
+  for (const b of S.borders) if (b.bb[0] < vx1 && b.bb[2] > vx0 && b.bb[1] < vy1 && b.bb[3] > vy0) ctx.stroke(b.p);
   ctx.setLineDash([]);
+  if (k >= 8) needNear();
   const cA = smooth(14, 40, k);
   if (cA > 0) for (const name in S.cities) drawCity(name, cA);
   const tA = smooth(18, 36, k);
@@ -1255,10 +1362,24 @@ function draw(now) {
   placePop();
 }
 
+// frames run only when asked for: a change calls invalidate(), and the loop keeps going only while a train animates
+let frame = 0;
+function invalidate() { dirty = true; if (!frame) frame = requestAnimationFrame(loop); }
 function loop(now) {
+  frame = 0;
   const animating = !reduce && slides[cur]?.leg && legT0;
-  if (dirty || animating) { dirty = false; draw(now); }
-  requestAnimationFrame(loop);
+  if (dirty) { dirty = false; draw(now); }
+  vc.setTransform(1, 0, 0, 1, 0, 0); vc.drawImage(base, 0, 0);
+  if (animating) { drawTrain(now); frame = requestAnimationFrame(loop); }
+}
+function drawTrain(now) {
+  const ph = ((now - legT0) / 6500) % 1.25;
+  if (ph >= 1) return; // a short pause at the end of each run
+  const e = ph < 0.5 ? 2 * ph * ph : 1 - Math.pow(-2 * ph + 2, 2) / 2;
+  const [x, y] = toS(legAt(LEGS[slides[cur].leg], e));
+  vc.setTransform(dpr, 0, 0, dpr, 0, 0);
+  vc.beginPath(); vc.arc(x, y, 9, 0, Math.PI * 2); vc.fillStyle = C.ink; vc.fill();
+  vc.beginPath(); vc.arc(x, y, 4, 0, Math.PI * 2); vc.fillStyle = C.halo; vc.fill();
 }
 
 // ---------- popup ----------
@@ -1269,17 +1390,17 @@ function openPop(p) {
   const imageSearch = `https://duckduckgo.com/?q=${encodeURIComponent(p.name + where)}&iax=images&ia=images`;
   const chip = p.kind ? `<span class="chip ${p.kind === "regional" ? "regional" : ""}" style="--c:var(--${p.city})">${KIND[p.kind]} · ${esc(p.tag)}</span>` : `<span class="chip">${{ stay: "Airbnb · approx. location", sight: "Sight", nature: `Nature · ${esc(p.time || "")}`, daytrip: `Day trip · ${esc(p.time || "")}` }[p.type]}</span>`;
   const photo = p.imgs && p.imgs.length > 1
-    ? `<div class="phs">${p.imgs.map(u => `<img src="${esc(u)}" alt="${esc(p.name)}">`).join("")}</div>`
-    : p.img ? `<img class="ph" src="${esc(p.img)}" alt="${esc(p.name)}">` : "";
+    ? `<div class="phs">${p.imgs.map((u, i) => `<img src="${esc(u)}" alt="${esc(p.name)}" data-i="${i}" decoding="async">`).join("")}</div>`
+    : p.img ? `<img class="ph" src="${esc(p.img)}" alt="${esc(p.name)}" data-i="0" decoding="async">` : "";
   const by = p.credit ? p.credit.replace(/^Photos?: /, "") : "";
   const credit = by ? `<div class="credit">${p.imgs && p.imgs.length > 1 ? "Photos" : "Photo"}: ${p.link ? `<a href="${esc(p.link)}" target="_blank" rel="noopener">${esc(by)}</a>` : esc(by)}</div>` : "";
   pop.innerHTML = `<button class="x" aria-label="Close">×</button>${photo}<h4>${esc(p.name)}</h4>${chip}<p>${esc(p.blurb)}</p>
     <div class="links">${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener">${p.type === "stay" ? "View on Airbnb" : p.type === "daytrip" ? "See the tour" : "Website"} ↗</a>` : ""}${p.guide ? `<a href="${esc(p.guide)}" target="_blank" rel="noopener">${esc(p.guideLabel || "Guide")} ↗</a>` : p.type === "stay" ? "" : `<a href="${imageSearch}" target="_blank" rel="noopener">More photos ↗</a>`}</div>${credit}`;
   pop.querySelector(".x").onclick = closePop;
-  const im = pop.querySelector(".ph"); if (im) im.onload = () => { dirty = true; };
-  pop.hidden = false; dirty = true;
+  const im = pop.querySelector(".ph"); if (im) im.onload = () => { invalidate(); };
+  pop.hidden = false; invalidate();
 }
-function closePop() { openPlace = null; pop.hidden = true; dirty = true; }
+function closePop() { openPlace = null; pop.hidden = true; invalidate(); }
 function placePop() {
   if (!openPlace) return;
   const [x, y] = toS(openPlace.xy);
@@ -1291,6 +1412,48 @@ function placePop() {
   px = Math.max(16, px); py = Math.max(16, Math.min(H - h - 80, py));
   pop.style.transform = `translate(${Math.round(px)}px, ${Math.round(py)}px)`;
 }
+
+// ---------- photo viewer ----------
+// shows the popup-size photo at once, then swaps in the full-resolution copy when it has loaded
+const viewer = document.getElementById("viewer"), vImg = document.getElementById("vImg"), vCap = document.getElementById("vCap");
+let vPlace = null, vIdx = 0, vBack = null;
+function photosOf(p) {
+  const shown = p.imgs || (p.img ? [p.img] : []), full = p.fulls || (p.full ? [p.full] : []);
+  return shown.map((u, i) => ({ low: u, full: full[i] || u }));
+}
+function showPhoto(i) {
+  const ph = photosOf(vPlace); if (!ph.length) return;
+  vIdx = (i + ph.length) % ph.length;
+  const { low, full } = ph[vIdx];
+  vImg.src = low; vImg.alt = vPlace.name; vImg.dataset.want = full;
+  viewer.classList.toggle("loading", full !== low);
+  if (full !== low) {
+    const hi = new Image();
+    hi.onload = () => { if (vImg.dataset.want === full) { vImg.src = full; viewer.classList.remove("loading"); } };
+    hi.onerror = () => { if (vImg.dataset.want === full) viewer.classList.remove("loading"); }; // keep the smaller copy
+    hi.src = full;
+  }
+  for (const b of viewer.querySelectorAll(".vnav")) b.hidden = ph.length < 2;
+  const by = vPlace.credit ? vPlace.credit.replace(/^Photos?: /, "") : "";
+  vCap.innerHTML = `<b>${esc(vPlace.name)}</b>${ph.length > 1 ? `<span class="n">${vIdx + 1} / ${ph.length}</span>` : ""}${by ? (vPlace.link ? `<a href="${esc(vPlace.link)}" target="_blank" rel="noopener">${esc(by)}</a>` : esc(by)) : ""}`;
+}
+function openViewer(p, i = 0) {
+  if (!p || !photosOf(p).length) return;
+  vPlace = p; vBack = document.activeElement;
+  showPhoto(i); viewer.hidden = false;
+  viewer.querySelector(".vx").focus();
+}
+function closeViewer() {
+  viewer.hidden = true; vImg.removeAttribute("src"); delete vImg.dataset.want; vPlace = null;
+  vBack?.focus?.();
+}
+viewer.addEventListener("click", e => {
+  if (e.target.closest(".vx")) closeViewer();
+  else if (e.target.closest(".prev")) showPhoto(vIdx - 1);
+  else if (e.target.closest(".next")) showPhoto(vIdx + 1);
+  else if (!e.target.closest("img, figcaption")) closeViewer(); // a click on the backdrop
+});
+pop.addEventListener("click", e => { const im = e.target.closest("img[data-i]"); if (im && openPlace) openViewer(openPlace, +im.dataset.i); });
 
 // ---------- slides ----------
 const card = document.getElementById("card"), progress = document.getElementById("progress");
@@ -1305,6 +1468,7 @@ function go(i, { instant = false } = {}) {
   i = Math.max(0, Math.min(slides.length - 1, i));
   const sl = slides[i];
   cur = i; legT0 = 0; closePop();
+  for (const j of [i, stepFrom(i, 1), stepFrom(i, -1)]) needCity(slides[j].city);
   document.getElementById("next").style.setProperty("--nc", `var(${slides[stepFrom(i, 1)].color})`);
   card.classList.add("swap");
   setTimeout(() => {
@@ -1313,15 +1477,16 @@ function go(i, { instant = false } = {}) {
     card.scrollTop = 0;
     card.classList.remove("swap");
     const t1 = sl.view();
-    if (instant) { cvSel.call(zoom.transform, t1); if (sl.leg) legT0 = performance.now(); }
-    else flyTo(t1, () => { if (sl.leg) legT0 = performance.now(); });
+    const startTrain = () => { if (sl.leg) { legT0 = performance.now(); invalidate(); } };
+    if (instant) { cvSel.call(zoom.transform, t1); startTrain(); }
+    else flyTo(t1, startTrain);
   }, instant || reduce ? 0 : 180);
   const m = MAIN.indexOf(mainOf(i));
   progress.querySelectorAll("button").forEach((b, j) => { b.classList.toggle("on", j === m); b.setAttribute("aria-current", j === m ? "step" : "false"); });
   document.getElementById("count")?.remove();
   progress.insertAdjacentHTML("beforeend", `<span id="count">${String(m + 1).padStart(2, "0")} / ${MAIN.length}</span>`);
   try { history.replaceState(null, "", "#" + sl.id); } catch (e) {}
-  dirty = true;
+  invalidate();
 }
 function buildNav() {
   MAIN = slides.map((s, i) => s.side ? -1 : i).filter(i => i >= 0);
@@ -1349,6 +1514,7 @@ document.getElementById("prev").onclick = () => go(stepFrom(cur, -1));
 document.getElementById("overview").onclick = () => { closePop(); flyTo(fitPts(Object.values(CITIES).map(c => c.xy), 70)); };
 function toggleRoam() {
   const on = document.body.classList.toggle("roam");
+  remeasure();
   document.getElementById("roam").setAttribute("aria-pressed", on);
   document.getElementById("roamLbl").textContent = on ? "Show card" : "Explore map";
 }
@@ -1371,7 +1537,7 @@ function planChanged({ rerender = true } = {}) {
   savePlan();
   document.getElementById("calDates").textContent = planRange();
   if (slides[cur]) card.innerHTML = slides[cur].html();
-  dirty = true;
+  invalidate();
   if (rerender) renderPlanner();
 }
 function flash(msg) { plMsg = msg; const s = calPanel.querySelector(".pl-status"); if (s) s.textContent = msg; }
@@ -1536,10 +1702,21 @@ tMenu.addEventListener("change", e => {
   const m = e.target.dataset.mode; if (!m) return;
   TRANSIT[m] = e.target.checked;
   try { localStorage.setItem("transit", JSON.stringify(TRANSIT)); } catch (err) {}
-  ensureTransit(); syncTransitUI(); dirty = true;
+  ensureTransit(); syncTransitUI(); invalidate();
 });
 document.addEventListener("click", e => { if (!tMenu.hidden && !e.target.closest(".tmenu")) { tMenu.hidden = true; tBtn.setAttribute("aria-expanded", "false"); } });
 addEventListener("keydown", e => {
+  if (!viewer.hidden) { // the photo viewer owns the keyboard while it's open
+    if (e.key === "Escape") closeViewer();
+    else if (["ArrowRight", "PageDown", " "].includes(e.key)) showPhoto(vIdx + 1);
+    else if (["ArrowLeft", "PageUp"].includes(e.key)) showPhoto(vIdx - 1);
+    else if (e.key === "Tab") { // keep focus on the viewer's own buttons
+      const bs = [...viewer.querySelectorAll("button:not([hidden])")], at = bs.indexOf(document.activeElement);
+      bs[(at + (e.shiftKey ? -1 : 1) + bs.length) % bs.length].focus();
+    }
+    else return;
+    e.preventDefault(); return;
+  }
   if (e.target.closest("input, textarea, select")) return;
   if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); go(stepFrom(cur, 1)); }
   else if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); go(stepFrom(cur, -1)); }
@@ -1553,6 +1730,7 @@ card.addEventListener("click", e => {
   if (jump) { e.preventDefault(); e.stopPropagation(); go(slides.findIndex(s => s.id === jump.dataset.go)); return; }
   if (e.target.closest("[data-plan]")) { e.preventDefault(); e.stopPropagation(); setCal(true); return; }
   const li = e.target.closest("[data-p]"); if (!li) return;
+  if (e.target.matches("img.thumb")) { openViewer(placeBy[li.dataset.p], 0); return; } // the photo opens big; the rest of the row flies there
   focusPlace(placeBy[li.dataset.p]);
 });
 card.addEventListener("keydown", e => {
@@ -1585,12 +1763,13 @@ addEventListener("hashchange", () => {
 cv.addEventListener("mousemove", ev => cv.classList.toggle("pointing", !!hitAt(ev)));
 
 // ---------- boot ----------
-const DATA_V = "19"; // bump when data files change so browsers don't reuse stale copies
+const DATA_V = "20"; // bump when data files change so browsers don't reuse stale copies
 async function boot() {
   readTheme(); resize();
-  requestAnimationFrame(loop);
+  invalidate();
   const [region, places, stays, images, legs, hoods] = await Promise.all(["region", "places", "stays", "images", "legs", "hoods"].map(n => fetch(`data/${n}.json?v=${DATA_V}`).then(r => r.json())));
   buildRegion(region); buildLegs(legs); buildPlaces(places, stays, images); HOODS = hoods;
+  for (const hs of Object.values(HOODS)) for (const h of hs) { h.path = new Path2D(); for (const ring of h.rings) addAbs(h.path, ring.flat(), true); }
   TRIPS = PLACES.filter(p => p.type === "nature" || p.type === "daytrip");
   DAYS = buildDays();
   slides = slideDeck(); buildNav();
@@ -1598,11 +1777,25 @@ async function boot() {
   const h = location.hash.slice(1), start = Math.max(0, slides.findIndex(s => s.id === h));
   go(start, { instant: true });
   if (sharedPending) setCal(true); // someone sent a plan: show it with the keep / discard choice
-  document.fonts && document.fonts.ready.then(() => { dirty = true; });
+  document.fonts && document.fonts.ready.then(() => { invalidate(); });
   ensureTransit(); syncTransitUI();
   readTheme();
+}
+// city and day-trip maps load when needed: for the slide on screen and its neighbours, or when the
+// camera gets close to one (anchored at the city, or at the day-trip area's own places)
+const cityReq = {};
+function needCity(name) {
+  if (!name || cityReq[name] || !(name in CITIES || name in DETAIL)) return;
+  cityReq[name] = fetch(`data/${name}.json?v=${DATA_V}`).then(r => r.json()).then(c => buildCity(name, c))
+    .catch(() => { delete cityReq[name]; }); // try again next time it's needed
+}
+function needNear() {
   for (const name of [...Object.keys(CITIES), ...Object.keys(DETAIL)]) {
-    fetch(`data/${name}.json?v=${DATA_V}`).then(r => r.json()).then(c => buildCity(name, c)).catch(() => {});
+    if (cityReq[name]) continue;
+    const at = CITIES[name]?.xy || PLACES.find(p => p.city === name)?.xy;
+    if (!at) continue;
+    const [x, y] = toS(at);
+    if (inView(x, y, Math.max(W, H) / 2)) needCity(name);
   }
 }
 boot().catch(err => { document.getElementById("loading").textContent = "The map data didn't load. Reload the page to try again."; console.error(err); });

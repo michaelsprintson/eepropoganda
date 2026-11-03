@@ -15,7 +15,7 @@ from shapely.geometry import LineString
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw" / "osm"
 R, ORIGIN = 6378.137, (14.0, 49.0)
-CITIES = ["vienna", "prague", "munich"]
+CITIES = ["vienna", "prague"]
 PENALTY = {"service": 4.0, "tunnel": 2.5}
 SNAP_KM = 3.0  # mercator km; stations further than this from track keep a straight segment
 

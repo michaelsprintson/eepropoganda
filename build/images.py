@@ -2,9 +2,13 @@
 
 Sources, tried in order per place: freely licensed Wikimedia Commons images (via a Wikipedia
 article or a Commons search), then the venue's own website share image (og:image).
-Airbnb listings use the listing's cover photo. Writes deck/img/*.jpg and deck/data/images.json.
+Airbnb listings use the listing's cover photo. Writes deck/data/images.json and, per photo,
+three WebP files in deck/img: the popup size (640 px), a small card thumbnail (-t) and a
+full-resolution copy for the photo viewer (full/).
 
 Run with: .venv/bin/python -I build/images.py
+          .venv/bin/python -I build/images.py --convert   (rebuild the files from the download cache;
+                                                           only fetches the large Commons originals)
 """
 import html
 import io
@@ -12,6 +16,7 @@ import os
 import json
 import pathlib
 import re
+import sys
 import time
 
 import requests
@@ -239,7 +244,49 @@ USER = {
 }
 
 
-def save(src, slug, width=900, data=None):
+FULL_W, VIEW_W, THUMB_SHORT = 1920, 640, 200  # 1920: a Commons standard thumbnail size; 640 fills the popup at 2x
+
+
+def full_raw(slug, link):
+    """The download cache holds Commons photos at 1000 px; the viewer wants the larger original."""
+    big = RAW / f"{slug}.full.bin"
+    if not big.exists() and link and "commons.wikimedia.org/wiki/File:" in link:
+        from urllib.parse import unquote
+        title = unquote(link.split("/wiki/", 1)[1])
+        data = api("https://commons.wikimedia.org/w/api.php", {
+            "action": "query", "format": "json", "titles": title, "prop": "imageinfo", "iiprop": "url", "iiurlwidth": FULL_W})
+        ii = next(iter(data["query"]["pages"].values()))["imageinfo"][0]
+        for attempt in range(4):  # the image servers rate-limit bursts: back off and retry
+            time.sleep(2 + attempt * 10)
+            r = requests.get(ii.get("thumburl") or ii["url"], headers=UA, timeout=60)
+            if r.status_code != 429:
+                break
+        r.raise_for_status()
+        big.write_bytes(r.content)
+    return big if big.exists() else RAW / f"{slug}.bin"
+
+
+def derive(slug, link=None):
+    """Write the popup, thumbnail and viewer copies of one cached photo; returns their deck paths."""
+    im = Image.open(io.BytesIO((RAW / f"{slug}.bin").read_bytes())).convert("RGB")
+    view = im.copy(); view.thumbnail((VIEW_W, VIEW_W))
+    view.save(OUT / f"{slug}.webp", "WEBP", quality=78, method=6)
+    k = THUMB_SHORT / min(im.size)
+    thumb = im.resize((max(1, round(im.width * k)), max(1, round(im.height * k))), Image.LANCZOS) if k < 1 else im.copy()
+    thumb.save(OUT / f"{slug}-t.webp", "WEBP", quality=74, method=6)
+    try:
+        src = full_raw(slug, link)
+    except Exception as e:  # keep the cached copy if the large original won't download
+        print("   full-res", slug, "failed:", e)
+        src = RAW / f"{slug}.bin"
+    full = Image.open(io.BytesIO(src.read_bytes())).convert("RGB")
+    full.thumbnail((FULL_W, FULL_W))
+    (OUT / "full").mkdir(exist_ok=True)
+    full.save(OUT / "full" / f"{slug}.webp", "WEBP", quality=74, method=6)
+    return {"img": f"img/{slug}.webp", "thumb": f"img/{slug}-t.webp", "full": f"img/full/{slug}.webp"}, view.size
+
+
+def save(src, slug, data=None, link=None):
     raw = RAW / f"{slug}.bin"
     if data:
         raw.write_bytes(data)
@@ -248,11 +295,28 @@ def save(src, slug, width=900, data=None):
         r.raise_for_status()
         raw.write_bytes(r.content)
         time.sleep(0.5)
-    im = Image.open(io.BytesIO(raw.read_bytes())).convert("RGB")
-    im.thumbnail((width, width))
-    out = OUT / f"{slug}.jpg"
-    im.save(out, "JPEG", quality=74, optimize=True, progressive=True)
-    return f"img/{slug}.jpg", im.size
+    return derive(slug, link)
+
+
+def slug_of(path):
+    return path.split("/")[-1].rsplit(".", 1)[0]
+
+
+def convert():
+    """Rebuild every photo file from the download cache and drop the old JPEGs."""
+    images_path = ROOT / "deck" / "data" / "images.json"
+    result = json.loads(images_path.read_text())
+    for name, e in result.items():
+        paths = e.get("imgs") or [e["img"]]
+        files = [derive(slug_of(u), e.get("link") if j == 0 else None)[0] for j, u in enumerate(paths)]
+        e.update(files[0])
+        if len(files) > 1:
+            e["imgs"] = [f["img"] for f in files]
+            e["fulls"] = [f["full"] for f in files]
+        print(f"{name:<32} ok")
+    images_path.write_text(json.dumps(result, ensure_ascii=False, indent=1))
+    for old in OUT.glob("*.jpg"):
+        old.unlink()
 
 
 def main():
@@ -281,7 +345,8 @@ def main():
                 try:
                     info = FINDERS[how](arg)
                     if info:
-                        path, size = save(info["src"], f"{slug}", data=info.pop("data", None))
+                        files, size = save(info["src"], f"{slug}", data=info.pop("data", None), link=info["link"])
+                        path = files["img"]
                         break
                 except Exception as e:  # keep going to the next source
                     print("  ", how, arg, "failed:", e)
@@ -289,7 +354,7 @@ def main():
             if not path:
                 print("NO IMAGE", p["name"])
                 continue
-            result[p["name"]] = {"img": path, "credit": info["credit"], "link": info["link"]}
+            result[p["name"]] = {**files, "credit": info["credit"], "link": info["link"]}
             if how == "img":
                 result[p["name"]]["user"] = arg
                 extra = []
@@ -298,7 +363,8 @@ def main():
                     if more:
                         extra.append(save(more["src"], f"{slug}-{j}", data=more["data"])[0])
                 if extra:
-                    result[p["name"]]["imgs"] = [path] + extra
+                    result[p["name"]]["imgs"] = [path] + [f["img"] for f in extra]
+                    result[p["name"]]["fulls"] = [files["full"]] + [f["full"] for f in extra]
             print(f"{p['name']:<32} {how:<8} {size} {info['credit'][:70]}")
     for city, items in stays.items():
         for i, s in enumerate(items):
@@ -308,11 +374,11 @@ def main():
             if not m:
                 print("NO AIRBNB IMAGE", room)
                 continue
-            path, size = save(html.unescape(m.group(1)), f"{city}-h{i}")
-            result[f"airbnb:{room}"] = {"img": path, "credit": "Photo: Airbnb listing", "link": s["url"]}
+            files, size = save(html.unescape(m.group(1)), f"{city}-h{i}")
+            result[f"airbnb:{room}"] = {**files, "credit": "Photo: Airbnb listing", "link": s["url"]}
             print(f"airbnb {city} {room} {size}")
     images_path.write_text(json.dumps(result, ensure_ascii=False, indent=1))
 
 
 if __name__ == "__main__":
-    main()
+    convert() if "--convert" in sys.argv else main()

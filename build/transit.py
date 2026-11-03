@@ -17,7 +17,7 @@ from fetch import CITIES, OVERPASS, RAW, get  # noqa: E402
 from process import CITY_BOXES, flat_delta, iter_parts, merc  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-MAIN = ["vienna", "prague", "munich"]
+MAIN = ["vienna", "prague"]
 MODES = {"subway": "subway", "light_rail": "subway", "tram": "tram", "bus": "bus", "trolleybus": "bus"}
 DEFAULT_COLOR = {"subway": "#3b6fd1", "tram": "#d0453b", "bus": "#8a63c8"}
 

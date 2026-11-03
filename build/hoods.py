@@ -35,10 +35,6 @@ HOODS = {
         ("Hradčany", ["Hradčany"], "The castle district, with St. Vitus Cathedral and quiet lanes past the crowds."),
         ("Josefov", ["Josefov"], "The old Jewish Quarter, with its synagogues and centuries-old cemetery."),
     ]},
-    "munich": {"bbox": (48.12, 11.55, 48.15, 11.61), "hoods": [
-        ("Altstadt & Lehel", ["Altstadt-Lehel"], "The medieval core inside the old walls (Marienplatz, Frauenkirche, Viktualienmarkt) and the elegant 19th-century Lehel by the river."),
-        ("Haidhausen & Au", ["Au-Haidhausen"], "The old French Quarter: leafy squares, cafés and beer gardens across the Isar."),
-    ]},
 }
 
 
