@@ -234,12 +234,9 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .seg span { padding: 0 10px; font: 600 10.5px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
 .seg button { font: 600 13px var(--f-body); border: 0; border-left: 1px solid var(--line); background: none; color: var(--ink); padding: 7px 12px; cursor: pointer; }
 .seg button.on { background: var(--ink); color: var(--panel); }
-.sb { width: 28px; height: 28px; border: 1px solid var(--line); border-radius: 4px; background: var(--chip); color: var(--ink); font-size: 16px; line-height: 1; cursor: pointer; }
-.sb:hover { border-color: var(--ink-2); }
 .cal.planner .cd { min-height: 62px; padding-bottom: 6px; }
 .cd.sel { box-shadow: 0 0 0 2px var(--ink); }
 .cd.drop-ok { box-shadow: 0 0 0 2px var(--ink), inset 0 0 0 999px color-mix(in srgb, var(--ink) 10%, transparent); }
-.cd.drop-no { box-shadow: 0 0 0 2px #c2453a; }
 .cd .tr { font-size: 10px; font-weight: 700; line-height: 1.15; color: var(--ink); background: color-mix(in srgb, var(--panel) 70%, transparent); border-radius: 3px; padding: 1px 3px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .cd .nd { position: absolute; top: 6px; right: 6px; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); }
 .cd .grip { position: absolute; top: 18%; bottom: 18%; right: -4px; width: 8px; border-radius: 4px; background: var(--ink); opacity: .55; cursor: ew-resize; touch-action: none; z-index: 1; }
@@ -250,13 +247,6 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .editor .eh b { font: 600 13px var(--f-mono); }
 .editor p a, .planned a, .hint a { color: var(--ink); font-weight: 600; }
 .small { font-size: 12px; margin: -4px 0 10px; }
-.palette { display: grid; gap: 8px; }
-.pg { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.pgl { font: 600 10.5px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); min-width: 54px; border-left: 3px solid var(--c); padding-left: 6px; }
-.tchip { display: inline-grid; gap: 1px; padding: 5px 9px; border-radius: 5px; border: 1px dashed var(--c); font-size: 12.5px; font-weight: 600; cursor: grab; user-select: none; background: var(--panel); }
-.tchip em { font: 500 10px var(--f-mono); font-style: normal; color: var(--ink-2); }
-.tchip.on { border-style: solid; background: color-mix(in srgb, var(--c) 18%, var(--panel)); }
-.tchip.lost em { color: #c2453a; }
 .share { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .mini { font: 600 12.5px var(--f-body); color: var(--panel); background: var(--ink); border: 1px solid var(--ink); border-radius: 5px; padding: 6px 10px; cursor: pointer; }
 .mini.ghost { background: none; color: var(--ink); border-color: var(--line); }
@@ -348,26 +338,26 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .psum { display: flex; width: 100%; justify-content: space-between; gap: 10px; align-items: center; background: var(--chip); border: 0; padding: 9px 12px; font: 600 12px var(--f-mono); color: var(--ink); cursor: pointer; text-align: left; }
 .psum em { font-style: normal; color: var(--ink-2); font-weight: 500; white-space: nowrap; }
 .prow { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 10px; align-items: center; padding: 9px 12px; border-top: 1px solid var(--line); }
-.prow.wide { grid-template-columns: minmax(0, 1fr); gap: 6px; }
 .prow .lab { font: 600 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
 .prow .lab em { font: 500 11px var(--f-body); letter-spacing: 0; text-transform: none; font-style: normal; margin-left: 6px; }
 .prow .ctl { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-width: 0; }
 .prow input[type=date] { font: inherit; font-size: 14px; color: var(--ink); background: var(--chip); border: 1px solid var(--line); border-radius: 5px; padding: 5px 8px; }
 .prow .end { font: 500 11.5px var(--f-mono); color: var(--ink-2); }
-.stp { display: inline-flex; align-items: center; gap: 6px; }
-.stp .nv { min-width: 1.5em; text-align: center; font: 600 14px var(--f-mono); font-variant-numeric: tabular-nums; }
 .seg2 { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; width: 100%; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
 .seg2 button { font: 600 13px var(--f-body); border: 0; background: none; color: var(--ink); padding: 7px 10px; cursor: pointer; }
 .seg2 button + button { border-left: 1px solid var(--line); }
 .seg2 button.on { background: var(--ink); color: var(--panel); }
-.cells { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 6px; }
-.nc { display: grid; gap: 4px; justify-items: start; align-content: start; padding: 6px 6px 7px; border: 1px solid var(--line); border-top: 3px solid var(--c); border-radius: 5px; min-width: 0; overflow: hidden; font-size: 13px; }
-.nc .stp { display: flex; width: 100%; justify-content: space-between; gap: 2px; }
-.nc .sb { flex: none; width: 24px; height: 24px; padding: 0; font-size: 14px; }
-.nc .nv { min-width: 0; }
-.nc select { width: 100%; font: inherit; font-size: 12px; color: var(--ink); background: var(--chip); border: 1px solid var(--line); border-radius: 4px; padding: 3px 2px; }
-.cells.stays { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
-.nc small { font-size: 10.5px; color: var(--ink-2); }
+.drange { font: 600 13.5px var(--f-body); color: var(--ink); background: var(--chip); border: 1px solid var(--line); border-radius: 5px; padding: 5px 10px; cursor: pointer; }
+.drange:hover, .drange.on { border-color: var(--ink-2); }
+.rp { padding: 8px 12px 10px; border-top: 1px solid var(--line); }
+.rph { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; font-size: 13px; }
+.rpg { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.rpg i { font: 600 10px var(--f-mono); font-style: normal; text-transform: uppercase; color: var(--ink-2); text-align: center; padding: 2px 0; }
+.rpg button { height: 30px; border: 0; border-radius: 4px; background: none; font: 500 13px var(--f-body); color: var(--ink); cursor: pointer; font-variant-numeric: tabular-nums; }
+.rpg button:hover { background: var(--chip); }
+.rpg button.in, .rpg button.hv { background: color-mix(in srgb, var(--ink) 12%, transparent); border-radius: 0; }
+.rpg button.s, .rpg button.e { background: var(--ink); color: var(--panel); font-weight: 700; }
+.rp p { margin: 6px 0 0; }
 
 /* calendar cells: the day's pins as little badges */
 .cd .pr { display: flex; gap: 2px; flex-wrap: wrap; margin-top: 2px; }
@@ -442,7 +432,6 @@ body.dock #panel { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
   #tools { left: calc(var(--gl) + 52px); }
   #calBtn .dates { display: none; }
   .prow { grid-template-columns: 1fr; gap: 6px; }
-  .cells { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .places li { grid-template-columns: 68px 1fr; gap: 12px; }
   .thumb { width: 68px; height: 68px; }
 }
@@ -856,7 +845,7 @@ function setZsOpt(opt) {
 }
 
 // ---------- pins: up to three places per day ----------
-let TRIPS = []; // every trip from a city's "Day trips & nature" slide (the planner's drag palette)
+let TRIPS = []; // every trip from a city's "Day trips & nature" slide
 const tripId = p => p.detail || `${p.city}-${p.code}`;
 const keyOf = p => `${p.city}:${p.code}`;
 const homeOf = p => PC[p.city] ? p.city : DETAIL[p.city]?.parent; // a day-trip area belongs to its base city
@@ -984,30 +973,53 @@ function itinerary(x) {
 }
 
 // ---------- planner panel ----------
-let plSel = null, plMsg = "", plResetAsk = false, plImport = false, plAdd = false, plSetOpen = true;
+let plSel = null, plMsg = "", plResetAsk = false, plImport = false, plAdd = false, plSetOpen = true, plRange = null;
 try { plSetOpen = localStorage.getItem("planSettings") !== "closed"; } catch (e) {}
 const pinBadge = p => `<i class="pb" style="--c:var(--${homeOf(p)})" title="${esc(p.name)}">${esc(p.label || p.code)}</i>`;
 function settingsHTML() {
-  const rail = byRail(), zn = PLAN.nights.zagreb, ncs = nightCities();
+  const rail = byRail(), zn = PLAN.nights.zagreb;
   const trainNight = DAYS.some(x => x.sleeper);
-  const nights = ncs.map(c => `<div class="nc" style="--c:var(--${c})"><b>${PC[c].local}</b><div class="stp">
-      <button class="sb" data-n="${c}" data-d="-1" aria-label="One night less in ${PC[c].en}">−</button><span class="nv">${PLAN.nights[c]}</span>
-      <button class="sb" data-n="${c}" data-d="1" aria-label="One night more in ${PC[c].en}">+</button></div>${c === "zagreb" && !zn ? `<small>evening only</small>` : ""}</div>`).join("");
-  const stays = ncs.map(c => {
-    const opts = PLACES.filter(p => p.city === c && p.type === "stay");
-    return `<label class="nc" style="--c:var(--${c})"><b>${PC[c].local}</b>${opts.length
-      ? `<select data-stay="${c}"><option value="">City center</option>${opts.map(p => `<option value="${p.code}"${PLAN.stays[c] === p.code ? " selected" : ""}>${esc(p.label)} · ${esc(p.name)}</option>`).join("")}</select>`
-      : `<span class="muted small">${esc(CENTER_NAME[c] || "City center")}</span>`}</label>`;
-  }).join("");
   const sum = `${planRange()} · ${totalNights()} nights · ${rail ? (zn ? `${zn} in Zagreb` : "rail via Zagreb") : "flying to Split"}`;
   return `<div class="pset">
   <button class="psum" data-act="settings" aria-expanded="${plSetOpen}"><span>${sum}</span><em>${plSetOpen ? "Hide" : "Edit trip"}</em></button>
-  ${plSetOpen ? `<div class="prow"><span class="lab">Start</span><div class="ctl"><input type="date" id="pl-start" value="${PLAN.start}"><span class="end">home ${fmtDay(DAYS.at(-1).date)}</span></div></div>
-  <div class="prow"><span class="lab">Nights</span><div class="ctl"><div class="stp"><button class="sb" data-total="-1" aria-label="Shorter trip">−</button><span class="nv">${totalNights()}</span><button class="sb" data-total="1" aria-label="Longer trip">+</button></div>${trainNight ? `<span class="end">incl. 1 on the train</span>` : ""}</div></div>
+  ${plSetOpen ? `<div class="prow"><span class="lab">Dates</span><div class="ctl"><button class="drange${plRange ? " on" : ""}" data-act="range" aria-expanded="${!!plRange}">${fmtDay(DAYS[0].date)} → ${fmtDay(DAYS.at(-1).date)}</button><span class="end">${totalNights()} nights${trainNight ? " · 1 on the train" : ""}</span></div></div>
+  ${plRange ? rangeHTML() : ""}
   <div class="prow"><span class="lab">Vienna → Split</span><div class="ctl"><div class="seg2" role="group" aria-label="Vienna to Split"><button data-vs="sleeper" class="${rail ? "on" : ""}" aria-pressed="${rail}">Train via Zagreb</button><button data-vs="flight" class="${rail ? "" : "on"}" aria-pressed="${!rail}">Flight</button></div></div></div>
-  ${rail && zn ? `<div class="prow"><span class="lab">Zagreb → Split</span><div class="ctl"><div class="seg2" role="group" aria-label="Zagreb to Split"><button data-zs="sleeper" class="${PLAN.legs.zs.opt === "sleeper" ? "on" : ""}">Sleeper</button><button data-zs="day" class="${PLAN.legs.zs.opt === "day" ? "on" : ""}">Day train</button></div></div></div>` : ""}
-  <div class="prow wide"><span class="lab">Nights per city <em>moving one keeps the trip length</em></span><div class="cells" style="--n:${ncs.length}">${nights}</div></div>
-  <div class="prow wide"><span class="lab">Staying at <em>where each day's route starts</em></span><div class="cells stays">${stays}</div></div>` : ""}</div>`;
+  ${rail && zn ? `<div class="prow"><span class="lab">Zagreb → Split</span><div class="ctl"><div class="seg2" role="group" aria-label="Zagreb to Split"><button data-zs="sleeper" class="${PLAN.legs.zs.opt === "sleeper" ? "on" : ""}">Sleeper</button><button data-zs="day" class="${PLAN.legs.zs.opt === "day" ? "on" : ""}">Day train</button></div></div></div>` : ""}` : ""}</div>`;
+}
+// the date-range picker: click the first day, then the last
+function rangeHTML() {
+  const { y, m, a } = plRange, first = new Date(y, m, 1), lead = (first.getDay() + 6) % 7, len = new Date(y, m + 1, 0).getDate();
+  const s0 = a || DAYS[0].iso, e0 = a ? null : DAYS.at(-1).iso, cells = [];
+  for (let k = 0; k < lead; k++) cells.push(`<span></span>`);
+  for (let d = 1; d <= len; d++) {
+    const iso = isoDate(new Date(y, m, d)), c = [iso === s0 ? "s" : "", iso === e0 ? "e" : "", e0 && iso > s0 && iso < e0 ? "in" : ""].join(" ").trim();
+    cells.push(`<button data-rd="${iso}"${c ? ` class="${c}"` : ""}>${d}</button>`);
+  }
+  return `<div class="rp" role="group" aria-label="Pick the trip dates">
+    <div class="rph"><button class="ib" data-rm="-1" aria-label="Previous month">‹</button><b>${["January","February","March","April","May","June","July","August","September","October","November","December"][m]} ${y}</b><button class="ib" data-rm="1" aria-label="Next month">›</button></div>
+    <div class="rpg">${WD.map(w => `<i>${w.slice(0, 2)}</i>`).join("")}${cells.join("")}</div>
+    <p class="muted small">${a ? `From ${fmtDay(parseISO(a))}. Now click the day you fly home.` : "Click the day you fly in, then the day you fly home. Prague takes the change at the start, Split at the end."}</p></div>`;
+}
+// new trip dates: days added or cut at the start go to Prague, at the end to Split (then the next city along)
+function setRange(sIso, eIso) {
+  const keep = clone(PLAN.nights), list = nightCities();
+  const shift = (order, d) => {
+    if (d > 0) { PLAN.nights[order[0]] += d; return true; }
+    for (; d < 0; d++) { const c = order.find(x => PLAN.nights[x] > minN(x)); if (!c) return false; PLAN.nights[c]--; }
+    return true;
+  };
+  const front = Math.round((DAYS[0].date - parseISO(sIso)) / 864e5), back = Math.round((parseISO(eIso) - DAYS.at(-1).date) / 864e5);
+  const ok = shift(list, front) && shift([...list].reverse(), back);
+  const days = buildDays({ ...PLAN, start: sIso });
+  if (!ok || days.at(-1).iso !== eIso || days.length - 1 > 30) {
+    PLAN.nights = keep;
+    flash(days.length - 1 > 30 ? "Trips can be up to 30 nights." : "That's too short: each city needs at least one night.");
+    return false;
+  }
+  PLAN.start = sIso;
+  plMsg = `${fmtDay(days[0].date)} → ${fmtDay(days.at(-1).date)}, ${days.length - 1} nights.`;
+  return true;
 }
 function dayViewHTML(x) {
   const pins = pinsOn(x), n = pins.length;
@@ -1049,12 +1061,17 @@ function planHTML() {
   const cells = [];
   for (let k = 0; k < lead; k++) cells.push(`<div class="cd off"><span class="n">${addDays(first, k - lead).getDate()}</span></div>`);
   const ncs = nightCities(), lastStay = {};
-  DAYS.forEach(x => { if (x.kind === "stay" && ncs.indexOf(x.city) < ncs.length - 1) lastStay[x.city] = x.i; });
+  // the grip sits on the day of a city's last night, which is its arrival day when it has only one
+  DAYS.forEach(x => {
+    const c = x.kind === "travel" ? (x.sleeper ? null : x.to) : x.kind === "depart" ? null : x.city;
+    if (c && ncs.indexOf(c) < ncs.length - 1) lastStay[c] = x.i;
+  });
   DAYS.forEach(x => {
     const n = x.date.getDate(), m = n === 1 || x.i === 0 ? ` ${MON[x.date.getMonth()]}` : "";
     const pins = pinsOn(x).map(k => placeBy[k]), note = PLAN.notes[x.iso];
     const sel = plSel === x.i ? " sel" : "";
-    const grip = lastStay[x.city] === x.i ? `<span class="grip" data-grip="${x.city}" title="Drag to change nights in ${PC[x.city].en}"></span>` : "";
+    const gc = Object.keys(lastStay).find(c => lastStay[c] === x.i);
+    const grip = gc ? `<span class="grip" data-grip="${gc}" title="Drag to change nights in ${PC[gc].en}"></span>` : "";
     const style = x.kind === "travel" ? `--a:var(--${x.from});--b:var(--${x.to})` : `--a:var(--${x.city})`;
     const fly = x.kind === "arrive" || x.kind === "depart"; // flying in and home get their own look
     const label = x.kind === "travel" ? `${PC[x.from].local.slice(0, 3)}→${PC[x.to].local.slice(0, 3)}` : fly ? (x.kind === "arrive" ? "Fly in" : "Fly home") : PC[x.city].local;
@@ -1066,15 +1083,6 @@ function planHTML() {
   while (cells.length % 7) cells.push(`<div class="cd off"></div>`);
   const travel = DAYS.filter(x => x.kind === "travel").map(x => { const s = legSummary(x.leg); return `<li><b>${fmtDay(x.date)}</b><span>${esc(s.info.label)}<br><span class="muted">${esc(s.text)}</span></span></li>`; }).join("");
 
-  // day-trip palette, grouped by city: drag a trip onto a day to pin it
-  const palette = ORDER.map(c => {
-    const ts = TRIPS.filter(p => p.city === c);
-    if (!ts.length) return "";
-    return `<div class="pg"><span class="pgl" style="--c:var(--${c})">${CITIES[c].local}</span>${ts.map(p => {
-      const at = pinDays(keyOf(p))[0], lost = !at && lostPins().some(l => l.key === keyOf(p));
-      return `<span class="tchip${at ? " on" : ""}${lost ? " lost" : ""}" draggable="true" data-trip="${keyOf(p)}" style="--c:var(--${c})" title="Drag onto a ${CITIES[c].en} day">${esc(p.name)}<em>${at ? fmtDay(at.date) : lost ? "needs a new day" : "drag to a day"}</em></span>`;
-    }).join("")}</div>`;
-  }).join("");
   const lost = lostPins();
   const lostHTML = lost.length ? `<h3 class="sub">Needs a new day</h3><ul class="lostl">${lost.map(l => { const p = placeBy[l.key]; return `<li style="--c:var(--${homeOf(p)})">${badge(p)}<span>${esc(p.name)} <span class="muted">was on ${fmtDay(parseISO(l.iso))}</span></span><button class="ib" data-unpin="${l.key}" data-iso="${l.iso}" aria-label="Remove ${esc(p.name)}">×</button></li>`; }).join("")}</ul>` : "";
 
@@ -1085,10 +1093,9 @@ function planHTML() {
   ${sharedPending ? `<div class="banner"><span>You opened a shared plan.</span><button class="mini" data-act="keep">Keep it as mine</button><button class="mini ghost" data-act="discard">Use my own</button></div>` : ""}
   ${settingsHTML()}
   <div class="cal planner">${WD.map(w => `<div class="wd">${w}</div>`).join("")}${cells.join("")}</div>
-  <p class="pl-status" role="status">${esc(plMsg || "Click a day to see it on the map and pin up to 3 places. Drag the handle on a city's last day to move nights.")}</p>
+  <p class="pl-status" role="status">${esc(plMsg || "Click a day to see it on the map and pin up to 3 places. Drag the handle on a city's last day to move nights between cities (drag Wien's left to stop over in Zagreb).")}</p>
   ${plSel != null && DAYS[plSel] ? dayViewHTML(DAYS[plSel]) : ""}
   ${lostHTML}
-  <h3 class="sub">Day trips</h3><div class="palette">${palette}</div>
   <h3 class="sub">Travel days</h3><ul class="trav">${travel}</ul>
   ${outside.length ? `<p class="note">Notes on ${outside.length} date${outside.length > 1 ? "s" : ""} outside the trip are kept in case the dates move back.</p>` : ""}
   <h3 class="sub">Share</h3>
@@ -1930,24 +1937,6 @@ function setHome(key) {
   plMsg = PLAN.stays[p.city] ? `${PC[p.city].en} days now start and end at ${p.name}.` : `${PC[p.city].en} days start from the city center.`;
   planChanged();
 }
-function moveNights(c, d) { // moving nights between cities never changes the trip length
-  const list = nightCities(), i = list.indexOf(c);
-  const nearby = [list[i + 1], list[i - 1], ...list].filter((x, k, a) => x && x !== c && a.indexOf(x) === k);
-  if (d > 0) {
-    const donor = nearby.find(x => PLAN.nights[x] > minN(x));
-    if (!donor) { flash("No other city has a night to spare. Add nights to the trip first."); return; }
-    PLAN.nights[c] += 1; PLAN.nights[donor] -= 1;
-    plMsg = `${PC[c].en} ${PLAN.nights[c]} night${PLAN.nights[c] === 1 ? "" : "s"}, ${PC[donor].en} ${PLAN.nights[donor]}.`;
-  } else {
-    if (PLAN.nights[c] <= minN(c)) { flash(c === "zagreb" ? "Zagreb is already an evening stop between trains." : `${PC[c].en} needs at least one night.`); return; }
-    const to = nearby.find(x => x !== "zagreb" || PLAN.nights.zagreb > 0) || nearby[0];
-    PLAN.nights[c] -= 1; PLAN.nights[to] += 1;
-    plMsg = `${PC[c].en} ${PLAN.nights[c]} night${PLAN.nights[c] === 1 ? "" : "s"}, ${PC[to].en} ${PLAN.nights[to]}.`;
-  }
-  if (c === "zagreb" || PLAN.nights.zagreb === 0) DAYS = buildDays();
-  planChanged();
-}
-
 calPanel.addEventListener("click", e => {
   const t = e.target;
   const jump = t.closest("[data-go]");
@@ -1956,19 +1945,15 @@ calPanel.addEventListener("click", e => {
   if (day && !t.closest("[data-grip]")) { const i = +day.dataset.day; plMsg = ""; if (daySl && daySl.i === i) exitDay(); else goDay(i); return; }
   const ds = t.closest("[data-dstep]");
   if (ds) { goDay(plSel + +ds.dataset.dstep); return; }
-  const tb = t.closest("[data-total]");
-  if (tb) { // the trip length: extra nights go to (and come from) the last city first
-    const d = +tb.dataset.total, list = nightCities();
-    if (d > 0) { if (totalNights() >= 30) return; PLAN.nights[list.at(-1)] += 1; }
-    else {
-      const from = [...list].reverse().find(c => PLAN.nights[c] > minN(c));
-      if (!from) { flash("Each city needs at least one night."); return; }
-      PLAN.nights[from] -= 1;
-    }
-    DAYS = buildDays(); plMsg = `${totalNights()} nights, home on ${fmtDay(DAYS.at(-1).date)}.`; planChanged(); return;
+  const rd = t.closest("[data-rd]");
+  if (rd) {
+    const iso = rd.dataset.rd;
+    if (!plRange.a || iso <= plRange.a) { plRange.a = iso; renderPlanner(); return; }
+    if (setRange(plRange.a, iso)) { plRange = null; planChanged(); } else { plRange.a = null; renderPlanner(); }
+    return;
   }
-  const sb = t.closest("[data-n]");
-  if (sb) { moveNights(sb.dataset.n, +sb.dataset.d); return; }
+  const rm = t.closest("[data-rm]");
+  if (rm) { const d = new Date(plRange.y, plRange.m + +rm.dataset.rm, 1); plRange.y = d.getFullYear(); plRange.m = d.getMonth(); renderPlanner(); return; }
   const vs = t.closest("[data-vs]");
   if (vs) { setVsOpt(vs.dataset.vs); planChanged(); return; }
   const zs = t.closest("[data-zs]");
@@ -1991,7 +1976,8 @@ calPanel.addEventListener("click", e => {
   const act = t.closest("[data-act]")?.dataset.act;
   if (!act) return;
   const strip = () => { try { history.replaceState(null, "", location.pathname + location.hash); } catch (err) {} };
-  if (act === "settings") { plSetOpen = !plSetOpen; try { localStorage.setItem("planSettings", plSetOpen ? "open" : "closed"); } catch (err) {} renderPlanner(); }
+  if (act === "range") { plRange = plRange ? null : { y: DAYS[0].date.getFullYear(), m: DAYS[0].date.getMonth(), a: null }; renderPlanner(); }
+  else if (act === "settings") { plSetOpen = !plSetOpen; try { localStorage.setItem("planSettings", plSetOpen ? "open" : "closed"); } catch (err) {} renderPlanner(); }
   else if (act === "play") playDay();
   else if (act === "dayoff") exitDay();
   else if (act === "dayon") goDay(plSel);
@@ -2012,14 +1998,17 @@ calPanel.addEventListener("click", e => {
   else if (act === "reset-no") { plResetAsk = false; renderPlanner(); }
   else if (act === "reset-yes") { PLAN = clone(PLAN_DEFAULT); plResetAsk = false; plMsg = "Back to the default plan."; planChanged(); }
 });
+calPanel.addEventListener("pointerover", e => {
+  if (!plRange?.a) return;
+  const h = e.target.closest?.("[data-rd]")?.dataset.rd;
+  calPanel.querySelectorAll(".rpg [data-rd]").forEach(b => b.classList.toggle("hv", !!h && b.dataset.rd > plRange.a && b.dataset.rd <= h));
+});
 calPanel.addEventListener("toggle", e => { if (e.target.id === "pl-add") plAdd = e.target.open; }, true); // toggle doesn't bubble
 
 calPanel.addEventListener("change", e => {
   const t = e.target;
-  if (t.id === "pl-start" && t.value) { PLAN.start = t.value; DAYS = buildDays(); plMsg = `Trip starts ${fmtDay(parseISO(t.value))}.`; planChanged(); }
-  else if (t.id === "pl-opt") { const l = t.dataset.leg; if (l === "vs") setVsOpt(t.value); else if (l === "zs") setZsOpt(t.value); planChanged(); }
+  if (t.id === "pl-opt") { const l = t.dataset.leg; if (l === "vs") setVsOpt(t.value); else if (l === "zs") setZsOpt(t.value); planChanged(); }
   else if (t.id === "pl-dep" && t.value) { PLAN.legs[t.dataset.leg === "vz" ? "vs" : t.dataset.leg].dep = t.value; planChanged(); }
-  else if (t.dataset.stay) { PLAN.stays[t.dataset.stay] = t.value || null; plMsg = t.value ? `${PC[t.dataset.stay].en} days start and end at ${placeBy[`${t.dataset.stay}:${t.value}`].name}.` : ""; planChanged(); }
 });
 calPanel.addEventListener("input", e => {
   if (e.target.id !== "pl-note") return;
@@ -2027,35 +2016,6 @@ calPanel.addEventListener("input", e => {
   if (v) PLAN.notes[x.iso] = e.target.value.slice(0, 500); else delete PLAN.notes[x.iso];
   savePlan(); // no re-render while typing; the note dot appears on the next render
 });
-
-// drag a day trip onto a day to pin it
-let dragTrip = null;
-calPanel.addEventListener("dragstart", e => {
-  const chip = e.target.closest("[data-trip]"); if (!chip) return;
-  dragTrip = chip.dataset.trip;
-  e.dataTransfer.setData("text/plain", dragTrip); e.dataTransfer.effectAllowed = "move";
-});
-calPanel.addEventListener("dragover", e => {
-  const cell = e.target.closest("[data-day]"); if (!cell || !dragTrip) return;
-  e.preventDefault();
-  const x = DAYS[+cell.dataset.day], ok = canPin(x, placeBy[dragTrip]) && (pinsOn(x).length < PIN_MAX || pinsOn(x).includes(dragTrip));
-  calPanel.querySelectorAll(".cd.drop-ok, .cd.drop-no").forEach(c => c.classList.remove("drop-ok", "drop-no"));
-  cell.classList.add(ok ? "drop-ok" : "drop-no");
-});
-calPanel.addEventListener("drop", e => {
-  const cell = e.target.closest("[data-day]"); if (!cell || !dragTrip) return;
-  e.preventDefault();
-  const x = DAYS[+cell.dataset.day], p = placeBy[dragTrip];
-  dragTrip = null;
-  if (!canPin(x, p)) {
-    renderPlanner();
-    flash(x.kind === "travel" ? `${fmtDay(x.date)} is a travel day. Pick a full day in ${CITIES[p.city].en}.` : `${p.name} is a day trip from ${CITIES[p.city].en}. Drop it on a ${CITIES[p.city].en} day.`);
-    return;
-  }
-  if (pinsOn(x).includes(keyOf(p))) { renderPlanner(); return; }
-  plMsg = pinMsg(togglePin(keyOf(p), x.iso), p, x); planChanged();
-});
-calPanel.addEventListener("dragend", () => { dragTrip = null; calPanel.querySelectorAll(".cd.drop-ok, .cd.drop-no").forEach(c => c.classList.remove("drop-ok", "drop-no")); });
 
 // drag the handle on a city's last day to move nights between it and the next city (total trip length stays the same)
 let grip = null;
@@ -2075,11 +2035,17 @@ calPanel.addEventListener("pointerup", () => {
   if (!grip) return;
   const { city, from, to } = grip; grip = null;
   if (to == null || to === from) { renderPlanner(); return; }
-  const list = nightCities(), next = list[list.indexOf(city) + 1], delta = to - from;
-  const a = PLAN.nights[city] + delta, b = PLAN.nights[next] - delta;
-  if (a < minN(city) || b < minN(next)) { renderPlanner(); flash("Each city needs at least one night."); return; }
-  PLAN.nights[city] = a; PLAN.nights[next] = b;
-  plMsg = `${PC[city].en} ${a} night${a === 1 ? "" : "s"}, ${PC[next].en} ${b} night${b === 1 ? "" : "s"}.`;
+  const list = nightCities(), after = list.slice(list.indexOf(city) + 1), delta = to - from, keep = clone(PLAN.nights);
+  if (PLAN.nights[city] + delta < minN(city)) { renderPlanner(); flash(`${PC[city].en} needs at least one night.`); return; }
+  PLAN.nights[city] += delta;
+  if (delta < 0) PLAN.nights[after[0]] -= delta; // shrinking hands the nights to the next city (Wien's go to a Zagreb stopover)
+  else for (let d = delta; d > 0; d--) {
+    const c = after.find(x => PLAN.nights[x] > minN(x));
+    if (!c) { PLAN.nights = keep; renderPlanner(); flash("Each city needs at least one night."); return; }
+    PLAN.nights[c]--;
+  }
+  const n = c => `${PC[c].en} ${PLAN.nights[c]} night${PLAN.nights[c] === 1 ? "" : "s"}`;
+  plMsg = [city, ...after].filter(c => PLAN.nights[c] !== keep[c]).map(n).join(", ") + ".";
   planChanged();
 });
 document.getElementById("calDates").textContent = planRange();
