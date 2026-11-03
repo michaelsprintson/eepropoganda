@@ -361,9 +361,12 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .seg2 button + button { border-left: 1px solid var(--line); }
 .seg2 button.on { background: var(--ink); color: var(--panel); }
 .cells { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 6px; }
-.nc { display: grid; gap: 4px; justify-items: start; align-content: start; padding: 6px 8px 7px; border: 1px solid var(--line); border-top: 3px solid var(--c); border-radius: 5px; min-width: 0; font-size: 13px; }
-.nc .sb { width: 24px; height: 24px; font-size: 14px; }
+.nc { display: grid; gap: 4px; justify-items: start; align-content: start; padding: 6px 6px 7px; border: 1px solid var(--line); border-top: 3px solid var(--c); border-radius: 5px; min-width: 0; overflow: hidden; font-size: 13px; }
+.nc .stp { display: flex; width: 100%; justify-content: space-between; gap: 2px; }
+.nc .sb { flex: none; width: 24px; height: 24px; padding: 0; font-size: 14px; }
+.nc .nv { min-width: 0; }
 .nc select { width: 100%; font: inherit; font-size: 12px; color: var(--ink); background: var(--chip); border: 1px solid var(--line); border-radius: 4px; padding: 3px 2px; }
+.cells.stays { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
 .nc small { font-size: 10.5px; color: var(--ink-2); }
 
 /* calendar cells: the day's pins as little badges */
@@ -1004,7 +1007,7 @@ function settingsHTML() {
   <div class="prow"><span class="lab">Vienna → Split</span><div class="ctl"><div class="seg2" role="group" aria-label="Vienna to Split"><button data-vs="sleeper" class="${rail ? "on" : ""}" aria-pressed="${rail}">Train via Zagreb</button><button data-vs="flight" class="${rail ? "" : "on"}" aria-pressed="${!rail}">Flight</button></div></div></div>
   ${rail && zn ? `<div class="prow"><span class="lab">Zagreb → Split</span><div class="ctl"><div class="seg2" role="group" aria-label="Zagreb to Split"><button data-zs="sleeper" class="${PLAN.legs.zs.opt === "sleeper" ? "on" : ""}">Sleeper</button><button data-zs="day" class="${PLAN.legs.zs.opt === "day" ? "on" : ""}">Day train</button></div></div></div>` : ""}
   <div class="prow wide"><span class="lab">Nights per city <em>moving one keeps the trip length</em></span><div class="cells" style="--n:${ncs.length}">${nights}</div></div>
-  <div class="prow wide"><span class="lab">Staying at <em>where each day's route starts</em></span><div class="cells" style="--n:${ncs.length}">${stays}</div></div>` : ""}</div>`;
+  <div class="prow wide"><span class="lab">Staying at <em>where each day's route starts</em></span><div class="cells stays">${stays}</div></div>` : ""}</div>`;
 }
 function dayViewHTML(x) {
   const pins = pinsOn(x), n = pins.length;
