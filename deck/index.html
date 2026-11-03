@@ -1890,7 +1890,15 @@ function buildNav() {
 }
 document.getElementById("next").onclick = () => stepAny(1);
 document.getElementById("prev").onclick = () => stepAny(-1);
-document.getElementById("overview").onclick = () => { closePop(); flyTo(fitPts(Object.values(CITIES).map(c => c.xy), 70)); };
+document.getElementById("overview").onclick = () => {
+  closePop();
+  if (daySl || plSel != null) { // the whole trip, so the calendar lets go of its day (and that day's route and home base)
+    plSel = null;
+    if (daySl && cur >= 0) go(cur, { fly: false }); else daySl = null;
+    renderPlanner(); invalidate();
+  }
+  flyTo(fitPts(Object.values(CITIES).map(c => c.xy), 70));
+};
 function toggleRoam() {
   const on = document.body.classList.toggle("roam");
   remeasure();
