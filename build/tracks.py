@@ -51,7 +51,8 @@ def add_ways(path, nodes, adj, keep):
 
 def build_graph(leg_id, cities):
     nodes, adj = {}, {}
-    add_ways(RAW / f"corridor_{leg_id}.json", nodes, adj, lambda t: True)
+    if (RAW / f"corridor_{leg_id}.json").exists():
+        add_ways(RAW / f"corridor_{leg_id}.json", nodes, adj, lambda t: True)
     for c in cities:  # full city networks, so the in-city part follows the exact tracks
         add_ways(RAW / f"{c}_base.json", nodes, adj, lambda t: t.get("usage") not in ("industrial", "military"))
     bridge_gaps(nodes, adj)
@@ -170,7 +171,8 @@ def dijkstra(adj, a, b):
 
 
 CITY_KM = [(km(w, n), km(e, s)) for w, s, e, n in [
-    (16.265, 48.160, 16.430, 48.270), (14.355, 50.050, 14.480, 50.115), (11.460, 48.075, 11.650, 48.215)]]
+    (16.265, 48.160, 16.430, 48.270), (14.355, 50.050, 14.480, 50.115), (11.460, 48.075, 11.650, 48.215),
+    (16.395, 43.490, 16.470, 43.530)]]
 
 
 def in_city(p):

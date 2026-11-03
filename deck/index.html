@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Wien · Praha · München</title>
+<title>Praha · Wien · Split</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,6 +26,7 @@
   --vienna: #c9920c;
   --prague: #c23a2e;
   --munich: #2a64ad;
+  --split: #12857f;
   --tram: #d4483c;
   --bus: #7d5cc0;
   --board: #15191c;
@@ -42,14 +43,14 @@
     --bg: #0b1114; --land: #172026; --land-hi: #1e2930; --border: #3a4952; --water: #173343;
     --green: #1b2d24; --road: #3b4850; --casing: #10171b; --building: #283239; --rail: #6d7b82;
     --ink: #e7ecec; --ink-2: #9ba8ae; --panel: rgba(20, 27, 32, 0.94); --line: #2b373e; --chip: #222d33;
-    --vienna: #f0b630; --prague: #e8584c; --munich: #5b95dc; --tram: #f06a5c; --bus: #a98be6; color-scheme: dark;
+    --vienna: #f0b630; --prague: #e8584c; --munich: #5b95dc; --split: #2fb8b0; --tram: #f06a5c; --bus: #a98be6; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0b1114; --land: #172026; --land-hi: #1e2930; --border: #3a4952; --water: #173343;
   --green: #1b2d24; --road: #3b4850; --casing: #10171b; --building: #283239; --rail: #6d7b82;
   --ink: #e7ecec; --ink-2: #9ba8ae; --panel: rgba(20, 27, 32, 0.94); --line: #2b373e; --chip: #222d33;
-  --vienna: #f0b630; --prague: #e8584c; --munich: #5b95dc; --tram: #f06a5c; --bus: #a98be6; color-scheme: dark;
+  --vienna: #f0b630; --prague: #e8584c; --munich: #5b95dc; --split: #2fb8b0; --tram: #f06a5c; --bus: #a98be6; color-scheme: dark;
 }
 html, body { height: 100%; overflow: hidden; }
 [hidden] { display: none !important; }
@@ -146,16 +147,35 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 
 /* departure board: a physical object, so it keeps one look in both themes */
 .board { background: var(--board); color: var(--board-ink); border-radius: 5px; padding: 12px 12px 10px; font-family: var(--f-mono); font-size: 12.5px; margin: 4px 0 12px; overflow-x: auto; box-shadow: inset 0 0 0 1px #000, 0 2px 0 rgba(0,0,0,.15); }
-.board table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; min-width: 300px; }
+.board table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; min-width: 280px; }
 .board th { color: var(--board-dim); font-weight: 500; font-size: 10px; letter-spacing: .1em; text-align: left; padding: 0 6px 6px 0; border-bottom: 1px solid #2c3236; }
-.board td { padding: 7px 6px 7px 0; border-bottom: 1px dashed #2a2f33; white-space: nowrap; }
+.board td { padding: 7px 8px 7px 0; border-bottom: 1px dashed #2a2f33; vertical-align: top; }
+.board td.t, .board td.c { white-space: nowrap; }
+.board td.c { text-align: right; padding-right: 0; }
+.board .sub2 { display: block; color: var(--board-dim); font-size: 11px; margin-top: 2px; }
 .board tr:last-child td { border-bottom: 0; }
+.board tr.opt td { color: var(--board-dim); font-size: 10px; letter-spacing: .1em; padding: 12px 0 2px; border-bottom: 0; }
+.board tr.total td { border-top: 1px solid #3a4045; border-bottom: 0; font-weight: 600; color: #fff; }
 .board td.t { font-weight: 600; font-size: 15px; }
 .board td.op { color: #e9ecee; white-space: normal; }
 .board .foot { color: var(--board-dim); font-size: 10px; margin-top: 8px; letter-spacing: .04em; }
 .via { font-size: 13px; color: var(--ink-2); margin: 0 0 10px; }
 .via b { color: var(--ink); font-weight: 600; }
 
+.cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin: 4px 0 6px; }
+.cal .wd { font: 600 10px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); text-align: center; padding-bottom: 2px; }
+.cd { position: relative; min-height: 52px; border: 0; border-radius: 4px; padding: 4px 5px; text-align: left; font: inherit; color: var(--ink); cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;
+  background: color-mix(in srgb, var(--a) 26%, var(--panel)); border-top: 3px solid var(--a); min-width: 0; }
+.cd:hover, .cd:focus-visible { background: color-mix(in srgb, var(--a) 42%, var(--panel)); outline: none; }
+.cd:focus-visible { box-shadow: 0 0 0 2px var(--ink); }
+.cd.travel { background: linear-gradient(135deg, color-mix(in srgb, var(--a) 30%, var(--panel)) 0 50%, color-mix(in srgb, var(--b) 30%, var(--panel)) 50%); border-top: 3px solid transparent; border-image: linear-gradient(90deg, var(--a), var(--b)) 1; }
+.cd.off { background: none; border-top: 3px solid var(--line); cursor: default; color: var(--ink-2); opacity: .45; }
+.cd .n { font: 600 12px var(--f-mono); font-variant-numeric: tabular-nums; }
+.cd .t { font-size: 10.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cd .i { position: absolute; top: 3px; right: 4px; font-size: 11px; }
+.trav { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 13px; }
+.trav li { display: grid; grid-template-columns: 92px 1fr; gap: 10px; }
+.trav b { font-family: var(--f-mono); font-size: 11.5px; font-weight: 600; }
 .checks { list-style: none; padding: 0; margin: 0 0 8px; display: grid; gap: 8px; }
 .checks li { display: grid; grid-template-columns: 18px 1fr; gap: 10px; }
 .checks li::before { content: ""; width: 14px; height: 14px; border: 2px solid var(--ink); border-radius: 3px; margin-top: 3px; }
@@ -240,7 +260,7 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l-2-4M15 21l2-4"/><circle cx="9" cy="14" r=".6" fill="currentColor"/><circle cx="15" cy="14" r=".6" fill="currentColor"/></svg><span class="lbl">Transit</span>
     </button>
     <div id="transitMenu" class="menu" hidden>
-      <p class="mh">Show lines in Vienna, Prague &amp; Munich</p>
+      <p class="mh">Show lines in Prague &amp; Vienna</p>
       <label><input type="checkbox" id="t-subway" data-mode="subway"><span class="sw subway"></span>Subway (U-Bahn / metro)</label>
       <label><input type="checkbox" id="t-tram" data-mode="tram"><span class="sw tram"></span>Tram</label>
       <label><input type="checkbox" id="t-bus" data-mode="bus"><span class="sw bus"></span>Bus</label>
@@ -273,16 +293,17 @@ const P = (lon, lat) => { const [x, y] = merc(lon, lat); return [x - OX, y - OY]
 
 // ---------- trip content ----------
 const CITIES = {
-  vienna: { en: "Vienna", local: "Wien", ll: [16.3725, 48.2085], nights: 5 },
   prague: { en: "Prague", local: "Praha", ll: [14.4213, 50.0875], nights: 4 },
-  munich: { en: "Munich", local: "München", ll: [11.5755, 48.1374], nights: 4 },
+  vienna: { en: "Vienna", local: "Wien", ll: [16.3725, 48.2085], nights: 4 },
+  split: { en: "Split", local: "Split", ll: [16.4401, 43.5081], nights: 4 },
 };
 for (const c of Object.values(CITIES)) c.xy = P(...c.ll);
 
 
 const TOWNS = [["Bratislava", 17.107, 48.148], ["Budapest", 19.040, 47.498], ["Dresden", 13.738, 51.050], ["Berlin", 13.405, 52.520],
   ["Zurich", 8.541, 47.377], ["Ljubljana", 14.506, 46.056], ["Kraków", 19.945, 50.065], ["Innsbruck", 11.404, 47.269],
-  ["Nuremberg", 11.077, 49.452], ["Graz", 15.439, 47.071], ["Wrocław", 17.038, 51.108], ["Leipzig", 12.374, 51.340]];
+  ["Nuremberg", 11.077, 49.452], ["Wrocław", 17.038, 51.108], ["Leipzig", 12.374, 51.340],
+  ["Rijeka", 14.442, 45.327], ["Zadar", 15.231, 44.119], ["Šibenik", 15.896, 43.735], ["Sarajevo", 18.413, 43.856], ["Dubrovnik", 18.094, 42.650]];
 
 // legs come from data/legs.json: stations [name, lon, lat, major?] plus a path traced along real OSM track in each city
 let LEGS = {};
@@ -297,6 +318,12 @@ function buildLegs(data) {
 }
 
 const BOARDS = {
+  pv: { rows: [["4h 00", "Railjet · ČD / ÖBB", "every 2 h", "€20+"], ["4h 15", "RegioJet train", "several daily", "€15+"], ["4h 30", "FlixBus coach", "several daily", "€15+"]],
+    via: "Pardubice · <b>Brno</b> · Břeclav", stop: "<b>Worth a stop:</b> Brno, a lively student city right at the halfway point. Easy lunch break." },
+  vs: { rows: [["", "OPTION A · TRAIN + SLEEPER", "", ""], ["6h 30", "Day train to Zagreb · ÖBB / SŽ / HŽ", "1–2 daily", "€30+"], ["~9h", "Sleeper to Split · HŽ (summer)", "nightly", "€40+"],
+      ["", "OPTION B · FLY", "", ""], ["1h 15", "Flight VIE → SPU · Austrian / Croatia Airlines", "daily in summer", "€80+"]],
+    via: "<b>Semmering</b> · Graz · Maribor · <b>Zagreb</b> · Knin",
+    stop: "<b>Option A:</b> about 6.5 h awake on the day train over the UNESCO-listed Semmering railway, an evening in Zagreb, then sleep through Lika and wake up on the coast. <b>Option B:</b> fly in 1h15 and skip Zagreb. The dashed arc on the map is the flight." },
   vp: { rows: [["4h 00", "Railjet · ÖBB / ČD", "every 2 h", "€20+"], ["4h 15", "RegioJet train", "several daily", "€15+"], ["4h 30", "FlixBus coach", "several daily", "€15+"]],
     via: "Břeclav · <b>Brno</b> · Pardubice", stop: "<b>Worth a stop:</b> Brno, a lively student city right at the halfway point. Easy lunch break." },
   pm: { rows: [["5h 45", "Direct EC · ČD / DB", "every 2 h", "€25+"], ["4h 45", "FlixBus coach", "many daily", "€20+"]],
@@ -309,8 +336,9 @@ const SEASON = {
   vienna: "In late August the locals head out and the city moves outdoors: wine taverns in the vineyards, long evenings in palace gardens, swimming in the Alte Donau. Expect 25–30°C.",
   prague: "Late summer means long evenings: beer gardens up on the hills, sunsets from the bridges, boats on the Vltava. Warm days around 25°C.",
   munich: "Beer gardens at their peak, and we beat the Oktoberfest crowds, which arrive in September. The lakes and the Alps are an hour away for a day trip.",
+  split: "Late August is peak beach season: a warm sea around 24°C, long evenings on the Riva, and islands an hour away by boat. Expect 28–32°C.",
 };
-const EAT_TITLE = { vienna: "Schnitzel, ramen & tapas", prague: "Pilsner, pho & pasta", munich: "Beer, dumplings & more" };
+const EAT_TITLE = { vienna: "Schnitzel, ramen & tapas", prague: "Pilsner, pho & pasta", munich: "Beer, dumplings & more", split: "Fish, octopus & Croatian wine" };
 
 let PLACES = [];        // flattened places with code + city
 const DETAIL = {};      // day-trip zoom-in areas (salzburg, lednice) -> {en, local, parent}
@@ -319,28 +347,33 @@ const placeBy = {};     // `${city}:${code}`
 
 function slideDeck() {
   const s = [];
-  s.push({ id: "intro", color: "--ink-2", view: () => fitLL([9.6, 46.6, 18.6, 51.6]), html: introHTML });
+  s.push({ id: "intro", color: "--ink-2", view: () => fitLL([11.5, 42.8, 19.5, 51.2]), html: introHTML });
   s.push({ id: "route", color: "--ink-2", view: () => fitPts(Object.values(CITIES).map(c => c.xy), 70), html: routeHTML });
-  const order = [["vienna", "vp", 1], ["prague", "pm", 2], ["munich", "mv", 3]];
+  s.push({ id: "calendar", color: "--ink-2", view: () => fitPts(Object.values(CITIES).map(c => c.xy), 70), html: calendarHTML });
+  const order = [["prague", "pv", 1], ["vienna", "vs", 2], ["split", null, 3]];
   for (const [city, leg, n] of order) {
     s.push({ id: city, city, color: `--${city}`, focus: ["A", "B", "C", "D"], view: () => fitPts(cityPts(city, ["A", "B", "C", "D"]), 60), html: () => cityHTML(city, n) });
     s.push({ id: `${city}-eat`, city, color: `--${city}`, focus: ["1", "2", "3", "C"], view: () => fitPts(cityPts(city, ["1", "2", "3", "C"]), 60), html: () => eatHTML(city) });
-    s.push({ id: `${city}-stay`, city, color: `--${city}`, focus: ["H1", "H2", "H3"], view: () => fitPts(cityPts(city, ["H1", "H2", "H3"]), 70, 2.6), html: () => stayHTML(city) });
+    s.push({ id: `${city}-stay`, city, color: `--${city}`, focus: ["H1", "H2", "H3"], view: () => { const pts = cityPts(city, ["H1", "H2", "H3"]); return pts.length ? fitPts(pts, 70, 2.6) : fitPts([CITIES[city].xy], 70, 4); }, html: () => stayHTML(city) });
     s.push({ id: `${city}-out`, city, color: `--${city}`, focus: ["T1", "T2", "T3", "T4"], view: () => fitPts([CITIES[city].xy, ...cityPts(city, ["T1", "T2", "T3", "T4"])], 70), html: () => outHTML(city) });
     for (const t of PLACES.filter(p => p.city === city && p.detail)) {
       const dc = t.detail;
       s.push({ id: dc, city: dc, side: `${city}-out`, color: `--${city}`, focus: ["A", "B", "C", "D"], view: () => fitPts(cityPts(dc, ["A", "B", "C", "D"]), 60), html: () => detailHTML(dc, t) });
     }
+    if (!leg) continue;
     s.push({ id: leg, leg, color: `--${LEGS[leg].from}`, color2: `--${LEGS[leg].to}`, view: () => fitPts(LEGS[leg].pts, 70), html: () => legHTML(leg, n) });
+    // stopovers on this leg (e.g. an evening in Zagreb between trains) follow the leg in the main flow
+    for (const [dc, d] of Object.entries(DETAIL)) if (d.stop === leg)
+      s.push({ id: dc, city: dc, color: `--${LEGS[leg].to}`, focus: ["A", "B", "C", "D", "1"], view: () => fitPts(cityPts(dc, ["A", "B", "C", "D", "1"]), 60), html: () => stopHTML(dc) });
   }
   s.push({ id: "in", color: "--ink-2", view: () => fitPts(Object.values(CITIES).map(c => c.xy), 70), html: wrapHTML });
   // human-readable names for the progress bar preview
-  const LBL = { intro: "Intro: the trip at a glance", route: "The route: one line across the map", in: "Next steps: so, are you in?" };
+  const LBL = { intro: "Intro: the trip at a glance", route: "The route: one line across the map", calendar: "Calendar: day by day", in: "Summary: travel times & costs" };
   const PART = { eat: "eat & drink", stay: "where to stay (Airbnbs)", out: "day trips & nature" };
   for (const sl of s) {
     if (LBL[sl.id]) sl.label = LBL[sl.id];
-    else if (sl.leg) { const L = LEGS[sl.leg]; sl.label = `Train: ${CITIES[L.from].en} → ${CITIES[L.to].en}${L.optional ? " (optional)" : ""}`; }
-    else if (DETAIL[sl.id]) sl.label = `Day trip zoom-in: ${DETAIL[sl.id].en}`;
+    else if (sl.leg) { const L = LEGS[sl.leg]; sl.label = `Train: ${CITIES[L.from].en} → ${CITIES[L.to].en}${L.optional ? " (optional)" : ""}${sl.leg === "vs" ? " (day train + sleeper)" : ""}`; }
+    else if (DETAIL[sl.id]) sl.label = DETAIL[sl.id].stop ? `Stopover: an evening in ${DETAIL[sl.id].en}` : `Day trip zoom-in: ${DETAIL[sl.id].en}`;
     else { const [c, part] = sl.id.split("-"); sl.label = `${CITIES[c].en}: ${PART[part] || "sights & historic neighborhoods"}`; }
   }
   return s;
@@ -351,17 +384,17 @@ const KIND = { regional: "Regional", splurge: "Splurge", cafe: "Café", world: "
 
 function introHTML() {
   return `<p class="eyebrow">Late August 2027 · about two weeks</p>
-  <h1>Wien <span class="arrow">→</span> Praha <span class="arrow">→</span> München</h1>
-  <p class="lede">Three old imperial capitals, each about four hours apart by train. Coffee houses, beer gardens, wine taverns and castles, with no flights or rental cars in between.</p>
-  <dl class="stats"><div><dt>Cities</dt><dd>3</dd></div><div><dt>Nights</dt><dd>13</dd></div><div><dt>Of us</dt><dd>11</dd></div><div><dt>On trains</dt><dd>~10 h</dd></div></dl>
+  <h1>Praha <span class="arrow">→</span> Wien <span class="arrow">→</span> Split</h1>
+  <p class="lede">Two old imperial capitals, then a sleeper train down to the Adriatic. Castles, coffee houses and wine taverns first, then sea, islands and old stone.</p>
+  <dl class="stats"><div><dt>Cities</dt><dd>3</dd></div><div><dt>Nights</dt><dd>13</dd></div><div><dt>Of us</dt><dd>11</dd></div><div><dt>Awake on trains</dt><dd>~10.5 h</dd></div></dl>
   <p class="hint">Press <kbd>→</kbd> or Next to fly through it. Drag, scroll or pinch the map anytime, and click pins for details.</p>`;
 }
 function routeHTML() {
   const stop = (c, extra) => `<li class="stop" style="--c:var(--${c})"><span class="node"></span><div><b>${CITIES[c].en}</b><span>${CITIES[c].nights} nights${extra ? " · " + extra : ""}</span></div></li>`;
   const ride = (t, opt) => `<li class="ride${opt ? " opt" : ""}"><div>${t}</div></li>`;
   return `<p class="eyebrow">The plan</p><h2>One line across the map</h2>
-  <p class="lede">Fly into Vienna, ride the rails west, fly home from Munich.</p>
-  <ol class="strip">${stop("vienna", "fly in to VIE")}${ride("Railjet · ~4 h")}${stop("prague")}${ride("Direct EC · ~5¾ h")}${stop("munich", "fly home from MUC")}${ride("optional: Railjet back to Vienna · ~4 h", true)}</ol>`;
+  <p class="lede">Fly into Prague, ride the rails south to the sea, fly home from Split.</p>
+  <ol class="strip">${stop("prague", "fly in to PRG")}${ride("Railjet · ~4 h")}${stop("vienna")}${ride("Day train to Zagreb · ~6.5 h, evening in Zagreb, sleeper to Split · overnight")}${stop("split", "fly home from SPU")}</ol>`;
 }
 function badge(p) {
   return `<span class="badge ${p.type}"><span>${p.label || p.code}</span></span>`;
@@ -387,6 +420,14 @@ function outHTML(city) {
   <h2>Day trips &amp; nature</h2>
   <p class="lede">Easy escapes when we want a break from the city. Times are from the main station.</p>
   <ul class="places">${trips.map(p => li({ ...p, kind: null }, `<p class="when"><span class="chip">${KINDT[p.type]}</span> ${esc(p.time)}</p>${p.detail ? `<p><a href="#${p.detail}" data-go="${p.detail}">Zoom into the map →</a></p>` : ""}${p.url ? `<p><a href="${esc(p.url)}" target="_blank" rel="noopener">See the tour ↗</a></p>` : ""}`)).join("")}</ul>`;
+}
+function stopHTML(dc) {
+  const d = DETAIL[dc];
+  const items = PLACES.filter(p => p.city === dc);
+  return `<p class="eyebrow"><span class="dot"></span>Stopover · ${esc(d.time)}</p>
+  <h2>${esc(d.local)}</h2>
+  <p class="lede">${esc(d.blurb)}</p>
+  <ul class="places">${items.map(p => li(p)).join("")}</ul>`;
 }
 function detailHTML(dc, trip) {
   const d = DETAIL[dc], parent = CITIES[d.parent];
@@ -430,21 +471,73 @@ function stayHTML(city) {
 }
 function legHTML(leg, n) {
   const L = LEGS[leg], B = BOARDS[leg], from = L.stations[0][0], to = L.stations[L.stations.length - 1][0];
-  const title = leg === "mv" ? "Home, or back to Vienna" : `${CITIES[L.from].en} to ${CITIES[L.to].en}`;
+  const title = leg === "mv" ? "Home, or back to Vienna" : leg === "vs" ? "Vienna to Split, by sleeper" : `${CITIES[L.from].en} to ${CITIES[L.to].en}`;
   return `<p class="eyebrow" style="--c:var(--${L.from})"><span class="dot"></span>Leg ${n}${L.optional ? " · optional" : ""} · ${from} → ${to}</p>
   <h2>${title}</h2>
-  <div class="board"><table><thead><tr><th>TIME</th><th>SERVICE</th><th>FREQ</th><th>FROM</th></tr></thead>
-  <tbody>${B.rows.map(r => `<tr><td class="t">${r[0]}</td><td class="op">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join("")}</tbody></table>
-  <div class="foot">APPROXIMATE · CHECK OEBB.AT · CD.CZ · BAHN.DE BEFORE BOOKING</div></div>
+  <div class="board"><table><thead><tr><th>TIME</th><th>SERVICE</th><th style="text-align:right">FROM</th></tr></thead>
+  <tbody>${B.rows.map(r => r[0] === "" ? `<tr class="opt"><td colspan="3">${r[1]}</td></tr>` : `<tr><td class="t">${r[0]}</td><td class="op">${r[1]}<span class="sub2">${r[2]}</span></td><td class="c">${r[3]}</td></tr>`).join("")}</tbody></table>
+  <div class="foot">APPROXIMATE · CHECK OEBB.AT · CD.CZ · HZPP.HR BEFORE BOOKING</div></div>
   <p class="via">Via ${B.via}</p>
   <p class="note" style="--c:var(--${L.to})">${B.stop}</p>`;
 }
+const SUMMARY = [
+  ["opt", "GETTING THERE"],
+  ["Fly in", "Home → Prague (PRG)", "depends on origin", "—"],
+  ["opt", "BETWEEN CITIES"],
+  ["4h 00", "Prague → Vienna · Railjet", "awake", "€20–40"],
+  ["6h 30", "Vienna → Zagreb · day train", "awake", "€30–50"],
+  ["~3h", "Evening in Zagreb", "dinner, old town", "—"],
+  ["~9h", "Zagreb → Split · sleeper", "asleep", "€40–70"],
+  ["total", "Train route: ~10.5 h awake + 1 night on the train", "", "€90–160"],
+  ["or", "Vienna → Split · flight 1h15 (skip Zagreb)", "", "€80–150"],
+  ["total", "Fly route: ~5.5 h of travel, plus a night in a hotel", "", "€100–190"],
+  ["opt", "GETTING HOME"],
+  ["Fly home", "Split (SPU) → home", "depends on origin", "—"],
+];
+// ---------- day-by-day calendar (example dates until we pick real ones) ----------
+const TRIP_START = new Date(2027, 7, 21); // Sat 21 Aug 2027
+const DAYS = [
+  { city: "prague", note: "Fly in to Prague" }, { city: "prague" }, { city: "prague" }, { city: "prague" },
+  { from: "prague", to: "vienna", go: "pv", train: "Railjet Prague → Vienna", time: "morning departure · about 4 h" },
+  { city: "vienna" }, { city: "vienna" }, { city: "vienna" },
+  { from: "vienna", to: "split", go: "vs", train: "Day train Vienna → Zagreb, evening in Zagreb, sleeper to Split", time: "morning departure · about 6.5 h awake, overnight on the sleeper" },
+  { city: "split", note: "Sleeper arrives early morning" }, { city: "split" }, { city: "split" }, { city: "split" },
+  { city: "split", note: "Fly home from Split" },
+];
+const WD = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+function dayDate(i) { const d = new Date(TRIP_START); d.setDate(d.getDate() + i); return d; }
+function calendarHTML() {
+  const first = dayDate(0), lead = (first.getDay() + 6) % 7; // Monday-first grid
+  const cells = [];
+  for (let k = 0; k < lead; k++) { const d = new Date(first); d.setDate(d.getDate() - lead + k); cells.push(`<div class="cd off"><span class="n">${d.getDate()}</span></div>`); }
+  DAYS.forEach((x, i) => {
+    const d = dayDate(i), n = d.getDate(), m = n === 1 || i === 0 ? ` ${MON[d.getMonth()]}` : "";
+    const go = x.go || x.city;
+    if (x.from) cells.push(`<button class="cd travel" data-go="${go}" style="--a:var(--${x.from});--b:var(--${x.to})" title="${esc(x.train)}"><span class="n">${n}${m}</span><span class="t">${CITIES[x.from].local.slice(0, 3)}→${CITIES[x.to].local.slice(0, 3)}</span></button>`);
+    else cells.push(`<button class="cd" data-go="${go}" style="--a:var(--${x.city})" title="${esc(CITIES[x.city].en + (x.note ? " · " + x.note : ""))}"><span class="n">${n}${m}</span><span class="t">${CITIES[x.city].local}</span>${x.note ? `<span class="i">${x.note.startsWith("Fly") ? "✈\uFE0E" : "•"}</span>` : ""}</button>`);
+  });
+  while (cells.length % 7) cells.push(`<div class="cd off"></div>`);
+  const fmt = d => `${WD[(d.getDay() + 6) % 7]} ${d.getDate()} ${MON[d.getMonth()]}`;
+  const travel = DAYS.map((x, i) => [x, dayDate(i)]).filter(([x]) => x.from || x.note);
+  const last = dayDate(DAYS.length - 1);
+  return `<p class="eyebrow">Example dates · ${fmt(first)} – ${fmt(last)}</p><h2>Day by day</h2>
+  <div class="cal">${WD.map(w => `<div class="wd">${w}</div>`).join("")}${cells.join("")}</div>
+  <h3 class="sub">Travel days</h3>
+  <ul class="trav">${travel.map(([x, d]) => `<li><b>${fmt(d)}</b><span>${x.from ? `${esc(x.train)}<br><span class="muted">${esc(x.time)}</span>` : esc(x.note)}</span></li>`).join("")}</ul>
+  <p class="note">Dates are a placeholder until we vote. Train times are typical departure windows; exact timetables come out a few months ahead. Flying Vienna → Split instead swaps the sleeper night for a 5th night in Vienna.</p>`;
+}
+
 function wrapHTML() {
-  return `<p class="eyebrow">Next steps</p><h2>So, are you in?</h2>
-  <p class="lede">If we lock it in this winter, the cheap train fares and the good Airbnbs are still there.</p>
-  <ul class="checks"><li>Pick exact dates in late August</li><li>Book flights: into Vienna, home from Munich</li>
-  <li>Book trains about two months out for saver fares (ÖBB Sparschiene, ČD, DB Sparpreis)</li><li>Vote on the Airbnb shortlist for each city</li></ul>
-  <p class="hint">Trains for all three legs come to roughly €60–120 per person when booked early.</p>`;
+  const rows = SUMMARY.map(r => r[0] === "opt" ? `<tr class="opt"><td colspan="3">${r[1]}</td></tr>`
+    : r[0] === "total" ? `<tr class="total"><td></td><td class="op">${r[1]}</td><td class="c">${r[3]}</td></tr>`
+    : r[0] === "or" ? `<tr class="opt"><td colspan="3">OR</td></tr><tr><td class="t">1h 15</td><td class="op">${r[1]}</td><td class="c">${r[3]}</td></tr>`
+    : `<tr><td class="t">${r[0]}</td><td class="op">${r[1]}${r[2] ? `<span class="sub2">${r[2]}</span>` : ""}</td><td class="c">${r[3]}</td></tr>`).join("");
+  return `<p class="eyebrow">The whole trip</p><h2>Times &amp; costs</h2>
+  <p class="lede">Every journey between cities, per person. Day trips are on each city's slides.</p>
+  <div class="board"><table><thead><tr><th>TIME</th><th>JOURNEY</th><th style="text-align:right">COST</th></tr></thead><tbody>${rows}</tbody></table>
+  <div class="foot">APPROXIMATE, BOOKED ~2 MONTHS AHEAD · SLEEPER PRICE IS A COUCHETTE</div></div>
+  <p class="hint">Next: pick dates, book the sleeper early (summer cabins sell out), and vote on the Airbnbs.</p>`;
 }
 
 // ---------- canvas + state ----------
@@ -460,7 +553,7 @@ function readTheme() {
   const g = n => cs.getPropertyValue(n).trim();
   C = { bg: g("--bg"), land: g("--land"), landHi: g("--land-hi"), border: g("--border"), water: g("--water"), green: g("--green"),
     road: g("--road"), casing: g("--casing"), building: g("--building"), rail: g("--rail"), ink: g("--ink"), ink2: g("--ink-2"),
-    vienna: g("--vienna"), prague: g("--prague"), munich: g("--munich"), halo: g("--land-hi") };
+    vienna: g("--vienna"), prague: g("--prague"), munich: g("--munich"), split: g("--split"), halo: g("--land-hi") };
   C.tram = g("--tram"); C.bus = g("--bus");
   for (const [k, d] of Object.entries(DETAIL)) C[k] = C[d.parent]; // day trips take their base city's color
   dirty = true;
@@ -491,7 +584,7 @@ function buildRegion(r) {
   S.riversMajor = new Path2D(); S.riversMinor = new Path2D();
   for (const rv of r.rivers) addAbs(rv.rank <= 5 ? S.riversMajor : S.riversMinor, rv.line, false);
 }
-const POLY = new Set(["wa", "gr", "bd"]);
+const POLY = new Set(["wa", "gr", "bd", "sea"]);
 function buildCity(name, c) {
   const paths = {};
   for (const [layer, items] of Object.entries(c.layers)) {
@@ -500,7 +593,7 @@ function buildCity(name, c) {
     paths[layer] = p;
   }
   const [ox, oy] = c.origin, [w, n, e, s] = c.bounds;
-  S.cities[name] = { origin: c.origin, paths, box: [ox + w / 1000, oy + n / 1000, ox + e / 1000, oy + s / 1000] };
+  S.cities[name] = { origin: c.origin, paths, bounds: c.bounds, box: [ox + w / 1000, oy + n / 1000, ox + e / 1000, oy + s / 1000] };
   dirty = true;
 }
 // ---------- transit lines ----------
@@ -526,7 +619,7 @@ let transitLoading = false;
 function ensureTransit() {
   if (transitLoading || !Object.values(TRANSIT).some(Boolean)) return;
   transitLoading = true;
-  for (const name of ["vienna", "prague", "munich"]) {
+  for (const name of Object.keys(CITIES)) {
     const load = () => S.cities[name] ? fetch(`data/transit_${name}.json?v=${DATA_V}`).then(r => r.json()).then(t => buildTransit(name, t)).catch(() => {}) : setTimeout(load, 400);
     load();
   }
@@ -647,6 +740,11 @@ function drawCity(name, alpha) {
   oc.clearRect(0, 0, off.width, off.height);
   oc.setTransform(dpr * s, 0, 0, dpr * s, dpr * (T.x + c.origin[0] * k), dpr * (T.y + c.origin[1] * k));
   oc.lineCap = "round"; oc.lineJoin = "round";
+  if (P2.sea) { // coastal map: land everywhere, then the sea cut from the real coastline
+    const [bw, bn, be, bs] = c.bounds;
+    oc.fillStyle = C.landHi; oc.fillRect(bw, bn, be - bw, bs - bn);
+    oc.fillStyle = C.water; oc.fill(P2.sea, "evenodd");
+  }
   oc.fillStyle = C.green; oc.fill(P2.gr);
   oc.fillStyle = C.water; oc.fill(P2.wa, "evenodd");
   oc.strokeStyle = C.water; oc.lineWidth = Math.max(1.5 * px, 12); oc.stroke(P2.wl);
@@ -680,6 +778,23 @@ function legAt(L, f) {
   return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
 }
 
+// flights drawn as dashed arcs: on their leg's slide, the route slide and the summary
+const FLIGHTS = [{ leg: "vs", from: "vienna", to: "split", label: "✈ 1h15" }];
+function drawFlights() {
+  const sl = slides[cur] || {};
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  for (const f of FLIGHTS) {
+    if (!(sl.leg === f.leg || sl.id === "route" || sl.id === "in")) continue;
+    const a = toS(CITIES[f.from].xy), b = toS(CITIES[f.to].xy);
+    const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = b[0] - a[0], dy = b[1] - a[1];
+    const cx = mx + dy * 0.22, cy = my - dx * 0.22; // bow the arc to one side of the rail line
+    ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.quadraticCurveTo(cx, cy, b[0], b[1]);
+    ctx.setLineDash([2, 7]); ctx.lineCap = "round"; ctx.lineWidth = 3; ctx.strokeStyle = C.ink2; ctx.globalAlpha = 0.9; ctx.stroke(); ctx.setLineDash([]);
+    const lx = 0.25 * a[0] + 0.5 * cx + 0.25 * b[0], ly = 0.25 * a[1] + 0.5 * cy + 0.25 * b[1];
+    text(f.label, lx, ly, { size: 12, weight: 600, fam: "--f-mono", color: C.ink2, align: "center", halo: 3.5 });
+    ctx.globalAlpha = 1;
+  }
+}
 function drawLegs(now) {
   const sl = slides[cur] || {}, k = T.k, cityFade = 1;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -854,7 +969,7 @@ function drawMarkers() {
 function draw(now) {
   hits = [];
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-  ctx.fillStyle = C.bg; ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.fillStyle = S.countries.length ? C.water : C.bg; ctx.fillRect(0, 0, cv.width, cv.height); // open sea between countries
   if (!S.countries.length) return;
   const k = T.k;
   ctx.setTransform(dpr * k, 0, 0, dpr * k, dpr * T.x, dpr * T.y);
@@ -883,6 +998,7 @@ function draw(now) {
   }
   ctx.globalAlpha = 1;
   drawLegs(now);
+  drawFlights();
   drawMarkers();
   drawPins();
   placePop();
@@ -1045,7 +1161,7 @@ addEventListener("hashchange", () => {
 cv.addEventListener("mousemove", ev => cv.classList.toggle("pointing", !!hitAt(ev)));
 
 // ---------- boot ----------
-const DATA_V = "13"; // bump when data files change so browsers don't reuse stale copies
+const DATA_V = "15"; // bump when data files change so browsers don't reuse stale copies
 async function boot() {
   readTheme(); resize();
   requestAnimationFrame(loop);
@@ -1058,7 +1174,7 @@ async function boot() {
   document.fonts && document.fonts.ready.then(() => { dirty = true; });
   ensureTransit(); syncTransitUI();
   readTheme();
-  for (const name of ["vienna", "prague", "munich", ...Object.keys(DETAIL)]) {
+  for (const name of [...Object.keys(CITIES), ...Object.keys(DETAIL)]) {
     fetch(`data/${name}.json?v=${DATA_V}`).then(r => r.json()).then(c => buildCity(name, c)).catch(() => {});
   }
 }

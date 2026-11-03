@@ -32,8 +32,14 @@ CITIES = {
     "bohemian": {"bbox": (50.85, 14.23, 50.9, 14.335), "core": (50.85, 14.23, 50.9, 14.335)},
     "starnberg": {"bbox": (47.935, 11.285, 48.005, 11.37), "core": (47.935, 11.285, 48.005, 11.37)},
     "partnach": {"bbox": (47.452, 11.08, 47.5, 11.145), "core": (47.452, 11.08, 47.5, 11.145)},
+    "split": {"bbox": (43.49, 16.395, 43.53, 16.47), "core": (43.502, 16.432, 43.513, 16.448)},
+    "trogir": {"bbox": (43.508, 16.232, 43.527, 16.268), "core": (43.514, 16.244, 43.52, 16.256)},
+    "hvar": {"bbox": (43.15, 16.365, 43.185, 16.46), "core": (43.168, 16.435, 43.176, 16.448)},
+    "krka": {"bbox": (43.79, 15.895, 43.875, 15.99), "core": (43.812, 15.918, 43.82, 15.93)},
+    "zagreb": {"bbox": (45.797, 15.955, 45.825, 15.992), "core": (45.805, 15.965, 45.818, 15.985)},
 }
 
+COASTAL = ["split", "trogir", "hvar"]
 OVERPASS = "https://overpass-api.de/api/interpreter"
 MIRRORS = ["https://overpass.private.coffee/api/interpreter"]
 
@@ -95,6 +101,10 @@ def main():
         time.sleep(5)
         get(OVERPASS, RAW / "osm" / f"{city}_buildings.json", method="POST", data={"data": building_query(c["core"])})
         time.sleep(5)
+
+    for city in COASTAL:  # the sea is mapped as coastline lines, not water areas
+        q = f'[out:json][timeout:240];way["natural"="coastline"]({bb(CITIES[city]["bbox"])});out geom;'
+        get(OVERPASS, RAW / "osm" / f"{city}_coast.json", method="POST", data={"data": q})
 
     places = json.loads((ROOT / "build" / "places.json").read_text())
     geo_path = RAW / "geocode.json"

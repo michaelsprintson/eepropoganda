@@ -199,101 +199,6 @@
    }
   ]
  },
- "munich": {
-  "food": [
-   {
-    "name": "Augustiner-Keller",
-    "q": "Augustiner-Keller, Arnulfstraße 52, München",
-    "kind": "regional",
-    "tag": "Beer garden",
-    "blurb": "5,000 seats under chestnut trees, beer from wooden barrels, half a roast chicken. A late-summer must.",
-    "url": "https://www.augustinerkeller.de"
-   },
-   {
-    "name": "Wirtshaus in der Au",
-    "q": "Wirtshaus in der Au, Lilienstraße 51, München",
-    "kind": "regional",
-    "tag": "Bavarian",
-    "blurb": "A Bavarian tavern known for its dumplings. They also run dumpling cooking classes.",
-    "url": "https://wirtshausinderau.de/de/feste-feiern/knoedelkochkurs/"
-   },
-   {
-    "name": "Meraki",
-    "q": "meraki, Braystraße 22, München",
-    "kind": "world",
-    "tag": "Greek",
-    "blurb": "Greek cooking in Haidhausen, across the Isar from the old town."
-   },
-   {
-    "name": "Indian Village",
-    "q": "Indian Village, Feldmochinger Straße 226, München",
-    "kind": "world",
-    "tag": "Indian",
-    "blurb": "Indian cooking out in Fasanerie, in the north of the city. Best paired with a trip out that way."
-   }
-  ],
-  "cafe": {
-   "name": "Café Frischhut",
-   "q": "Café Frischhut, Prälat-Zistl-Straße 8, München",
-   "kind": "cafe",
-   "tag": "Schmalznudel",
-   "blurb": "One thing on the menu: fried dough, hot from the pan, next to the Viktualienmarkt. Opens early.",
-   "url": null
-  },
-  "sights": [
-   {
-    "name": "Marienplatz & Viktualienmarkt",
-    "q": "Marienplatz, München",
-    "blurb": "The Glockenspiel at 11, then graze the market stalls."
-   },
-   {
-    "name": "Nymphenburg Palace",
-    "q": "Schloss Nymphenburg, München",
-    "blurb": "Baroque palace with huge gardens. Rent a gondola on the canal."
-   },
-   {
-    "name": "Asamkirche",
-    "q": "Asamkirche, Sendlinger Straße, München",
-    "blurb": "A tiny late-baroque church packed floor to ceiling with gold, stucco and frescoes, squeezed between townhouses on Sendlinger Straße."
-   }
-  ],
-  "trips": [
-   {
-    "name": "Lake Starnberg",
-    "q": "Starnberg Bahnhof See",
-    "kind": "nature",
-    "time": "30 min by S-Bahn S6",
-    "blurb": "Swim, paddle or ride a steamer across a lake with the Alps on the horizon.",
-    "detail": "starnberg"
-   },
-   {
-    "name": "Neuschwanstein",
-    "q": "Schloss Neuschwanstein",
-    "kind": "daytrip",
-    "time": "2 h by train + bus",
-    "blurb": "The fairy-tale castle above the Alpsee. Book timed tickets well ahead.",
-    "detail": "neuschwanstein"
-   },
-   {
-    "name": "Partnach Gorge",
-    "q": "Partnachklamm",
-    "kind": "nature",
-    "time": "1 h 20 by train to Garmisch",
-    "blurb": "A roaring gorge cut into the limestone, with the Zugspitze above it.",
-    "guide": "https://www.moonhoneytravel.com/partnach-gorge-hike/",
-    "guideLabel": "Hike guide",
-    "detail": "partnach"
-   },
-   {
-    "name": "Salzburg",
-    "q": "Mozarts Geburtshaus, Salzburg",
-    "kind": "daytrip",
-    "time": "1 h 30 by train, or stop on the way back to Vienna",
-    "detail": "salzburg",
-    "blurb": "Mozart's baroque hometown under a clifftop fortress, right across the Austrian border."
-   }
-  ]
- },
  "lednice": {
   "detail": true,
   "parent": "vienna",
@@ -319,62 +224,6 @@
     "name": "Colonnade on Reistna",
     "q": "Kolonáda na Reistně",
     "blurb": "A hilltop colonnade above Valtice with views over the vineyards toward Austria."
-   }
-  ]
- },
- "salzburg": {
-  "detail": true,
-  "parent": "munich",
-  "local": "Salzburg",
-  "en": "Salzburg",
-  "sights": [
-   {
-    "name": "Getreidegasse & Mozart's birthplace",
-    "q": "Mozarts Geburtshaus, Salzburg",
-    "blurb": "The old-town shopping street with wrought-iron signs, and the yellow house where Mozart was born."
-   },
-   {
-    "name": "Hohensalzburg Fortress",
-    "q": "Festung Hohensalzburg",
-    "blurb": "One of Europe's largest medieval castles. Take the funicular up for the view."
-   },
-   {
-    "name": "Mirabell Gardens",
-    "q": "Mirabellgarten, Salzburg",
-    "blurb": "Formal baroque gardens with the fortress framed behind the fountains."
-   },
-   {
-    "name": "Augustiner Bräu Mülln",
-    "q": "Augustiner Bräu Kloster Mülln",
-    "blurb": "A monastery brewery with a huge chestnut-shaded beer garden. Beer poured from wooden barrels into stone mugs."
-   }
-  ]
- },
- "neuschwanstein": {
-  "detail": true,
-  "parent": "munich",
-  "local": "Neuschwanstein",
-  "en": "Neuschwanstein",
-  "sights": [
-   {
-    "name": "Neuschwanstein Castle",
-    "q": "Schloss Neuschwanstein",
-    "blurb": "King Ludwig II's fairy-tale castle on a crag above the gorge. Inside visits are by timed ticket only."
-   },
-   {
-    "name": "Marienbrücke",
-    "q": "Marienbrücke, Schwangau",
-    "blurb": "The iron footbridge over the Pöllat gorge with the classic postcard view of the castle."
-   },
-   {
-    "name": "Hohenschwangau Castle",
-    "q": "Schloss Hohenschwangau",
-    "blurb": "The yellow castle where Ludwig grew up, on the hill facing Neuschwanstein."
-   },
-   {
-    "name": "Alpsee",
-    "q": "Alpsee, Schwangau",
-    "blurb": "A clear mountain lake right below the castles. Rent a rowboat or swim from the beach."
    }
   ]
  },
@@ -541,59 +390,192 @@
    }
   ]
  },
- "starnberg": {
-  "detail": true,
-  "parent": "munich",
-  "local": "Lake Starnberg",
-  "en": "Lake Starnberg",
+ "split": {
+  "food": [
+   {
+    "name": "Konoba Fetivi",
+    "q": "Konoba Fetivi, Split",
+    "kind": "regional",
+    "tag": "Dalmatian",
+    "blurb": "A small family konoba in Veli Varoš serving the day's catch, grilled simply with olive oil and blitva."
+   },
+   {
+    "name": "Konoba Matejuška",
+    "q": "Konoba Matejuška, Split",
+    "kind": "regional",
+    "tag": "Seafood",
+    "blurb": "A tiny place by the old fishermen's harbor. Order the fish of the day and the octopus."
+   },
+   {
+    "name": "Bokeria Kitchen & Wine",
+    "q": "Bokeria, Domaldova, Split",
+    "kind": "world",
+    "tag": "Mediterranean",
+    "blurb": "A lively market-style restaurant just outside the palace walls, with a long Croatian wine list."
+   }
+  ],
+  "cafe": {
+   "name": "Café Luxor",
+   "q": "Luxor, Peristil, Split",
+   "kind": "cafe",
+   "tag": "Inside the palace",
+   "blurb": "Coffee on cushions on the steps of Diocletian's Peristyle, surrounded by 1,700-year-old columns."
+  },
   "sights": [
    {
-    "name": "Starnberg lakefront",
-    "q": "Seepromenade, Starnberg",
-    "blurb": "Step off the S-Bahn onto the promenade. Boats leave from here for the round-the-lake trip."
+    "name": "Diocletian's Palace & Peristyle",
+    "q": "Peristil, Split",
+    "blurb": "A Roman emperor's retirement palace that the whole old town now lives inside. Climb the cathedral bell tower."
    },
    {
-    "name": "Roseninsel",
-    "q": "Roseninsel, Feldafing",
-    "blurb": "King Ludwig's little island hideaway with a rose garden, reached by a tiny ferry."
+    "name": "Riva promenade",
+    "q": "Riva, Split",
+    "blurb": "The palm-lined waterfront where all of Split strolls at sunset."
    },
    {
-    "name": "Possenhofen Castle",
-    "q": "Schloss Possenhofen",
-    "blurb": "Empress Sisi's childhood summer home, next to a lakeside park and swimming spot."
+    "name": "Marjan Hill",
+    "q": "Marjan, Split",
+    "blurb": "A forested peninsula park with viewpoints, chapels and quiet swimming coves."
    },
    {
-    "name": "Votive Chapel, Berg",
-    "q": "Votivkapelle Berg",
-    "blurb": "A chapel on the shore where King Ludwig II drowned, with a cross standing in the water."
+    "name": "Bačvice beach",
+    "q": "Bačvice, Split",
+    "blurb": "Shallow sandy town beach, home of picigin, the local splash-ball game."
+   }
+  ],
+  "trips": [
+   {
+    "name": "Trogir",
+    "q": "Katedrala sv. Lovre, Trogir",
+    "kind": "daytrip",
+    "time": "30 min by bus",
+    "detail": "trogir",
+    "blurb": "A UNESCO-listed medieval town on a tiny island, all stone lanes, palaces and a waterfront fortress."
+   },
+   {
+    "name": "Hvar",
+    "q": "Trg svetog Stjepana, Hvar",
+    "kind": "daytrip",
+    "time": "1 h by catamaran",
+    "detail": "hvar",
+    "blurb": "The island town with a hilltop fortress, lavender fields and boat trips to the Pakleni islands."
+   },
+   {
+    "name": "Krka National Park",
+    "q": "Skradinski buk",
+    "kind": "nature",
+    "time": "1 h 15 by bus",
+    "detail": "krka",
+    "blurb": "A river of turquoise waterfalls and travertine terraces, explored on boardwalks and by boat."
    }
   ]
  },
- "partnach": {
+ "trogir": {
   "detail": true,
-  "parent": "munich",
-  "local": "Garmisch-Partenkirchen",
-  "en": "Garmisch-Partenkirchen",
+  "parent": "split",
+  "local": "Trogir",
+  "en": "Trogir",
   "sights": [
    {
-    "name": "Partnach Gorge",
-    "q": "Partnachklamm",
-    "blurb": "The trail runs through tunnels cut into the rock beside the roaring water."
+    "name": "Cathedral of St. Lawrence",
+    "q": "Katedrala sv. Lovre, Trogir",
+    "blurb": "Its Romanesque portal by Master Radovan is one of the finest carvings on the Adriatic. Climb the tower."
    },
    {
-    "name": "Olympic Ski Stadium",
-    "q": "Olympia-Skistadion Garmisch-Partenkirchen",
-    "blurb": "The giant ski jump at the trailhead, home of the New Year's jump."
+    "name": "Kamerlengo Fortress",
+    "q": "Tvrđava Kamerlengo, Trogir",
+    "blurb": "A 15th-century Venetian fortress at the tip of the island, with walls you can walk."
    },
    {
-    "name": "Eckbauer cable car",
-    "q": "Eckbauerbahn",
-    "blurb": "Ride up and walk down to the gorge for a gentler loop with Alpine views."
+    "name": "Trogir waterfront",
+    "q": "Obala bana Berislavića, Trogir",
+    "blurb": "The palm-lined riva facing Čiovo, lined with cafés and yachts."
+   }
+  ]
+ },
+ "hvar": {
+  "detail": true,
+  "parent": "split",
+  "local": "Hvar",
+  "en": "Hvar",
+  "sights": [
+   {
+    "name": "Fortica fortress",
+    "q": "Tvrđava Fortica, Hvar",
+    "blurb": "A short climb through pine trees to the fortress above town, with the best view of the islands."
    },
    {
-    "name": "Ludwigstraße, Partenkirchen",
-    "q": "Ludwigstraße, Garmisch-Partenkirchen",
-    "blurb": "A street of painted Bavarian houses and beer halls for after the hike."
+    "name": "St. Stephen's Square",
+    "q": "Trg svetog Stjepana, Hvar",
+    "blurb": "One of the largest squares in Dalmatia, running from the cathedral down to the harbor."
+   },
+   {
+    "name": "Pakleni islands",
+    "q": "Pakleni otoci",
+    "blurb": "Water taxis from the harbor go to pine-covered islets with beach bars and clear water."
+   }
+  ]
+ },
+ "krka": {
+  "detail": true,
+  "parent": "split",
+  "local": "Krka National Park",
+  "en": "Krka National Park",
+  "sights": [
+   {
+    "name": "Skradinski buk",
+    "q": "Skradinski buk",
+    "blurb": "The park's biggest cascade: 17 travertine steps, circled by a boardwalk loop (swimming is no longer allowed)."
+   },
+   {
+    "name": "Skradin",
+    "q": "Skradin",
+    "blurb": "A little riverside town where the park boats leave from. Good for lunch."
+   },
+   {
+    "name": "Visovac monastery",
+    "q": "Visovac",
+    "blurb": "A Franciscan monastery on a tiny island in the river, reached on the boat tour."
+   }
+  ]
+ },
+ "zagreb": {
+  "detail": true,
+  "parent": "vienna",
+  "stop": "vs",
+  "local": "Zagreb",
+  "en": "Zagreb",
+  "time": "An evening between trains",
+  "blurb": "The day train gets in with time to spare before the sleeper, so we get an evening in the old town. Everything below is a short walk from the station.",
+  "sights": [
+   {
+    "name": "Upper Town & St. Mark's Church",
+    "q": "Crkva sv. Marka, Zagreb",
+    "blurb": "Cobbled Gornji Grad and the church with the tiled coat-of-arms roof."
+   },
+   {
+    "name": "Lotrščak Tower & funicular",
+    "q": "Kula Lotrščak, Zagreb",
+    "blurb": "Ride one of the world's shortest funiculars up to the tower and its view over the city."
+   },
+   {
+    "name": "Museum of Broken Relationships",
+    "q": "Muzej prekinutih veza, Zagreb",
+    "blurb": "Objects left behind by ended relationships, each with its story. Funny and moving. Check the closing time."
+   },
+   {
+    "name": "Tkalčićeva street",
+    "q": "Tkalčićeva ulica, Zagreb",
+    "blurb": "The café-and-bar street below the Upper Town, for a drink before the night train."
+   }
+  ],
+  "food": [
+   {
+    "name": "La Štruk",
+    "q": "La Štruk, Skalinska, Zagreb",
+    "kind": "regional",
+    "tag": "Zagorje štrukli",
+    "blurb": "A whole menu of štrukli, the baked cheese pastry Zagreb is proud of, in a little courtyard off Tkalčićeva."
    }
   ]
  }

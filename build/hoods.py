@@ -20,6 +20,10 @@ R, ORIGIN = 6378.137, (14.0, 49.0)
 
 # (south, west, north, east) search area, then each neighborhood: display name, OSM names to merge, blurb
 HOODS = {
+    "split": {"bbox": (43.495, 16.40, 43.52, 16.46), "hoods": [
+        ("Grad", ["Gradski kotar Grad"], "The old town inside and around Diocletian's Palace: Roman walls, the Peristyle and the cathedral."),
+        ("Varoš", ["Gradski kotar Varoš"], "The old fishermen's and farmers' quarter climbing toward Marjan, all stone houses and stairways."),
+    ]},
     "vienna": {"bbox": (48.17, 16.32, 48.23, 16.40), "hoods": [
         ("Innere Stadt", ["Innere Stadt"], "The old town inside the Ringstraße: UNESCO World Heritage, the cathedral, palaces and coffee houses."),
         ("Neubau & Spittelberg", ["Neubau"], "Cobbled Biedermeier lanes at Spittelberg, plus design shops, bars and cafés."),

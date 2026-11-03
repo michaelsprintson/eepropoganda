@@ -11,7 +11,7 @@ import json
 import math
 import pathlib
 
-from shapely.geometry import LineString, Polygon, MultiPolygon, MultiLineString, GeometryCollection, box, shape
+from shapely.geometry import LineString, Point, Polygon, MultiPolygon, MultiLineString, GeometryCollection, box, shape
 from shapely.ops import polygonize, linemerge, unary_union, transform
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -38,6 +38,11 @@ CITY_BOXES = {  # (west, south, east, north), matches fetch.py
     "bohemian": ((14.23, 50.85, 14.335, 50.9), (14.23, 50.85, 14.335, 50.9)),
     "starnberg": ((11.285, 47.935, 11.37, 48.005), (11.285, 47.935, 11.37, 48.005)),
     "partnach": ((11.08, 47.452, 11.145, 47.5), (11.08, 47.452, 11.145, 47.5)),
+    "split": ((16.395, 43.49, 16.47, 43.53), (16.432, 43.502, 16.448, 43.513)),
+    "trogir": ((16.232, 43.508, 16.268, 43.527), (16.244, 43.514, 16.256, 43.52)),
+    "hvar": ((16.365, 43.15, 16.46, 43.185), (16.435, 43.168, 16.448, 43.176)),
+    "krka": ((15.895, 43.79, 15.99, 43.875), (15.918, 43.812, 15.93, 43.82)),
+    "zagreb": ((15.955, 45.797, 15.992, 45.825), (15.965, 45.805, 15.985, 45.818)),
 }
 
 
@@ -190,6 +195,43 @@ TOL = {"r1": 2.0, "r2": 2.0, "r3": 2.5, "rl": 3.0, "wl": 3.0, "wa": 2.0, "gr": 3
 MIN_AREA = {"wa": 100, "gr": 400, "bd": 15}
 
 
+def sea_polygons(elements, proj, clip):
+    """OSM maps the sea as coastline ways with land on their left. Cut the map box along the
+    coastline and keep the pieces that lie to the right of it."""
+    lines = []
+    for el in elements:
+        pts = [proj(n["lon"], n["lat"]) for n in el.get("geometry", []) if n]
+        if len(pts) >= 2:
+            lines.append(LineString(pts))
+    if not lines:
+        return []
+    cut = unary_union(lines).intersection(clip)
+    pieces = list(polygonize(unary_union([cut, clip.exterior])))
+    out = []
+    for poly in pieces:
+        sea = None
+        for line in iter_parts(cut):
+            if not isinstance(line, LineString):
+                continue
+            cs = list(line.coords)
+            for (x0, y0), (x1, y1) in zip(cs, cs[1:]):
+                mx, my = (x0 + x1) / 2, (y0 + y1) / 2
+                if poly.boundary.distance(Point(mx, my)) > 0.5:
+                    continue
+                L = math.hypot(x1 - x0, y1 - y0) or 1
+                # sea lies to the right of the coastline; our y axis points down, which mirrors left and right
+                rx, ry = mx - (y1 - y0) / L * 3, my + (x1 - x0) / L * 3
+                sea = poly.contains(Point(rx, ry))
+                break
+            if sea is not None:
+                break
+        if sea:
+            g = poly.simplify(2.0)
+            if g.area > 200:
+                out.append([flat_delta(g.exterior.coords)] + [flat_delta(i.coords) for i in g.interiors if i.length > 30])
+    return out
+
+
 def city(name):
     full, core = CITY_BOXES[name]
     cx, cy = merc((full[0] + full[2]) / 2, (full[1] + full[3]) / 2)
@@ -222,6 +264,9 @@ def city(name):
                     layers[layer].append([flat_delta(part.exterior.coords)] + [flat_delta(i.coords) for i in part.interiors if i.length > 30])
                 elif isinstance(part, LineString) and part.length > 5:
                     layers[layer].append(flat_delta(part.coords))
+    coast = RAW / "osm" / f"{name}_coast.json"
+    if coast.exists():
+        layers["sea"] = sea_polygons(json.loads(coast.read_text())["elements"], proj, clip_full)
     ox, oy = cx - OX, cy - OY
     w, s = proj(full[0], full[1])
     e, n = proj(full[2], full[3])
