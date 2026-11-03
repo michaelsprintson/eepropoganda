@@ -27,6 +27,7 @@
   --vienna: #c9920c;
   --prague: #c23a2e;
   --split: #12857f;
+  --zagreb: #b8478a;
   --tram: #d4483c;
   --bus: #7d5cc0;
   --board: #15191c;
@@ -43,14 +44,14 @@
     --bg: #0b1114; --land: #172026; --land-hi: #1e2930; --border: #3a4952; --water: #173343;
     --green: #1b2d24; --road: #3b4850; --casing: #10171b; --building: #283239; --rail: #6d7b82;
     --ink: #e7ecec; --ink-2: #9ba8ae; --panel: rgba(20, 27, 32, 0.94); --line: #2b373e; --chip: #222d33;
-    --vienna: #f0b630; --prague: #e8584c; --split: #2fb8b0; --tram: #f06a5c; --bus: #a98be6; color-scheme: dark;
+    --vienna: #f0b630; --prague: #e8584c; --split: #2fb8b0; --zagreb: #e07cb6; --tram: #f06a5c; --bus: #a98be6; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0b1114; --land: #172026; --land-hi: #1e2930; --border: #3a4952; --water: #173343;
   --green: #1b2d24; --road: #3b4850; --casing: #10171b; --building: #283239; --rail: #6d7b82;
   --ink: #e7ecec; --ink-2: #9ba8ae; --panel: rgba(20, 27, 32, 0.94); --line: #2b373e; --chip: #222d33;
-  --vienna: #f0b630; --prague: #e8584c; --split: #2fb8b0; --tram: #f06a5c; --bus: #a98be6; color-scheme: dark;
+  --vienna: #f0b630; --prague: #e8584c; --split: #2fb8b0; --zagreb: #e07cb6; --tram: #f06a5c; --bus: #a98be6; color-scheme: dark;
 }
 html, body { height: 100%; overflow: hidden; }
 [hidden] { display: none !important; }
@@ -64,7 +65,7 @@ canvas#map.pointing { cursor: pointer; }
 canvas#map:active { cursor: grabbing; }
 
 #panel {
-  position: fixed; top: calc(16px + env(safe-area-inset-top, 0px)); left: var(--gl); bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  position: fixed; top: calc(70px + env(safe-area-inset-top, 0px)); left: var(--gl); bottom: calc(84px + env(safe-area-inset-bottom, 0px));
   width: min(400px, calc(100vw - 32px)); display: flex; flex-direction: column; justify-content: flex-start;
   pointer-events: none; z-index: 5;
 }
@@ -223,7 +224,6 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .calpanel .x:hover { background: var(--chip); }
 .calpanel .cd { min-height: 58px; }
 /* planner */
-.pl-top { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin: 0 0 10px; }
 .fld { display: grid; gap: 4px; font-size: 13px; margin: 0 0 10px; }
 .fld > span { font: 600 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
 .fld.inline { display: flex; align-items: center; gap: 8px; margin: 0; }
@@ -234,15 +234,8 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .seg span { padding: 0 10px; font: 600 10.5px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
 .seg button { font: 600 13px var(--f-body); border: 0; border-left: 1px solid var(--line); background: none; color: var(--ink); padding: 7px 12px; cursor: pointer; }
 .seg button.on { background: var(--ink); color: var(--panel); }
-.steps { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 12px; }
-.step { display: inline-flex; align-items: center; gap: 6px; padding: 4px 6px 4px 10px; border: 1px solid var(--line); border-left: 3px solid var(--c); border-radius: 5px; font-size: 13px; }
-.step .sw { display: none; }
-.step .nv { min-width: 1.4em; text-align: center; font: 600 14px var(--f-mono); font-variant-numeric: tabular-nums; }
 .sb { width: 28px; height: 28px; border: 1px solid var(--line); border-radius: 4px; background: var(--chip); color: var(--ink); font-size: 16px; line-height: 1; cursor: pointer; }
 .sb:hover { border-color: var(--ink-2); }
-.step.total { border-left: 3px solid var(--ink); }
-.step.total .end { font: 500 11.5px var(--f-mono); color: var(--ink-2); margin-left: 2px; padding-right: 4px; }
-.steps .tot { margin-left: auto; font: 600 11px var(--f-mono); color: var(--ink-2); letter-spacing: .04em; }
 .cal.planner .cd { min-height: 62px; padding-bottom: 6px; }
 .cd.sel { box-shadow: 0 0 0 2px var(--ink); }
 .cd.drop-ok { box-shadow: 0 0 0 2px var(--ink), inset 0 0 0 999px color-mix(in srgb, var(--ink) 10%, transparent); }
@@ -322,6 +315,112 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 #viewer.loading .vload { opacity: .85; }
 .thumb[src], #pop .ph, #pop .phs img { cursor: zoom-in; }
 
+/* menu bar: a menu per city, like a desktop app's */
+#menubar { position: fixed; top: calc(16px + env(safe-area-inset-top, 0px)); left: var(--gl); z-index: 8; display: flex; align-items: center; }
+.mbitems { display: flex; height: 44px; align-items: stretch; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 4px 16px rgba(10,20,25,.12); padding: 0 4px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.mbt { font: 600 14px var(--f-body); color: var(--ink); background: none; border: 0; padding: 0 12px; margin: 4px 0; cursor: pointer; position: relative; border-radius: 4px; }
+.mbt::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 3px; height: 3px; border-radius: 2px; background: var(--c); opacity: .25; }
+.mbt.cur::after { opacity: 1; }
+.mbt:hover, .mbt.open { background: var(--chip); }
+.mbt:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+.mbburger { display: none; }
+#menubar.compact .mbitems { display: none; }
+#menubar.compact .mbburger { display: inline-flex; }
+.mbmenu { position: fixed; top: calc(66px + env(safe-area-inset-top, 0px)); width: 320px; max-width: calc(100vw - 16px); max-height: calc(100vh - 100px); max-height: calc(100dvh - 100px); overflow-y: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 14px 40px rgba(10,20,25,.28); padding: 6px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+#menubar.compact .mbmenu { left: var(--gl); right: var(--gr); width: auto; max-width: 460px; }
+.mi { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; font: 500 13.5px var(--f-body); color: var(--ink); background: none; border: 0; border-radius: 4px; padding: 5px 8px; cursor: pointer; min-height: 34px; }
+.mi:hover, .mi:focus-visible { background: var(--chip); outline: none; }
+.mi:disabled { opacity: .45; cursor: default; }
+.mi.sec { font: 600 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); margin-top: 6px; justify-content: space-between; min-height: 28px; }
+.mrow { display: flex; align-items: center; }
+.mrow .mi:first-child { flex: 1; min-width: 0; }
+.mi .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.mi .when { font: 500 10.5px var(--f-mono); color: var(--ink-2); white-space: nowrap; }
+.mi.side { width: 34px; flex: none; justify-content: center; padding: 5px 0; opacity: .5; }
+.mi.side.on, .mi.side:hover, .mi.side:focus-visible { opacity: 1; }
+.mi .ck { width: 14px; font-weight: 700; }
+.mi .badge, .pchip .badge, .pinl .badge, .lostl .badge, .itin .badge { width: 20px; height: 20px; font-size: 12px; flex: none; margin: 0; }
+.mbmenu details summary { font: 700 16px var(--f-display); padding: 8px 8px 8px 10px; cursor: pointer; border-left: 3px solid var(--c); margin: 4px 0; }
+.mbmenu details[open] summary { background: var(--chip); border-radius: 0 4px 4px 0; }
+
+/* planner settings: one row per setting, labels in a column */
+.pset { border: 1px solid var(--line); border-radius: 6px; margin: 0 0 12px; overflow: hidden; }
+.psum { display: flex; width: 100%; justify-content: space-between; gap: 10px; align-items: center; background: var(--chip); border: 0; padding: 9px 12px; font: 600 12px var(--f-mono); color: var(--ink); cursor: pointer; text-align: left; }
+.psum em { font-style: normal; color: var(--ink-2); font-weight: 500; white-space: nowrap; }
+.prow { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 10px; align-items: center; padding: 9px 12px; border-top: 1px solid var(--line); }
+.prow.wide { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+.prow .lab { font: 600 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.prow .lab em { font: 500 11px var(--f-body); letter-spacing: 0; text-transform: none; font-style: normal; margin-left: 6px; }
+.prow .ctl { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-width: 0; }
+.prow input[type=date] { font: inherit; font-size: 14px; color: var(--ink); background: var(--chip); border: 1px solid var(--line); border-radius: 5px; padding: 5px 8px; }
+.prow .end { font: 500 11.5px var(--f-mono); color: var(--ink-2); }
+.stp { display: inline-flex; align-items: center; gap: 6px; }
+.stp .nv { min-width: 1.5em; text-align: center; font: 600 14px var(--f-mono); font-variant-numeric: tabular-nums; }
+.seg2 { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; width: 100%; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg2 button { font: 600 13px var(--f-body); border: 0; background: none; color: var(--ink); padding: 7px 10px; cursor: pointer; }
+.seg2 button + button { border-left: 1px solid var(--line); }
+.seg2 button.on { background: var(--ink); color: var(--panel); }
+.cells { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 6px; }
+.nc { display: grid; gap: 4px; justify-items: start; align-content: start; padding: 6px 8px 7px; border: 1px solid var(--line); border-top: 3px solid var(--c); border-radius: 5px; min-width: 0; font-size: 13px; }
+.nc .sb { width: 24px; height: 24px; font-size: 14px; }
+.nc select { width: 100%; font: inherit; font-size: 12px; color: var(--ink); background: var(--chip); border: 1px solid var(--line); border-radius: 4px; padding: 3px 2px; }
+.nc small { font-size: 10.5px; color: var(--ink-2); }
+
+/* calendar cells: the day's pins as little badges */
+.cd .pr { display: flex; gap: 2px; flex-wrap: wrap; margin-top: 2px; }
+.cd .pb { font: 700 9.5px var(--f-display); font-style: normal; min-width: 15px; height: 15px; padding: 0 2px; border-radius: 3px; background: var(--c); color: #fff; display: inline-grid; place-items: center; }
+
+/* the selected day, in the planner */
+.dayv { border: 1px solid var(--line); border-top: 3px solid var(--a); border-radius: 6px; padding: 10px 12px; margin: 0 0 8px; background: color-mix(in srgb, var(--chip) 60%, transparent); }
+.dayv .dh { display: grid; grid-template-columns: 30px 1fr 30px; gap: 8px; align-items: center; margin-bottom: 8px; }
+.dayv .dh b { font: 600 14px var(--f-mono); display: block; }
+.dayv .dh span { font-size: 12px; color: var(--ink-2); }
+.dayv h4 { font: 600 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); margin: 8px 0 6px; display: flex; justify-content: space-between; }
+.ib { width: 28px; height: 28px; flex: none; border: 1px solid var(--line); border-radius: 4px; background: var(--panel); color: var(--ink); cursor: pointer; font-size: 14px; line-height: 1; }
+.ib:disabled { opacity: .35; cursor: default; }
+.pinl, .lostl { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 4px; }
+.pinl li, .lostl li { display: flex; align-items: center; gap: 6px; font-size: 13.5px; }
+.pinl .nm, .lostl li > span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.add summary { cursor: pointer; font: 600 13px var(--f-body); margin: 4px 0 8px; }
+.pkg { border-left: 3px solid var(--c); padding-left: 8px; margin: 0 0 10px; }
+.pkh { font: 700 15px var(--f-display); display: block; margin-bottom: 4px; }
+.pk { margin: 0 0 6px; }
+.pkl { font: 600 10px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); display: block; margin-bottom: 4px; }
+.pkc { display: flex; flex-wrap: wrap; gap: 4px; }
+.pchip { display: inline-flex; align-items: center; gap: 5px; font: 500 12.5px var(--f-body); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 2px 9px 2px 3px; cursor: pointer; max-width: 100%; }
+.pchip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pchip.on { background: var(--ink); color: var(--panel); border-color: var(--ink); }
+.pchip:disabled { opacity: .4; cursor: default; }
+.pchip.in { font-size: 11.5px; }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) 120px; gap: 8px; }
+.dact { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* a day's route, on the card */
+.itin { list-style: none; margin: 4px 0 12px; padding: 0; }
+.itin .st { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: center; padding: 3px 4px; margin: 0 -4px; border-radius: 4px; }
+.itin .st[data-p] { cursor: pointer; }
+.itin .st[data-p]:hover, .itin .st[data-p]:focus-visible { background: var(--chip); outline: none; }
+.itin .st .mk { display: grid; place-items: center; }
+.itin .st b { font-weight: 600; display: block; line-height: 1.25; }
+.itin .st small { color: var(--ink-2); font-size: 12px; }
+.itin .hub { width: 24px; height: 24px; border: 2px solid var(--ink); border-radius: 5px; display: grid; place-items: center; font-size: 13px; font-weight: 700; background: var(--panel); }
+.itin .hp { display: grid; grid-template-columns: 26px 1fr; gap: 10px; font: 500 12px var(--f-mono); color: var(--ink-2); min-height: 26px; align-items: center; }
+.itin .hp .ln { justify-self: center; width: 0; height: 100%; min-height: 24px; border-left: 3px solid var(--c); }
+.itin .hp.walk .ln { border-left: 3px dotted var(--ink-2); }
+.itin .hp.regional .ln, .itin .hp.transfer .ln { border-left-style: dashed; }
+.itin .hp.train .ln, .itin .hp.sleeper .ln, .itin .hp.flight .ln { border-left-width: 5px; border-left-color: var(--ink); }
+.itin .hp.flight .ln { border-left-style: dotted; }
+.cfoot { display: flex; justify-content: space-between; gap: 8px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
+.cfoot .mini { max-width: 49%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pplan { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
+.pplan select { flex: 1; min-width: 0; font: inherit; font-size: 13px; color: var(--ink); background: var(--chip); border: 1px solid var(--line); border-radius: 5px; padding: 5px 6px; }
+
+/* wide screens: the planner is locked on screen and takes over from the bottom bar */
+body.dock .calpanel { box-sizing: border-box; top: calc(16px + env(safe-area-inset-top, 0px)); bottom: 16px; right: var(--gr); width: 420px; padding: 18px 16px 16px; max-height: none; box-shadow: 0 10px 40px rgba(10,20,25,.16); }
+body.dock #nav, body.dock #calBtn, body.dock #calClose { display: none; }
+body.dock #tools { right: calc(var(--gr) + 432px); }
+body.dock #panel { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+
 #loading { position: fixed; inset: 0; display: grid; place-items: center; font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); pointer-events: none; z-index: 4; }
 
 @media (max-width: 759px) {
@@ -337,7 +436,10 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
   .calpanel { top: auto; bottom: calc(72px + env(safe-area-inset-bottom, 0px)); left: var(--gl); right: var(--gr); width: auto; max-height: 72%; padding: 16px 16px 14px; }
   .cal.planner .cd { min-height: 54px; padding: 3px 3px 5px; }
   .cd .t, .cd .tr { font-size: 9.5px; }
-  #tools { left: var(--gl); }
+  #tools { left: calc(var(--gl) + 52px); }
+  #calBtn .dates { display: none; }
+  .prow { grid-template-columns: 1fr; gap: 6px; }
+  .cells { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .places li { grid-template-columns: 68px 1fr; gap: 12px; }
   .thumb { width: 68px; height: 68px; }
 }
@@ -349,6 +451,11 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 <canvas id="map" aria-label="Map of Prague, Vienna and Split with train routes"></canvas>
 <div id="loading">Loading map…</div>
 <aside id="panel" aria-live="polite"><div id="card"></div></aside>
+<nav id="menubar" aria-label="Sections">
+  <button class="btn mbburger" id="mbBurger" aria-haspopup="true" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="lbl">Menu</span></button>
+  <div id="mbItems" class="mbitems" role="menubar" aria-label="Sections"></div>
+  <div id="mbMenu" class="mbmenu" role="menu" hidden></div>
+</nav>
 <div id="tools">
   <button class="btn wide" id="calBtn" aria-expanded="false" aria-controls="calPanel" title="Plan the trip day by day">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Plan</span><span class="dates" id="calDates"></span>
@@ -492,20 +599,24 @@ function slideDeck() {
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const KIND = { regional: "Regional", splurge: "Splurge", cafe: "Café", world: "World food", nature: "Nature", daytrip: "Day trip" };
 
+function railHours() { // hours awake on trains: Prague–Vienna, Vienna–Zagreb, and Zagreb–Split by day
+  return 4 + 6.5 + (byRail() && PLAN.nights.zagreb && PLAN.legs.zs.opt === "day" ? 6.25 : 0);
+}
 function introHTML() {
-  const fly = PLAN.legs.vs.opt === "flight";
+  const fly = PLAN.legs.vs.opt === "flight", zn = byRail() ? PLAN.nights.zagreb : 0;
   return `<p class="eyebrow">${planRange()} ${DAYS[0].date.getFullYear()} · ${DAYS.length} days</p>
   <h1>Praha <span class="arrow">→</span> Wien <span class="arrow">→</span> Split</h1>
   <p class="lede">Two old imperial capitals, then a sleeper train down to the Adriatic. Castles, coffee houses and wine taverns first, then sea, islands and old stone.</p>
-  <dl class="stats"><div><dt>Cities</dt><dd>3</dd></div><div><dt>Nights</dt><dd>${totalNights()}</dd></div><div><dt>Of us</dt><dd>11</dd></div><div><dt>${fly ? "Travel" : "Awake on trains"}</dt><dd>${fly ? "~5.5 h" : "~10.5 h"}</dd></div></dl>
-  <p class="hint">Press <kbd>→</kbd> or Next to fly through it, or open <b>Plan</b> at the top to move dates, nights and day trips around. Your plan is saved in this browser.</p>`;
+  <dl class="stats"><div><dt>Cities</dt><dd>${zn ? 4 : 3}</dd></div><div><dt>Nights</dt><dd>${totalNights()}</dd></div><div><dt>Of us</dt><dd>11</dd></div><div><dt>${fly ? "Travel" : "Awake on trains"}</dt><dd>${fly ? "~5.5 h" : `~${+railHours().toFixed(1)} h`}</dd></div></dl>
+  <p class="hint">Press <kbd>→</kbd> or Next to fly through it, use the city menus at the top, or pick a day in <b>Plan</b> to see its route and pin places to it. Your plan is saved in this browser.</p>`;
 }
 function routeHTML() {
-  const stop = (c, extra) => `<li class="stop" style="--c:var(--${c})"><span class="node"></span><div><b>${CITIES[c].en}</b><span>${CITIES[c].nights} nights${extra ? " · " + extra : ""}</span></div></li>`;
+  const stop = (c, extra) => `<li class="stop" style="--c:var(--${c})"><span class="node"></span><div><b>${PC[c].en}</b><span>${PC[c].nights} night${PC[c].nights === 1 ? "" : "s"}${extra ? " · " + extra : ""}</span></div></li>`;
+  const zn = byRail() ? PLAN.nights.zagreb : 0, zs = PLAN.legs.zs.opt === "sleeper" ? "Sleeper to Split · overnight" : "Day train to Split · ~6 h 15";
   const ride = (t, opt) => `<li class="ride${opt ? " opt" : ""}"><div>${t}</div></li>`;
   return `<p class="eyebrow">The plan</p><h2>One line across the map</h2>
   <p class="lede">Fly into Prague, ride the rails south to the sea, fly home from Split.</p>
-  <ol class="strip">${stop("prague", "fly in to PRG")}${ride("Railjet · ~4 h")}${stop("vienna")}${ride(PLAN.legs.vs.opt === "flight" ? "Flight · 1h 15" : "Day train to Zagreb · ~6.5 h, evening in Zagreb, sleeper to Split · overnight")}${stop("split", "fly home from SPU")}</ol>`;
+  <ol class="strip">${stop("prague", "fly in to PRG")}${ride("Railjet · ~4 h")}${stop("vienna")}${zn ? `${ride("Day train to Zagreb · ~6.5 h")}${stop("zagreb")}${ride(zs)}` : ride(PLAN.legs.vs.opt === "flight" ? "Flight · 1h 15" : "Day train to Zagreb · ~6.5 h, evening in Zagreb, sleeper to Split · overnight")}${stop("split", "fly home from SPU")}</ol>`;
 }
 function badge(p) {
   return `<span class="badge ${p.type}"><span>${p.label || p.code}</span></span>`;
@@ -515,6 +626,8 @@ function thumb(p) {
 }
 function li(p, extra = "") {
   const chip = p.kind ? `<span class="chip ${p.kind === "regional" ? "regional" : ""}">${KIND[p.kind]} · ${esc(p.tag)}</span>` : "";
+  const at = !/stay|daytrip|nature/.test(p.type) && pinDays(keyOf(p))[0]; // day trips show theirs in a fuller line
+  if (at) extra = `<p class="planned"><span>Pinned</span> ${fmtDay(at.date)}</p>` + extra;
   return `<li tabindex="0" data-p="${p.city}:${p.code}">${thumb(p)}<div class="txt"><div class="name">${badge(p)}<span>${esc(p.name)}</span> ${chip}</div><p>${esc(p.blurb)}</p>${extra}</div></li>`;
 }
 function hoodList(city) {
@@ -524,8 +637,8 @@ function hoodList(city) {
   <ul class="hoods">${hs.map(h => `<li><b>${esc(h.name)}</b> ${esc(h.blurb)}</li>`).join("")}</ul>`;
 }
 function plannedChip(p) {
-  const at = tripDate(tripId(p));
-  return `<p class="planned${at ? "" : " none"}"><span>${at ? "Planned" : "Not planned"}</span> ${at ? fmtDay(at.date) : ""} <a href="#" data-plan="1">${at ? "Change" : "Plan it"}</a></p>`;
+  const at = pinDays(keyOf(p))[0];
+  return `<p class="planned${at ? "" : " none"}"><span>${at ? "Pinned" : "Not pinned"}</span> ${at ? fmtDay(at.date) : ""} <a href="#" data-plan="1">${at ? "Change" : "Pin it to a day"}</a></p>`;
 }
 function outHTML(city) {
   const c = CITIES[city];
@@ -587,8 +700,9 @@ function stayHTML(city) {
 }
 function legHTML(leg, n) {
   const L = LEGS[leg], B = BOARDS[leg], from = L.stations[0][0], to = L.stations[L.stations.length - 1][0];
-  const title = leg === "vs" ? `Vienna to Split, by ${PLAN.legs.vs.opt === "flight" ? "plane" : "sleeper"}` : `${CITIES[L.from].en} to ${CITIES[L.to].en}`;
-  const ld = legDay(leg), planned = ld && PLAN.legs[leg] ? `<p class="planned"><span>Planned</span> ${fmtDay(ld.date)} · ${esc(LEG_INFO[leg][PLAN.legs[leg].opt].label)} · ${esc(legSummary(leg).text)} <a href="#" data-plan="1">Change</a></p>` : "";
+  const zn = byRail() ? PLAN.nights.zagreb : 0;
+  const title = leg === "vs" ? `Vienna to Split, ${PLAN.legs.vs.opt === "flight" ? "by plane" : zn ? `with ${zn} night${zn === 1 ? "" : "s"} in Zagreb` : "by sleeper"}` : `${CITIES[L.from].en} to ${CITIES[L.to].en}`;
+  const planned = travelDays(leg).map(d => `<p class="planned"><span>Planned</span> ${fmtDay(d.date)} · ${esc(legSummary(d.leg).info.label)} · ${esc(legSummary(d.leg).text)} <a href="#" data-plan="1">Change</a></p>`).join("");
   return `<p class="eyebrow" style="--c:var(--${L.from})"><span class="dot"></span>Leg ${n}${L.optional ? " · optional" : ""} · ${from} → ${to}</p>
   <h2>${title}</h2>
   ${planned}
@@ -618,32 +732,50 @@ const SUMMARY = [
   ["row", "Fly home", "Split (SPU) → home", "depends on origin", "—"],
 ];
 // ---------- trip plan: each person's own copy, saved in their browser ----------
-const ORDER = Object.keys(CITIES);                       // prague, vienna, split
-const LEG_AFTER = { prague: "pv", vienna: "vs" };          // the leg that leaves each city
+const ORDER = Object.keys(CITIES);                           // prague, vienna, split: the cities with slides
+const NIGHT_ORDER = ["prague", "vienna", "zagreb", "split"]; // where nights can be spent (Zagreb only by rail)
+// Zagreb is a stopover in the slides, but by rail you can stay there: the two trains are separate bookings
+const ZAGREB = { en: "Zagreb", local: "Zagreb", ll: [15.9773, 45.8130] };
+ZAGREB.xy = P(...ZAGREB.ll);
+Object.defineProperty(ZAGREB, "nights", { get: () => PLAN.nights.zagreb });
+const PC = Object.fromEntries(NIGHT_ORDER.map(c => [c, CITIES[c] || ZAGREB])); // every place a night can be spent
+const LEG_BETWEEN = { "prague>vienna": "pv", "vienna>zagreb": "vz", "zagreb>split": "zs", "vienna>split": "vs" };
 const LEG_INFO = {
   pv: { train: { label: "Railjet Prague → Vienna", min: 240 } },
   vs: { sleeper: { label: "Day train to Zagreb, evening in Zagreb, sleeper to Split", min: 390 },
         flight: { label: "Flight Vienna → Split", min: 75 } },
+  vz: { train: { label: "Day train Vienna → Zagreb", min: 390 } },
+  zs: { sleeper: { label: "Sleeper Zagreb → Split", min: 540 }, day: { label: "Day train Zagreb → Split", min: 375 } },
 };
-const PLAN_DEFAULT = { v: 1, start: "2027-08-22", nights: { prague: 4, vienna: 4, split: 4 },
-  legs: { pv: { opt: "train", dep: "09:00" }, vs: { opt: "sleeper", dep: "09:00" } }, trips: {}, notes: {} };
+const PIN_MAX = 3;
+const PLAN_DEFAULT = { v: 2, start: "2027-08-22", nights: { prague: 4, vienna: 4, zagreb: 0, split: 4 },
+  legs: { pv: { opt: "train", dep: "09:00" }, vs: { opt: "sleeper", dep: "09:00" }, zs: { opt: "sleeper", dep: "21:30" } },
+  pins: {}, notes: {}, stays: { prague: "H1", vienna: "H1", zagreb: null, split: null } };
 const PLAN_KEY = "tripplan:split:v1";
 const WD = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const clone = o => JSON.parse(JSON.stringify(o));
+const minN = c => c === "zagreb" ? 0 : 1;
+const ISO = /^\d{4}-\d{2}-\d{2}$/;
 
 function normalizePlan(p) {
   const d = clone(PLAN_DEFAULT);
   if (!p || typeof p !== "object") return d;
-  if (/^\d{4}-\d{2}-\d{2}$/.test(p.start || "")) d.start = p.start;
-  for (const c of ORDER) { const n = +((p.nights || {})[c]); if (n >= 1 && n <= 30) d.nights[c] = Math.round(n); }
+  if (ISO.test(p.start || "")) d.start = p.start;
+  for (const c of NIGHT_ORDER) { const n = +((p.nights || {})[c]); if (n >= minN(c) && n <= 30) d.nights[c] = Math.round(n); }
   for (const l of Object.keys(d.legs)) {
     const q = (p.legs || {})[l] || {};
     if (LEG_INFO[l][q.opt]) d.legs[l].opt = q.opt;
     if (/^\d{2}:\d{2}$/.test(q.dep || "")) d.legs[l].dep = q.dep;
   }
-  for (const k of ["trips", "notes"]) for (const [date, v] of Object.entries(p[k] || {}))
-    if (/^\d{4}-\d{2}-\d{2}$/.test(date) && typeof v === "string" && v) d[k][date] = v.slice(0, 500);
+  for (const [date, v] of Object.entries(p.notes || {})) if (ISO.test(date) && typeof v === "string" && v) d.notes[date] = v.slice(0, 500);
+  for (const [date, v] of Object.entries(p.pins || {})) if (ISO.test(date) && Array.isArray(v)) {
+    const ks = v.filter(k => typeof k === "string" && /^[a-z]+:[A-Z0-9]+$/.test(k)).slice(0, PIN_MAX);
+    if (ks.length) d.pins[date] = ks;
+  }
+  // plans from before pins kept one day trip per date; migratePlan() turns them into pins once places load
+  if (p.trips) { d.trips = {}; for (const [date, v] of Object.entries(p.trips)) if (ISO.test(date) && typeof v === "string") d.trips[date] = v; }
+  for (const c of Object.keys(d.stays)) if (p.stays && c in p.stays && (p.stays[c] === null || /^H\d$/.test(p.stays[c] || ""))) d.stays[c] = p.stays[c];
   return d;
 }
 const toCode = p => btoa(unescape(encodeURIComponent(JSON.stringify(p)))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -666,22 +798,26 @@ const fmtDay = d => `${WD[(d.getDay() + 6) % 7]} ${d.getDate()} ${MON[d.getMonth
 const hm = m => `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, "0")}`;
 const addTime = (t, min) => { const [h, m] = t.split(":").map(Number), x = h * 60 + m + min; return `${String(Math.floor(x / 60) % 24).padStart(2, "0")}:${String(x % 60).padStart(2, "0")}`; };
 
+const byRail = (plan = PLAN) => plan.legs.vs.opt !== "flight";
+const nightCities = () => byRail() ? NIGHT_ORDER : ORDER; // the flight skips Zagreb
 // Derive the day list from the plan. Each night is spent somewhere; a day sits between two nights.
 function buildDays(plan = PLAN) {
-  const nights = [];
-  for (const c of ORDER) {
-    for (let k = 0; k < plan.nights[c]; k++) nights.push(c);
-    if (c === "vienna" && plan.legs.vs.opt === "sleeper") nights.push("train");
+  const rail = byRail(plan), zn = rail ? plan.nights.zagreb : 0, nights = [];
+  for (const c of NIGHT_ORDER) {
+    const n = c === "zagreb" ? zn : plan.nights[c];
+    for (let k = 0; k < n; k++) nights.push(c);
+    // a night on the sleeper: straight from Vienna (an evening in Zagreb), or after nights in Zagreb
+    if (rail && ((c === "vienna" && !zn) || (c === "zagreb" && zn && plan.legs.zs.opt === "sleeper"))) nights.push("train");
   }
   const start = parseISO(plan.start), days = [];
   for (let d = 0; d <= nights.length; d++) {
     const prev = nights[d - 1], cur = nights[d], date = addDays(start, d), base = { i: d, date, iso: isoDate(date) };
     if (d === 0) days.push({ ...base, kind: "arrive", city: cur, note0: "Fly in to Prague" });
-    else if (d === nights.length) days.push({ ...base, kind: "depart", city: prev, note0: `Fly home from ${CITIES[prev].en}` });
+    else if (d === nights.length) days.push({ ...base, kind: "depart", city: prev, note0: `Fly home from ${PC[prev].en}` });
     else if (prev === cur) days.push({ ...base, kind: "stay", city: cur });
-    else if (cur === "train") days.push({ ...base, kind: "travel", leg: "vs", from: prev, to: "split", sleeper: true });
-    else if (prev === "train") days.push({ ...base, kind: "stay", city: cur, note0: "Sleeper arrives early morning" });
-    else days.push({ ...base, kind: "travel", leg: LEG_AFTER[prev], from: prev, to: cur });
+    else if (cur === "train") days.push({ ...base, kind: "travel", leg: prev === "vienna" ? "vs" : "zs", from: prev, to: "split", sleeper: true });
+    else if (prev === "train") days.push({ ...base, kind: "stay", city: cur, afterTrain: true, note0: "Sleeper arrives early morning" });
+    else days.push({ ...base, kind: "travel", leg: LEG_BETWEEN[`${prev}>${cur}`], from: prev, to: cur });
   }
   return days;
 }
@@ -689,102 +825,266 @@ let DAYS = buildDays();
 const totalNights = () => DAYS.length - 1;
 const dayCity = x => x.city || x.from;
 
-// day trips that can be scheduled: every trip from a city's "Day trips & nature" slide
-let TRIPS = [];
-const tripId = p => p.detail || `${p.city}-${p.code}`;
-function tripDate(id) { // the planned date of a trip, if it still lands on a valid day
-  for (const [date, t] of Object.entries(PLAN.trips)) if (t === id) {
-    const x = DAYS.find(d => d.iso === date), trip = TRIPS.find(p => tripId(p) === id);
-    if (x && trip && canHost(x, trip)) return x;
+// changing how we travel keeps the end date: nights move to the cities in `prefer`, in that order
+function keepLength(before, prefer) {
+  DAYS = buildDays(); let diff = before - totalNights();
+  while (diff > 0) { PLAN.nights[prefer[0]]++; diff--; }
+  while (diff < 0) { const c = prefer.find(x => PLAN.nights[x] > minN(x)); if (!c) break; PLAN.nights[c]--; diff++; }
+}
+function setVsOpt(opt) {
+  if (opt === PLAN.legs.vs.opt) return;
+  const before = totalNights();
+  PLAN.legs.vs.opt = opt;
+  if (opt === "flight") {
+    PLAN.nights.vienna += PLAN.nights.zagreb; PLAN.nights.zagreb = 0;
+    keepLength(before, ["vienna", "split"]);
+    plMsg = "Flying Vienna → Split skips Zagreb and the night on the train; Vienna keeps those nights. Same end date.";
+  } else {
+    keepLength(before, ["vienna", "split", "prague"]);
+    plMsg = "By rail via Zagreb: one Vienna night becomes the night on the sleeper. Add nights in Zagreb to stop over. Same end date.";
   }
-  return null;
 }
-const canHost = (x, trip) => x.kind === "stay" && x.city === trip.city;
-function setTrip(id, date) {
-  for (const [d, t] of Object.entries(PLAN.trips)) if (t === id || d === date) delete PLAN.trips[d];
-  if (id && date) PLAN.trips[date] = id;
+function setZsOpt(opt) {
+  if (opt === PLAN.legs.zs.opt) return;
+  const before = totalNights();
+  PLAN.legs.zs.opt = opt; PLAN.legs.zs.dep = opt === "sleeper" ? "21:30" : "08:00";
+  keepLength(before, ["split", "zagreb", "vienna"]);
+  plMsg = opt === "day" ? "Day train Zagreb → Split: the night on the train becomes a night in Split." : "Sleeper Zagreb → Split: one Split night becomes the night on the train.";
 }
-function legDay(leg) { return DAYS.find(d => d.leg === leg); }
+
+// ---------- pins: up to three places per day ----------
+let TRIPS = []; // every trip from a city's "Day trips & nature" slide (the planner's drag palette)
+const tripId = p => p.detail || `${p.city}-${p.code}`;
+const keyOf = p => `${p.city}:${p.code}`;
+const homeOf = p => PC[p.city] ? p.city : DETAIL[p.city]?.parent; // a day-trip area belongs to its base city
+// the cities a day can take places from: on travel days both ends, and Zagreb on the sleeper from Vienna
+const dayCities = x => x.kind !== "travel" ? [x.city] : [x.from, ...(x.leg === "vs" && x.sleeper ? ["zagreb"] : []), x.to];
+const canPin = (x, p) => !!p && p.type !== "stay" && dayCities(x).includes(homeOf(p));
+const pinsOn = x => (PLAN.pins[x.iso] || []).filter(k => canPin(x, placeBy[k]));
+const pinDays = key => DAYS.filter(x => pinsOn(x).includes(key));
+const SLOT = { cafe: 0, sight: 1, nature: 1, daytrip: 1, food: 2 }; // breakfast at the café, sights by day, dinner last
+function togglePin(key, iso) {
+  const x = DAYS.find(d => d.iso === iso), p = placeBy[key];
+  if (!x || !canPin(x, p)) return "no";
+  const arr = PLAN.pins[iso] || (PLAN.pins[iso] = []), at = arr.indexOf(key);
+  if (at >= 0) { arr.splice(at, 1); if (!arr.length) delete PLAN.pins[iso]; return "off"; }
+  if (pinsOn(x).length >= PIN_MAX) { if (!arr.length) delete PLAN.pins[iso]; return "full"; }
+  let i = arr.length; // a new pin goes in at its time of day; reorder in the day view
+  while (i > 0 && (SLOT[placeBy[arr[i - 1]]?.type] ?? 1) > SLOT[p.type]) i--;
+  arr.splice(i, 0, key);
+  return "on";
+}
+const pinMsg = (r, p, x) => r === "full" ? `${fmtDay(x.date)} already has ${PIN_MAX} places. Remove one first.`
+  : r === "no" ? `${p.name} isn't near ${fmtDay(x.date)}'s stops.` : r === "on" ? `${p.name} pinned to ${fmtDay(x.date)}.` : `${p.name} unpinned from ${fmtDay(x.date)}.`;
+// pins whose date no longer lands in their city (after dates or nights change) wait for a new day
+function lostPins() {
+  return Object.entries(PLAN.pins).flatMap(([iso, ks]) => {
+    const x = DAYS.find(d => d.iso === iso);
+    return ks.filter(k => placeBy[k] && !(x && canPin(x, placeBy[k]))).map(key => ({ iso, key }));
+  });
+}
+function migratePlan() {
+  for (const [iso, id] of Object.entries(PLAN.trips || {})) {
+    const t = TRIPS.find(p => tripId(p) === id);
+    if (!t) continue;
+    const arr = PLAN.pins[iso] || (PLAN.pins[iso] = []);
+    if (!arr.includes(keyOf(t)) && arr.length < PIN_MAX) arr.push(keyOf(t));
+  }
+  delete PLAN.trips;
+  for (const [iso, ks] of Object.entries(PLAN.pins)) { PLAN.pins[iso] = ks.filter(k => placeBy[k]); if (!PLAN.pins[iso].length) delete PLAN.pins[iso]; }
+  for (const c of Object.keys(PLAN.stays)) if (PLAN.stays[c] && !placeBy[`${c}:${PLAN.stays[c]}`]) PLAN.stays[c] = null;
+}
+
+// ---------- legs as planned ----------
+const legPlan = leg => leg === "vz" ? { opt: "train", dep: PLAN.legs.vs.dep } : PLAN.legs[leg]; // Vienna's departure time covers both
 function legSummary(leg) {
-  const o = PLAN.legs[leg], info = LEG_INFO[leg][o.opt];
-  const arr = o.opt === "sleeper" ? "sleeper arrives next morning" : `arrives ~${addTime(o.dep, info.min)}`;
-  return { info, text: `dep ${o.dep} · ${hm(info.min)}${o.opt === "sleeper" ? " awake" : ""} · ${arr}` };
+  const o = legPlan(leg), info = LEG_INFO[leg][o.opt];
+  if (leg === "vs" && o.opt === "sleeper") return { info, text: `dep ${o.dep} · ${hm(info.min)} awake · sleeper arrives next morning` };
+  if (o.opt === "sleeper") return { info, text: `dep ${o.dep} · overnight · arrives next morning` };
+  return { info, text: `dep ${o.dep} · ${hm(info.min)} · arrives ~${addTime(o.dep, info.min)}` };
 }
+const travelDays = leg => DAYS.filter(d => leg === "vs" ? ["vs", "vz", "zs"].includes(d.leg) : d.leg === leg);
 function planRange() { return `${DAYS[0].date.getDate()} ${MON[DAYS[0].date.getMonth()]} – ${DAYS.at(-1).date.getDate()} ${MON[DAYS.at(-1).date.getMonth()]}`; }
 
+// ---------- a day's route: home base, stations and airports, the pinned places, rough hop times ----------
+const HUB = {
+  prague: { air: { name: "Prague airport (PRG)", ll: [14.2600, 50.1008], how: "Bus 119 + metro A", min: 45 }, rail: { name: "Praha hl.n.", ll: [14.4350, 50.0831] } },
+  vienna: { air: { name: "Vienna airport (VIE)", ll: [16.5697, 48.1103], how: "City Airport Train or S7", min: 25 }, rail: { name: "Wien Hbf", ll: [16.3762, 48.1852] } },
+  zagreb: { rail: { name: "Zagreb Glavni kolodvor", ll: [15.9781, 45.8048] } },
+  split: { air: { name: "Split airport (SPU)", ll: [16.2980, 43.5389], how: "Airport shuttle bus", min: 30 }, rail: { name: "Split station", ll: [16.4405, 43.5048] } },
+};
+for (const h of Object.values(HUB)) for (const k of ["air", "rail"]) if (h[k]) h[k].xy = P(...h[k].ll);
+const CITY_MODE = { prague: "metro or tram", vienna: "U-Bahn or tram", zagreb: "tram", split: "bus" };
+const CENTER_NAME = { split: "Split old town", zagreb: "Jelačić square" };
+function home(c) {
+  const p = PLAN.stays[c] && placeBy[`${c}:${PLAN.stays[c]}`];
+  return p ? { kind: "home", name: p.name, sub: "Our Airbnb", xy: p.xy, city: c, place: p }
+    : { kind: "home", name: CENTER_NAME[c] || `${PC[c].en} center`, sub: "Start and end of the day", xy: PC[c].xy, city: c };
+}
+const hubStop = (c, k) => ({ kind: k, name: HUB[c][k].name, xy: HUB[c][k].xy, city: c, hub: HUB[c][k] });
+// true ground distance in km between two map points (map km shrink by cos(latitude))
+function trueKm(a, b) {
+  const lat = 2 * Math.atan(Math.exp(-((a[1] + b[1]) / 2 + OY) / R)) - Math.PI / 2;
+  return Math.hypot(a[0] - b[0], a[1] - b[1]) * Math.cos(lat);
+}
+const tripFor = p => p && (p.type === "daytrip" || p.type === "nature" ? p : TRIPS.find(t => t.detail === p.city));
+function hop(a, b) {
+  const air = a.kind === "air" ? a : b.kind === "air" ? b : null;
+  if (air) return { mode: "transfer", text: `${air.hub.how} · ~${air.hub.min} min`, short: `${air.hub.min}′`, a, b };
+  const d = trueKm(a.xy, b.xy);
+  if (d < 1.3) { const m = Math.max(2, Math.round(d * 1.3 / 4.5 * 60)); return { mode: "walk", text: `${m} min walk`, short: `${m}′`, a, b }; }
+  const t = d > 20 && (tripFor(b.place) || tripFor(a.place));
+  if (t && t.time) return { mode: "regional", text: t.time, short: t.time.replace(/ by .*| to .*|,.*/, ""), a, b };
+  const area = (b.place || a.place)?.city || a.city;
+  if (d < 25) { const m = Math.round(10 + d * 1.3 / 20 * 60); return { mode: "city", text: `~${m} min by ${CITY_MODE[area] || "bus"}`, short: `${m}′`, a, b }; }
+  const m = Math.round(15 + d); return { mode: "regional", text: `~${hm(m)} by train or bus`, short: hm(m), a, b };
+}
+function itinerary(x) {
+  const pins = pinsOn(x).map(k => placeBy[k]), seq = [];
+  const stop = s => seq.push({ stop: s }), ride = (mode, text) => seq.push({ ride: { mode, text } });
+  const visit = c => { for (const p of pins) if (homeOf(p) === c) stop({ kind: "place", name: p.name, xy: p.xy, city: p.city, place: p }); };
+  const has = c => pins.some(p => homeOf(p) === c);
+  if (x.kind === "travel") {
+    stop(home(x.from)); visit(x.from);
+    if (x.leg === "vs" && PLAN.legs.vs.opt === "flight") {
+      stop(hubStop("vienna", "air")); ride("flight", `Flight to Split · dep ${PLAN.legs.vs.dep} · ${hm(75)}`);
+      stop(hubStop("split", "air")); stop(home("split")); visit("split"); if (has("split")) stop(home("split"));
+    } else {
+      stop(hubStop(x.from, "rail"));
+      if (x.leg === "vs") { // day train, an evening in Zagreb, then the sleeper on to Split
+        ride("train", `Day train to Zagreb · dep ${PLAN.legs.vs.dep} · ${hm(390)}`);
+        stop(hubStop("zagreb", "rail")); visit("zagreb"); if (has("zagreb")) stop(hubStop("zagreb", "rail"));
+        ride("sleeper", "Sleeper to Split · overnight");
+      } else if (x.sleeper) ride("sleeper", `Sleeper to Split · dep ${PLAN.legs.zs.dep} · overnight`);
+      else {
+        const s = legSummary(x.leg); ride("train", `${s.info.label} · ${s.text}`);
+        stop(hubStop(x.to, "rail")); stop(home(x.to)); visit(x.to); if (has(x.to)) stop(home(x.to));
+      }
+    }
+  } else {
+    const c = x.city;
+    if (x.kind === "arrive") stop(hubStop(c, "air"));
+    else if (x.afterTrain) stop(hubStop(c, "rail"));
+    stop(home(c)); visit(c);
+    if (x.kind === "depart") stop(hubStop(c, "air"));
+    else if (pins.length) stop(home(c));
+  }
+  // between two stops with no train or flight, a rough hop: walk, city transit, or the day trip's own ride
+  const out = [];
+  seq.forEach((e, j) => {
+    if (e.ride) { out.push({ hop: { ...e.ride, ride: true } }); return; }
+    out.push(e);
+    const nx = seq[j + 1];
+    if (nx && nx.stop) out.push({ hop: hop(e.stop, nx.stop) });
+  });
+  return out;
+}
+
 // ---------- planner panel ----------
-let plSel = null, plMsg = "", plResetAsk = false, plImport = false;
+let plSel = null, plMsg = "", plResetAsk = false, plImport = false, plAdd = false, plSetOpen = true;
+try { plSetOpen = localStorage.getItem("planSettings") !== "closed"; } catch (e) {}
+const pinBadge = p => `<i class="pb" style="--c:var(--${homeOf(p)})" title="${esc(p.name)}">${esc(p.label || p.code)}</i>`;
+function settingsHTML() {
+  const rail = byRail(), zn = PLAN.nights.zagreb, ncs = nightCities();
+  const trainNight = DAYS.some(x => x.sleeper);
+  const nights = ncs.map(c => `<div class="nc" style="--c:var(--${c})"><b>${PC[c].local}</b><div class="stp">
+      <button class="sb" data-n="${c}" data-d="-1" aria-label="One night less in ${PC[c].en}">−</button><span class="nv">${PLAN.nights[c]}</span>
+      <button class="sb" data-n="${c}" data-d="1" aria-label="One night more in ${PC[c].en}">+</button></div>${c === "zagreb" && !zn ? `<small>evening only</small>` : ""}</div>`).join("");
+  const stays = ncs.map(c => {
+    const opts = PLACES.filter(p => p.city === c && p.type === "stay");
+    return `<label class="nc" style="--c:var(--${c})"><b>${PC[c].local}</b>${opts.length
+      ? `<select data-stay="${c}"><option value="">City center</option>${opts.map(p => `<option value="${p.code}"${PLAN.stays[c] === p.code ? " selected" : ""}>${esc(p.label)} · ${esc(p.name)}</option>`).join("")}</select>`
+      : `<span class="muted small">${esc(CENTER_NAME[c] || "City center")}</span>`}</label>`;
+  }).join("");
+  const sum = `${planRange()} · ${totalNights()} nights · ${rail ? (zn ? `${zn} in Zagreb` : "rail via Zagreb") : "flying to Split"}`;
+  return `<div class="pset">
+  <button class="psum" data-act="settings" aria-expanded="${plSetOpen}"><span>${sum}</span><em>${plSetOpen ? "Hide" : "Edit trip"}</em></button>
+  ${plSetOpen ? `<div class="prow"><span class="lab">Start</span><div class="ctl"><input type="date" id="pl-start" value="${PLAN.start}"><span class="end">home ${fmtDay(DAYS.at(-1).date)}</span></div></div>
+  <div class="prow"><span class="lab">Nights</span><div class="ctl"><div class="stp"><button class="sb" data-total="-1" aria-label="Shorter trip">−</button><span class="nv">${totalNights()}</span><button class="sb" data-total="1" aria-label="Longer trip">+</button></div>${trainNight ? `<span class="end">incl. 1 on the train</span>` : ""}</div></div>
+  <div class="prow"><span class="lab">Vienna → Split</span><div class="ctl"><div class="seg2" role="group" aria-label="Vienna to Split"><button data-vs="sleeper" class="${rail ? "on" : ""}" aria-pressed="${rail}">Train via Zagreb</button><button data-vs="flight" class="${rail ? "" : "on"}" aria-pressed="${!rail}">Flight</button></div></div></div>
+  ${rail && zn ? `<div class="prow"><span class="lab">Zagreb → Split</span><div class="ctl"><div class="seg2" role="group" aria-label="Zagreb to Split"><button data-zs="sleeper" class="${PLAN.legs.zs.opt === "sleeper" ? "on" : ""}">Sleeper</button><button data-zs="day" class="${PLAN.legs.zs.opt === "day" ? "on" : ""}">Day train</button></div></div></div>` : ""}
+  <div class="prow wide"><span class="lab">Nights per city <em>moving one keeps the trip length</em></span><div class="cells" style="--n:${ncs.length}">${nights}</div></div>
+  <div class="prow wide"><span class="lab">Staying at <em>where each day's route starts</em></span><div class="cells" style="--n:${ncs.length}">${stays}</div></div>` : ""}</div>`;
+}
+function dayViewHTML(x) {
+  const pins = pinsOn(x), n = pins.length;
+  let travel = "";
+  if (x.kind === "travel") {
+    const o = legPlan(x.leg);
+    const opts = Object.entries(LEG_INFO[x.leg]).map(([k, v]) => `<option value="${k}"${o.opt === k ? " selected" : ""}>${esc(v.label)}</option>`).join("");
+    travel = `<div class="two"><label class="fld"><span>How</span><select id="pl-opt" data-leg="${x.leg}">${opts}</select></label>
+      <label class="fld"><span>Departs</span><input type="time" id="pl-dep" data-leg="${x.leg}" value="${o.dep}"></label></div>
+      <p class="muted small">${esc(legSummary(x.leg).text)}</p>`;
+  }
+  const list = pins.map((k, j) => { const p = placeBy[k]; return `<li style="--c:var(--${homeOf(p)})">${badge(p)}<span class="nm">${esc(p.name)}</span>
+    <button class="ib" data-mv="${j}" data-dir="-1" aria-label="Earlier in the day"${j ? "" : " disabled"}>↑</button><button class="ib" data-mv="${j}" data-dir="1" aria-label="Later in the day"${j < n - 1 ? "" : " disabled"}>↓</button>
+    <button class="ib" data-unpin="${k}" aria-label="Remove ${esc(p.name)}">×</button></li>`; }).join("");
+  const chip = p => { const on = pins.includes(keyOf(p)); return `<button class="pchip${on ? " on" : ""}" data-pin="${keyOf(p)}" aria-pressed="${on}"${!on && n >= PIN_MAX ? " disabled" : ""}>${badge(p)}<span>${esc(p.name)}</span></button>`; };
+  const cs = dayCities(x);
+  const groups = cs.map(c => {
+    const own = PLACES.filter(p => p.city === c);
+    const sec = (title, list) => list.length ? `<div class="pk"><span class="pkl">${title}</span><div class="pkc">${list.join("")}</div></div>` : "";
+    const trips = own.filter(p => p.type === "daytrip" || p.type === "nature").map(t => chip(t) + (t.detail ? PLACES.filter(p => p.city === t.detail).map(p => chip(p).replace('class="pchip', 'class="pchip in')).join("") : ""));
+    return `<div class="pkg" style="--c:var(--${c})">${cs.length > 1 ? `<b class="pkh">${PC[c].local}</b>` : ""}
+      ${sec("Eat &amp; drink", own.filter(p => p.type === "food" || p.type === "cafe").map(chip))}${sec("Sights", own.filter(p => p.type === "sight").map(chip))}${sec("Day trips &amp; nature", trips)}</div>`;
+  }).join("");
+  const where = x.kind === "travel" ? `${PC[x.from].local} → ${PC[x.to].local}` : PC[x.city].local;
+  return `<div class="dayv" style="--a:var(--${dayCity(x)})">
+    <div class="dh"><button class="ib" data-dstep="-1" aria-label="Previous day"${x.i ? "" : " disabled"}>‹</button>
+      <div><b>${fmtDay(x.date)}</b><span>Day ${x.i + 1} of ${DAYS.length} · ${where}${x.note0 ? ` · ${esc(x.note0)}` : ""}</span></div>
+      <button class="ib" data-dstep="1" aria-label="Next day"${x.i < DAYS.length - 1 ? "" : " disabled"}>›</button></div>
+    ${travel}
+    <h4>Pinned <span>${n} / ${PIN_MAX}</span></h4>
+    ${n ? `<ol class="pinl">${list}</ol>` : `<p class="muted small">Nothing pinned yet. Add up to ${PIN_MAX} places below, or with 📌 in the menus and on the map.</p>`}
+    <details class="add" id="pl-add"${plAdd ? " open" : ""}><summary>Add a place</summary>${groups}</details>
+    <label class="fld"><span>Note</span><textarea id="pl-note" rows="2" placeholder="e.g. dinner reservation 20:00">${esc(PLAN.notes[x.iso] || "")}</textarea></label>
+    <div class="dact"><button class="mini" data-act="play"${n ? "" : " disabled"}>▶ Play the day</button>${daySl ? `<button class="mini ghost" data-act="dayoff">Back to the slides</button>` : `<button class="mini ghost" data-act="dayon">Show on the map</button>`}</div>
+  </div>`;
+}
 function planHTML() {
   const first = DAYS[0].date, lead = (first.getDay() + 6) % 7;
   const cells = [];
   for (let k = 0; k < lead; k++) cells.push(`<div class="cd off"><span class="n">${addDays(first, k - lead).getDate()}</span></div>`);
-  const lastStay = {}; DAYS.forEach(x => { if (x.kind === "stay" && LEG_AFTER[x.city]) lastStay[x.city] = x.i; });
+  const ncs = nightCities(), lastStay = {};
+  DAYS.forEach(x => { if (x.kind === "stay" && ncs.indexOf(x.city) < ncs.length - 1) lastStay[x.city] = x.i; });
   DAYS.forEach(x => {
     const n = x.date.getDate(), m = n === 1 || x.i === 0 ? ` ${MON[x.date.getMonth()]}` : "";
-    const trip = TRIPS.find(p => tripId(p) === PLAN.trips[x.iso] && canHost(x, p));
-    const note = PLAN.notes[x.iso];
+    const pins = pinsOn(x).map(k => placeBy[k]), note = PLAN.notes[x.iso];
     const sel = plSel === x.i ? " sel" : "";
-    const grip = lastStay[x.city] === x.i ? `<span class="grip" data-grip="${x.city}" title="Drag to change nights in ${CITIES[x.city].en}"></span>` : "";
+    const grip = lastStay[x.city] === x.i ? `<span class="grip" data-grip="${x.city}" title="Drag to change nights in ${PC[x.city].en}"></span>` : "";
     const style = x.kind === "travel" ? `--a:var(--${x.from});--b:var(--${x.to})` : `--a:var(--${x.city})`;
     const fly = x.kind === "arrive" || x.kind === "depart"; // flying in and home get their own look
-    const label = x.kind === "travel" ? `${CITIES[x.from].local.slice(0, 3)}→${CITIES[x.to].local.slice(0, 3)}` : fly ? (x.kind === "arrive" ? "Fly in" : "Fly home") : CITIES[x.city].local;
-    const icon = x.kind === "arrive" || x.kind === "depart" ? "✈︎" : x.leg === "vs" && PLAN.legs.vs.opt === "flight" ? "✈︎" : "";
-    cells.push(`<button class="cd${x.kind === "travel" ? " travel" : ""}${fly ? " fly" : ""}${sel}" data-day="${x.i}" style="${style}" aria-label="${esc(fmtDay(x.date))}">
+    const label = x.kind === "travel" ? `${PC[x.from].local.slice(0, 3)}→${PC[x.to].local.slice(0, 3)}` : fly ? (x.kind === "arrive" ? "Fly in" : "Fly home") : PC[x.city].local;
+    const icon = fly || (x.leg === "vs" && PLAN.legs.vs.opt === "flight") ? "✈︎" : x.sleeper ? "☾" : "";
+    cells.push(`<button class="cd${x.kind === "travel" ? " travel" : ""}${fly ? " fly" : ""}${sel}" data-day="${x.i}" style="${style}" aria-label="${esc(fmtDay(x.date))}${pins.length ? `, ${pins.length} pinned` : ""}" aria-pressed="${plSel === x.i}">
       <span class="n">${n}${m}</span>${icon ? `<span class="i">${icon}</span>` : ""}${note ? `<span class="nd" title="${esc(note)}"></span>` : ""}
-      ${trip ? `<span class="tr">${esc(trip.name)}</span>` : `<span class="t">${label}</span>`}${grip}</button>`);
+      <span class="t">${label}</span>${pins.length ? `<span class="pr">${pins.map(pinBadge).join("")}</span>` : ""}${grip}</button>`);
   });
   while (cells.length % 7) cells.push(`<div class="cd off"></div>`);
-
-  const steppers = ORDER.map(c => `<div class="step" style="--c:var(--${c})"><span class="sw"></span><b>${CITIES[c].local}</b>
-    <button class="sb" data-n="${c}" data-d="-1" aria-label="One night less in ${CITIES[c].en}">−</button><span class="nv">${PLAN.nights[c]}</span>
-    <button class="sb" data-n="${c}" data-d="1" aria-label="One night more in ${CITIES[c].en}">+</button></div>`).join("");
-  const vs = PLAN.legs.vs.opt;
   const travel = DAYS.filter(x => x.kind === "travel").map(x => { const s = legSummary(x.leg); return `<li><b>${fmtDay(x.date)}</b><span>${esc(s.info.label)}<br><span class="muted">${esc(s.text)}</span></span></li>`; }).join("");
 
-  // day editor
-  let editor = "";
-  if (plSel != null && DAYS[plSel]) {
-    const x = DAYS[plSel], city = dayCity(x);
-    let body = "";
-    if (x.kind === "travel") {
-      const o = PLAN.legs[x.leg];
-      const opts = Object.entries(LEG_INFO[x.leg]).map(([k, v]) => `<option value="${k}"${o.opt === k ? " selected" : ""}>${esc(v.label)}</option>`).join("");
-      body += `<label class="fld"><span>How</span><select id="pl-opt" data-leg="${x.leg}">${opts}</select></label>
-        <label class="fld"><span>Departs</span><input type="time" id="pl-dep" data-leg="${x.leg}" value="${o.dep}"></label>
-        <p class="muted small">${esc(legSummary(x.leg).text)}</p>`;
-    } else if (x.kind === "stay") {
-      const here = TRIPS.filter(p => p.city === x.city);
-      const curId = PLAN.trips[x.iso] || "";
-      body += `<label class="fld"><span>Day trip</span><select id="pl-trip"><option value="">— none, stay in ${esc(CITIES[x.city].en)} —</option>${here.map(p => `<option value="${tripId(p)}"${curId === tripId(p) ? " selected" : ""}>${esc(p.name)} · ${esc(p.time)}</option>`).join("")}</select></label>`;
-    }
-    const go = x.kind === "travel" ? x.leg : PLAN.trips[x.iso] && TRIPS.some(p => tripId(p) === PLAN.trips[x.iso] && canHost(x, p)) ? PLAN.trips[x.iso] : city;
-    editor = `<div class="editor"><div class="eh"><b>${fmtDay(x.date)}</b><span class="muted">${x.kind === "travel" ? `${CITIES[x.from].en} → ${CITIES[x.to].en}` : CITIES[x.city].en}${x.note0 ? " · " + esc(x.note0) : ""}</span></div>
-      ${body}<label class="fld"><span>Note</span><textarea id="pl-note" rows="2" placeholder="e.g. dinner reservation 20:00">${esc(PLAN.notes[x.iso] || "")}</textarea></label>
-      <p><a href="#${go}" data-go="${go}">Show this on the map →</a></p></div>`;
-  }
-
-  // day-trip palette, grouped by city
+  // day-trip palette, grouped by city: drag a trip onto a day to pin it
   const palette = ORDER.map(c => {
     const ts = TRIPS.filter(p => p.city === c);
     if (!ts.length) return "";
     return `<div class="pg"><span class="pgl" style="--c:var(--${c})">${CITIES[c].local}</span>${ts.map(p => {
-      const at = tripDate(tripId(p)), lost = !at && Object.values(PLAN.trips).includes(tripId(p));
-      return `<span class="tchip${at ? " on" : ""}${lost ? " lost" : ""}" draggable="true" data-trip="${tripId(p)}" style="--c:var(--${c})" title="Drag onto a ${CITIES[c].en} day">${esc(p.name)}<em>${at ? fmtDay(at.date) : lost ? "needs a new day" : "drag to a day"}</em></span>`;
+      const at = pinDays(keyOf(p))[0], lost = !at && lostPins().some(l => l.key === keyOf(p));
+      return `<span class="tchip${at ? " on" : ""}${lost ? " lost" : ""}" draggable="true" data-trip="${keyOf(p)}" style="--c:var(--${c})" title="Drag onto a ${CITIES[c].en} day">${esc(p.name)}<em>${at ? fmtDay(at.date) : lost ? "needs a new day" : "drag to a day"}</em></span>`;
     }).join("")}</div>`;
   }).join("");
+  const lost = lostPins();
+  const lostHTML = lost.length ? `<h3 class="sub">Needs a new day</h3><ul class="lostl">${lost.map(l => { const p = placeBy[l.key]; return `<li style="--c:var(--${homeOf(p)})">${badge(p)}<span>${esc(p.name)} <span class="muted">was on ${fmtDay(parseISO(l.iso))}</span></span><button class="ib" data-unpin="${l.key}" data-iso="${l.iso}" aria-label="Remove ${esc(p.name)}">×</button></li>`; }).join("")}</ul>` : "";
 
   const shareLink = /github\.io$|^localhost$|^127\.0\.0\.1$/.test(location.hostname);
   const outside = Object.keys(PLAN.notes).filter(d => !DAYS.some(x => x.iso === d));
   return `<button class="x" id="calClose" aria-label="Close planner">×</button>
   <p class="eyebrow">Your plan · saved in this browser</p><h2>Day by day</h2>
   ${sharedPending ? `<div class="banner"><span>You opened a shared plan.</span><button class="mini" data-act="keep">Keep it as mine</button><button class="mini ghost" data-act="discard">Use my own</button></div>` : ""}
-  <div class="pl-top"><label class="fld inline"><span>Start</span><input type="date" id="pl-start" value="${PLAN.start}"></label>
-    <div class="step total"><b>Nights</b><button class="sb" data-total="-1" aria-label="Shorter trip">−</button><span class="nv">${totalNights()}</span><button class="sb" data-total="1" aria-label="Longer trip">+</button><span class="end">→ ${fmtDay(DAYS.at(-1).date)}</span></div>
-    <div class="seg" role="group" aria-label="Vienna to Split"><span>Vienna → Split</span><button data-vs="sleeper" class="${vs === "sleeper" ? "on" : ""}">Sleeper</button><button data-vs="flight" class="${vs === "flight" ? "on" : ""}">Flight</button></div></div>
-  <div class="steps">${steppers}<span class="tot">move nights between cities</span></div>
+  ${settingsHTML()}
   <div class="cal planner">${WD.map(w => `<div class="wd">${w}</div>`).join("")}${cells.join("")}</div>
-  <p class="pl-status" role="status">${esc(plMsg || "Click a day to edit it. Drag a day trip onto a day, or drag the handle on a city's last day to change its nights.")}</p>
-  ${editor}
+  <p class="pl-status" role="status">${esc(plMsg || "Click a day to see it on the map and pin up to 3 places. Drag the handle on a city's last day to move nights.")}</p>
+  ${plSel != null && DAYS[plSel] ? dayViewHTML(DAYS[plSel]) : ""}
+  ${lostHTML}
   <h3 class="sub">Day trips</h3><div class="palette">${palette}</div>
   <h3 class="sub">Travel days</h3><ul class="trav">${travel}</ul>
   ${outside.length ? `<p class="note">Notes on ${outside.length} date${outside.length > 1 ? "s" : ""} outside the trip are kept in case the dates move back.</p>` : ""}
@@ -796,9 +1096,35 @@ function planHTML() {
   <textarea id="pl-copy" class="copybox" readonly hidden></textarea>`;
 }
 
+// the day on the map: its route, from home base through the pins, with stations and airports
+const HUB_ICON = { home: "⌂", air: "✈︎", rail: "▤" };
+const HOP_ICON = { walk: "🚶", city: "🚇", transfer: "🚌", regional: "🚆", train: "🚆", sleeper: "🛏", flight: "✈︎" };
+function dayHTML(x, it) {
+  const where = x.kind === "travel" ? `${PC[x.from].local} <span class="arrow">→</span> ${PC[x.to].local}` : PC[x.city].local;
+  const n = pinsOn(x).length, note = PLAN.notes[x.iso];
+  const rows = it.map(e => e.stop
+    ? `<li class="st ${e.stop.kind}" style="--c:var(--${PC[e.stop.city] ? e.stop.city : homeOf(e.stop.place)})"${e.stop.place && e.stop.kind === "place" ? ` data-p="${keyOf(e.stop.place)}" tabindex="0"` : ""}><span class="mk">${e.stop.kind === "place" ? badge(e.stop.place) : `<span class="hub">${HUB_ICON[e.stop.kind]}</span>`}</span><span><b>${esc(e.stop.name)}</b>${e.stop.sub ? `<small>${esc(e.stop.sub)}</small>` : ""}</span></li>`
+    : `<li class="hp ${e.hop.mode}" style="--c:var(--${PC[e.hop.b?.city] ? e.hop.b.city : dayCity(x)})"><span class="ln"></span><span>${HOP_ICON[e.hop.mode]} ${esc(e.hop.text)}</span></li>`).join("");
+  return `<p class="eyebrow"><span class="dot"></span>Day ${x.i + 1} of ${DAYS.length} · ${fmtDay(x.date)}</p>
+  <h2>${where}</h2>
+  ${x.note0 ? `<p class="lede">${esc(x.note0)}.</p>` : ""}
+  <ol class="itin">${rows}</ol>
+  ${note ? `<p class="note">${esc(note)}</p>` : ""}
+  <p class="hint">${n ? "" : "Nothing pinned for this day yet. "}<a href="#" data-plan-day="${x.i}">${n ? "Edit this day" : `Pin up to ${PIN_MAX} places`}</a>${n ? ` · <a href="#" data-play="1">▶ Play the day</a>` : ""}. Times are rough estimates.</p>`;
+}
+
 function wrapHTML() {
   const g = r => r ? ` data-g="${r}"` : "";
-  const rows = SUMMARY.map(r =>
+  const zn = byRail() ? PLAN.nights.zagreb : 0, zday = zn && PLAN.legs.zs.opt === "day";
+  const plan = SUMMARY.map(r => { // the rail option as planned: nights in Zagreb, and the train on to Split
+    if (!zn || r[0] === "sec") return r;
+    if (r[2] === "Evening in Zagreb") return ["row", "—", `${zn} night${zn === 1 ? "" : "s"} in Zagreb`, "a hotel or Airbnb", "—", "a"];
+    if (r[2] === "Zagreb → Split · sleeper" && zday) return ["row", "~6h 15", "Zagreb → Split · day train", "awake · through Lika to the coast", "€25–40", "a"];
+    if (r[0] === "opt" && r[2] === "a") return ["opt", `Option A · day train, ${zn} night${zn === 1 ? "" : "s"} in Zagreb, ${zday ? "day train" : "sleeper"}`, "a"];
+    if (r[0] === "total" && r[3] === "a") return ["total", `With Option A: ~${+railHours().toFixed(1)} h awake on trains`, zday ? "€75–130" : r[2], "a"];
+    return r;
+  });
+  const rows = plan.map(r =>
       r[0] === "sec" ? `<tr class="sec"><td colspan="3">${esc(r[1])}</td></tr>`
     : r[0] === "opt" ? `<tr class="opt"${g(r[2])}><td colspan="3">${esc(r[1])}</td></tr>`
     : r[0] === "sub" ? `<tr class="subt"${g(r[3])}><td></td><td class="op">${esc(r[1])}</td><td class="c">${r[2]}</td></tr>`
@@ -830,6 +1156,7 @@ function readTheme() {
     vienna: g("--vienna"), prague: g("--prague"), split: g("--split"), halo: g("--land-hi") };
   C.tram = g("--tram"); C.bus = g("--bus");
   for (const [k, d] of Object.entries(DETAIL)) C[k] = C[d.parent]; // day trips take their base city's color
+  C.zagreb = g("--zagreb"); // a stopover you can spend nights in
   invalidate();
 }
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", readTheme);
@@ -845,7 +1172,7 @@ let refit = 0;
 addEventListener("resize", () => {
   resize(); uiCache = null;
   clearTimeout(refit);
-  refit = setTimeout(() => { if (slides[cur] && !openPlace) cvSel.interrupt().call(zoom.transform, slides[cur].view()); }, 150);
+  refit = setTimeout(() => { fitMenubar(); if (SL().view && !openPlace) cvSel.interrupt().call(zoom.transform, SL().view()); }, 150);
 });
 
 // ---------- geometry builders ----------
@@ -1015,10 +1342,11 @@ const zoom = d3.zoom().scaleExtent([0.35, 8000]).on("zoom", e => { T = e.transfo
 const cvSel = d3.select(cv).call(zoom);
 
 function viewRect() {
-  if (document.body.classList.contains("roam")) return { x: 0, y: 0, w: W, h: H };
+  const right = docked() ? calPanel.getBoundingClientRect().left : W;
+  if (document.body.classList.contains("roam")) return { x: 0, y: 0, w: right, h: H };
   const pr = document.getElementById("card").getBoundingClientRect();
-  const top = 70, bottom = 80;
-  if (W >= 760) return { x: pr.right, y: top, w: W - pr.right, h: H - top - bottom };
+  const top = 70, bottom = docked() ? 24 : 80;
+  if (W >= 760) return { x: pr.right, y: top, w: right - pr.right, h: H - top - bottom };
   return { x: 0, y: top, w: W, h: Math.max(160, pr.top - top) };
 }
 function fitBox(b, pad = 56, minSpan = 0) {
@@ -1132,10 +1460,10 @@ function legAt(L, f) {
 // airport to airport: Vienna Schwechat (VIE) and Split at Kaštela (SPU)
 const FLIGHTS = [{ leg: "vs", from: { code: "VIE", xy: P(16.5697, 48.1103) }, to: { code: "SPU", xy: P(16.2980, 43.5389) }, label: "✈ 1h15" }];
 function drawFlights() {
-  const sl = slides[cur] || {};
+  const sl = SL();
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   for (const f of FLIGHTS) {
-    if (!(sl.leg === f.leg || sl.id === "route" || sl.id === "in")) continue;
+    if (!(sl.day ? sl.flight === f.leg : sl.leg === f.leg || sl.id === "route" || sl.id === "in")) continue; // a rail day shows no flight
     const a = toS(f.from.xy), b = toS(f.to.xy);
     const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = b[0] - a[0], dy = b[1] - a[1];
     const cx = mx + dy * 0.22, cy = my - dx * 0.22; // bow the arc to one side of the rail line
@@ -1151,7 +1479,7 @@ function drawFlights() {
   }
 }
 function drawLegs() {
-  const sl = slides[cur] || {}, k = T.k;
+  const sl = SL(), k = T.k;
   ctx.lineCap = "round"; ctx.lineJoin = "round";
   const order = Object.keys(LEGS).sort((a, b) => (a === sl.leg) - (b === sl.leg));
   for (const id of order) {
@@ -1203,9 +1531,9 @@ let uiCache = null;
 function uiBoxes() {
   if (uiCache) return uiCache;
   uiCache = [];
-  for (const id of ["card", "nav", "tools"]) {
+  for (const id of ["card", "nav", "tools", "menubar", "calPanel"]) {
     const el = document.getElementById(id);
-    if (!el || (id === "card" && document.body.classList.contains("roam"))) continue;
+    if (!el || el.hidden || (id === "card" && document.body.classList.contains("roam"))) continue;
     const b = el.getBoundingClientRect();
     if (b.width) uiCache.push([b.left - 6, b.top - 6, b.right + 6, b.bottom + 6]);
   }
@@ -1213,15 +1541,15 @@ function uiBoxes() {
 }
 function remeasure() { uiCache = null; invalidate(); }
 const uiWatch = new ResizeObserver(remeasure);
-for (const id of ["card", "nav", "tools"]) uiWatch.observe(document.getElementById(id));
+for (const id of ["card", "nav", "tools", "menubar"]) uiWatch.observe(document.getElementById(id));
 const overlaps = (a, b) => a[0] < b[2] && a[2] > b[0] && a[1] < b[3] && a[3] > b[1];
 
 function drawPins() {
-  const sl = slides[cur] || {}, k = T.k;
+  const sl = SL(), k = T.k;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   const show = smooth(28, 45, k), tripShow = smooth(1.2, 2.5, k);
   if (show <= 0 && tripShow <= 0) return;
-  const focus = new Set(sl.city ? (sl.focus || []).map(c => `${sl.city}:${c}`) : []);
+  const focus = sl.focusKeys || new Set(sl.city ? (sl.focus || []).map(c => `${sl.city}:${c}`) : []);
   const taken = uiBoxes().slice(), labels = []; // keep labels out from under the card, nav and buttons
   // the suggested neighborhood: only on its stay slide, or when opened
   // historic neighborhoods: on a city's sights and stay slides, or anywhere while exploring
@@ -1266,7 +1594,7 @@ function drawPins() {
   for (const L of labels) {
     const o = { size: L.f ? 13.5 : 12, weight: L.f ? 600 : 500, fam: "--f-body" };
     ctx.font = fontFor(o);
-    const at = isTrip(L.p) ? tripDate(tripId(L.p)) : null;
+    const at = L.p.type !== "stay" && !sl.day ? pinDays(keyOf(L.p))[0] : null; // a day's own view needs no dates
     L.text = at ? `${L.p.name} · ${fmtDay(at.date)}` : L.p.name;
     const w = ctx.measureText(L.text).width, h = o.size * 1.3, g = L.r + 6;
     const opts = [
@@ -1295,7 +1623,7 @@ function drawMarkers() {
       if (k > 0.8) text(nm, x + 6, y, { size: 11, weight: 500, color: C.ink2 });
     }
     // major stations on every leg (context when no leg is active)
-    if (!slides[cur]?.leg && k > 0.9) {
+    if (!SL().leg && k > 0.9) {
       const seen = new Set();
       for (const L of Object.values(LEGS)) for (const st of L.stations.slice(1, -1)) {
         if (!st[3] || seen.has(st[0])) continue; seen.add(st[0]);
@@ -1357,6 +1685,7 @@ function draw(now) {
   ctx.globalAlpha = 1;
   drawLegs(now);
   drawFlights();
+  if (SL().day) drawDay(SL());
   drawMarkers();
   drawPins();
   placePop();
@@ -1367,7 +1696,7 @@ let frame = 0;
 function invalidate() { dirty = true; if (!frame) frame = requestAnimationFrame(loop); }
 function loop(now) {
   frame = 0;
-  const animating = !reduce && slides[cur]?.leg && legT0;
+  const animating = !reduce && SL().leg && legT0;
   if (dirty) { dirty = false; draw(now); }
   vc.setTransform(1, 0, 0, 1, 0, 0); vc.drawImage(base, 0, 0);
   if (animating) { drawTrain(now); frame = requestAnimationFrame(loop); }
@@ -1376,7 +1705,8 @@ function drawTrain(now) {
   const ph = ((now - legT0) / 6500) % 1.25;
   if (ph >= 1) return; // a short pause at the end of each run
   const e = ph < 0.5 ? 2 * ph * ph : 1 - Math.pow(-2 * ph + 2, 2) / 2;
-  const [x, y] = toS(legAt(LEGS[slides[cur].leg], e));
+  const [lo, hi] = SL().span || [0, 1]; // a day on part of a leg runs the train over just that part
+  const [x, y] = toS(legAt(LEGS[SL().leg], lo + (hi - lo) * e));
   vc.setTransform(dpr, 0, 0, dpr, 0, 0);
   vc.beginPath(); vc.arc(x, y, 9, 0, Math.PI * 2); vc.fillStyle = C.ink; vc.fill();
   vc.beginPath(); vc.arc(x, y, 4, 0, Math.PI * 2); vc.fillStyle = C.halo; vc.fill();
@@ -1396,10 +1726,26 @@ function openPop(p) {
   const credit = by ? `<div class="credit">${p.imgs && p.imgs.length > 1 ? "Photos" : "Photo"}: ${p.link ? `<a href="${esc(p.link)}" target="_blank" rel="noopener">${esc(by)}</a>` : esc(by)}</div>` : "";
   pop.innerHTML = `<button class="x" aria-label="Close">×</button>${photo}<h4>${esc(p.name)}</h4>${chip}<p>${esc(p.blurb)}</p>
     <div class="links">${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener">${p.type === "stay" ? "View on Airbnb" : p.type === "daytrip" ? "See the tour" : "Website"} ↗</a>` : ""}${p.guide ? `<a href="${esc(p.guide)}" target="_blank" rel="noopener">${esc(p.guideLabel || "Guide")} ↗</a>` : p.type === "stay" ? "" : `<a href="${imageSearch}" target="_blank" rel="noopener">More photos ↗</a>`}</div>${credit}`;
+  pop.insertAdjacentHTML("beforeend", popPlanHTML(p));
   pop.querySelector(".x").onclick = closePop;
   const im = pop.querySelector(".ph"); if (im) im.onload = () => { invalidate(); };
   pop.hidden = false; invalidate();
 }
+function popPlanHTML(p) {
+  const k = keyOf(p);
+  if (p.type === "stay") return PC[p.city] ? `<div class="pplan"><button class="mini${PLAN.stays[p.city] === p.code ? "" : " ghost"}" data-home="${k}">${PLAN.stays[p.city] === p.code ? "⌂ Our home base" : "⌂ Use as home base"}</button></div>` : "";
+  const days = DAYS.filter(x => canPin(x, p));
+  if (!days.length) return "";
+  return `<label class="pplan"><span>📌</span><select data-pinsel="${k}" aria-label="Pin ${esc(p.name)} to a day"><option value="">${pinDays(k).length ? `Pinned: ${pinDays(k).map(x => fmtDay(x.date)).join(", ")}` : "Pin to a day…"}</option>${days.map(x => {
+    const on = pinsOn(x).includes(k), n = pinsOn(x).length;
+    return `<option value="${x.iso}"${!on && n >= PIN_MAX ? " disabled" : ""}>${on ? "✓ unpin from " : ""}${fmtDay(x.date)} · ${n}/${PIN_MAX}</option>`;
+  }).join("")}</select></label>`;
+}
+pop.addEventListener("change", e => {
+  const sel = e.target.closest("[data-pinsel]"); if (!sel || !sel.value || !openPlace) return;
+  const p = openPlace, x = DAYS.find(d => d.iso === sel.value);
+  plMsg = pinMsg(togglePin(keyOf(p), x.iso), p, x); planChanged(); openPop(p);
+});
 function closePop() { openPlace = null; pop.hidden = true; invalidate(); }
 function placePop() {
   if (!openPlace) return;
@@ -1453,7 +1799,10 @@ viewer.addEventListener("click", e => {
   else if (e.target.closest(".next")) showPhoto(vIdx + 1);
   else if (!e.target.closest("img, figcaption")) closeViewer(); // a click on the backdrop
 });
-pop.addEventListener("click", e => { const im = e.target.closest("img[data-i]"); if (im && openPlace) openViewer(openPlace, +im.dataset.i); });
+pop.addEventListener("click", e => {
+  const im = e.target.closest("img[data-i]"); if (im && openPlace) openViewer(openPlace, +im.dataset.i);
+  const h = e.target.closest("[data-home]"); if (h) { const p = openPlace; setHome(h.dataset.home); openPop(p); }
+});
 
 // ---------- slides ----------
 const card = document.getElementById("card"), progress = document.getElementById("progress");
@@ -1464,30 +1813,50 @@ function stepFrom(i, dir) {
   if (!slides[i].side) while (slides[j] && slides[j].side) j += dir; // main flow skips side trips
   return Math.max(0, Math.min(slides.length - 1, j));
 }
-function go(i, { instant = false } = {}) {
+function go(i, { instant = false, fly = true } = {}) {
   i = Math.max(0, Math.min(slides.length - 1, i));
-  const sl = slides[i];
-  cur = i; legT0 = 0; closePop();
+  playTok++; daySl = null; closeMenu();
+  cur = i;
   for (const j of [i, stepFrom(i, 1), stepFrom(i, -1)]) needCity(slides[j].city);
-  document.getElementById("next").style.setProperty("--nc", `var(${slides[stepFrom(i, 1)].color})`);
+  showSlide(slides[i], instant, fly);
+  try { history.replaceState(null, "", "#" + slides[i].id); } catch (e) {}
+  if (plSel != null) renderPlanner(); // the calendar drops the day's highlight
+}
+// the card, the camera and the bottom bar for a slide or a day
+function showSlide(sl, instant, fly = true) {
+  legT0 = 0; closePop();
+  const nx = daySl ? DAYS[daySl.i + 1] : slides[stepFrom(cur, 1)];
+  document.getElementById("next").style.setProperty("--nc", `var(${daySl ? (nx ? `--${dayCity(nx)}` : "--ink-2") : nx.color})`);
   card.classList.add("swap");
   setTimeout(() => {
-    card.innerHTML = sl.html();
+    renderCard();
     card.style.setProperty("--c", `var(${sl.color})`);
     card.scrollTop = 0;
     card.classList.remove("swap");
+    if (!fly) return;
     const t1 = sl.view();
-    const startTrain = () => { if (sl.leg) { legT0 = performance.now(); invalidate(); } };
+    const startTrain = () => { if (sl.leg && SL() === sl) { legT0 = performance.now(); invalidate(); } };
     if (instant) { cvSel.call(zoom.transform, t1); startTrain(); }
     else flyTo(t1, startTrain);
   }, instant || reduce ? 0 : 180);
-  const m = MAIN.indexOf(mainOf(i));
-  progress.querySelectorAll("button").forEach((b, j) => { b.classList.toggle("on", j === m); b.setAttribute("aria-current", j === m ? "step" : "false"); });
-  document.getElementById("count")?.remove();
-  progress.insertAdjacentHTML("beforeend", `<span id="count">${String(m + 1).padStart(2, "0")} / ${MAIN.length}</span>`);
-  try { history.replaceState(null, "", "#" + sl.id); } catch (e) {}
+  syncProgress(); buildMenu();
   invalidate();
 }
+function syncProgress() {
+  const m = daySl ? -1 : MAIN.indexOf(mainOf(cur));
+  progress.querySelectorAll("button").forEach((b, j) => { b.classList.toggle("on", j === m); b.setAttribute("aria-current", j === m ? "step" : "false"); });
+  document.getElementById("count")?.remove();
+  progress.insertAdjacentHTML("beforeend", `<span id="count">${daySl ? `Day ${daySl.i + 1} / ${DAYS.length}` : `${String(m + 1).padStart(2, "0")} / ${MAIN.length}`}</span>`);
+}
+// docked layouts lose the bottom bar, so the card gets its own previous / next
+function cardFoot() {
+  if (!docked()) return "";
+  const btn = (d, t) => `<button class="mini ghost" data-step="${d}">${d < 0 ? "← " : ""}${esc(t)}${d > 0 ? " →" : ""}</button>`;
+  if (daySl) { const a = DAYS[daySl.i - 1], b = DAYS[daySl.i + 1]; return `<div class="cfoot">${a ? btn(-1, fmtDay(a.date)) : "<span></span>"}${b ? btn(1, fmtDay(b.date)) : ""}</div>`; }
+  const ai = stepFrom(cur, -1), bi = stepFrom(cur, 1);
+  return `<div class="cfoot">${ai !== cur ? btn(-1, slides[ai].label) : "<span></span>"}${bi !== cur ? btn(1, slides[bi].label) : ""}</div>`;
+}
+function renderCard() { const sl = SL(); if (sl.html) card.innerHTML = sl.html() + cardFoot(); }
 function buildNav() {
   MAIN = slides.map((s, i) => s.side ? -1 : i).filter(i => i >= 0);
   progress.innerHTML = MAIN.map((si, k) => { const s = slides[si]; return `<button aria-label="Slide ${k + 1}: ${esc(s.label)}" style="--c:var(${s.color})"><i style="${s.color2 ? `background:linear-gradient(90deg,var(${s.color}),var(${s.color2}))` : ""}"></i></button>`; }).join("");
@@ -1509,8 +1878,8 @@ function buildNav() {
     b.addEventListener("blur", () => { tip.hidden = true; });
   });
 }
-document.getElementById("next").onclick = () => go(stepFrom(cur, 1));
-document.getElementById("prev").onclick = () => go(stepFrom(cur, -1));
+document.getElementById("next").onclick = () => stepAny(1);
+document.getElementById("prev").onclick = () => stepAny(-1);
 document.getElementById("overview").onclick = () => { closePop(); flyTo(fitPts(Object.values(CITIES).map(c => c.xy), 70)); };
 function toggleRoam() {
   const on = document.body.classList.toggle("roam");
@@ -1520,6 +1889,7 @@ function toggleRoam() {
 }
 document.getElementById("roam").onclick = toggleRoam;
 const calBtn = document.getElementById("calBtn"), calPanel = document.getElementById("calPanel");
+const docked = () => document.body.classList.contains("dock");
 function renderPlanner() {
   if (calPanel.hidden) return;
   const y = calPanel.scrollTop;
@@ -1528,15 +1898,20 @@ function renderPlanner() {
   calPanel.querySelector("#calClose").onclick = () => setCal(false);
 }
 function setCal(open) {
+  if (docked()) open = true; // locked on screen on wide screens
   calPanel.hidden = !open; calBtn.setAttribute("aria-expanded", open);
   if (open) renderPlanner();
+  remeasure();
 }
 // one place to apply a plan change: recompute days, save, refresh whatever shows the plan
 function planChanged({ rerender = true } = {}) {
   DAYS = buildDays();
   savePlan();
   document.getElementById("calDates").textContent = planRange();
-  if (slides[cur]) card.innerHTML = slides[cur].html();
+  if (plSel != null) plSel = Math.min(plSel, DAYS.length - 1);
+  if (daySl) daySl = daySlide(DAYS[Math.min(daySl.i, DAYS.length - 1)]);
+  renderCard();
+  buildMenu();
   invalidate();
   if (rerender) renderPlanner();
 }
@@ -1546,17 +1921,28 @@ function copyText(text, okMsg) {
   try { navigator.clipboard.writeText(text).then(() => flash(okMsg), box); } catch (e) { box(); }
 }
 calBtn.onclick = e => { e.stopPropagation(); setCal(calPanel.hidden); };
-// switching sleeper <-> flight keeps the end date: the night on the train becomes (or comes back from) a night in Vienna
-function setVsOpt(opt) {
-  const was = PLAN.legs.vs.opt;
-  if (opt === was) return;
-  PLAN.legs.vs.opt = opt;
-  if (opt === "flight") { PLAN.nights.vienna += 1; plMsg = `Flying Vienna → Split: the sleeper night becomes night ${PLAN.nights.vienna} in Vienna. Same end date.`; }
-  else {
-    const from = PLAN.nights.vienna > 1 ? "vienna" : "split";
-    if (PLAN.nights[from] > 1) PLAN.nights[from] -= 1;
-    plMsg = `Day train + sleeper via Zagreb: one ${CITIES[from].en} night becomes the night on the train. Same end date.`;
+function setHome(key) {
+  const p = placeBy[key]; if (!p) return;
+  PLAN.stays[p.city] = PLAN.stays[p.city] === p.code ? null : p.code;
+  plMsg = PLAN.stays[p.city] ? `${PC[p.city].en} days now start and end at ${p.name}.` : `${PC[p.city].en} days start from the city center.`;
+  planChanged();
+}
+function moveNights(c, d) { // moving nights between cities never changes the trip length
+  const list = nightCities(), i = list.indexOf(c);
+  const nearby = [list[i + 1], list[i - 1], ...list].filter((x, k, a) => x && x !== c && a.indexOf(x) === k);
+  if (d > 0) {
+    const donor = nearby.find(x => PLAN.nights[x] > minN(x));
+    if (!donor) { flash("No other city has a night to spare. Add nights to the trip first."); return; }
+    PLAN.nights[c] += 1; PLAN.nights[donor] -= 1;
+    plMsg = `${PC[c].en} ${PLAN.nights[c]} night${PLAN.nights[c] === 1 ? "" : "s"}, ${PC[donor].en} ${PLAN.nights[donor]}.`;
+  } else {
+    if (PLAN.nights[c] <= minN(c)) { flash(c === "zagreb" ? "Zagreb is already an evening stop between trains." : `${PC[c].en} needs at least one night.`); return; }
+    const to = nearby.find(x => x !== "zagreb" || PLAN.nights.zagreb > 0) || nearby[0];
+    PLAN.nights[c] -= 1; PLAN.nights[to] += 1;
+    plMsg = `${PC[c].en} ${PLAN.nights[c]} night${PLAN.nights[c] === 1 ? "" : "s"}, ${PC[to].en} ${PLAN.nights[to]}.`;
   }
+  if (c === "zagreb" || PLAN.nights.zagreb === 0) DAYS = buildDays();
+  planChanged();
 }
 
 calPanel.addEventListener("click", e => {
@@ -1564,71 +1950,73 @@ calPanel.addEventListener("click", e => {
   const jump = t.closest("[data-go]");
   if (jump) { e.preventDefault(); setCal(false); go(slides.findIndex(s => s.id === jump.dataset.go)); return; }
   const day = t.closest("[data-day]");
-  if (day && !t.closest("[data-grip]")) { const i = +day.dataset.day; plSel = plSel === i ? null : i; plMsg = ""; renderPlanner(); return; }
+  if (day && !t.closest("[data-grip]")) { const i = +day.dataset.day; plMsg = ""; if (daySl && daySl.i === i) exitDay(); else goDay(i); return; }
+  const ds = t.closest("[data-dstep]");
+  if (ds) { goDay(plSel + +ds.dataset.dstep); return; }
   const tb = t.closest("[data-total]");
   if (tb) { // the trip length: extra nights go to (and come from) the last city first
-    const d = +tb.dataset.total;
-    if (d > 0) { if (totalNights() >= 30) return; PLAN.nights[ORDER.at(-1)] += 1; }
+    const d = +tb.dataset.total, list = nightCities();
+    if (d > 0) { if (totalNights() >= 30) return; PLAN.nights[list.at(-1)] += 1; }
     else {
-      const from = [...ORDER].reverse().find(c => PLAN.nights[c] > 1);
+      const from = [...list].reverse().find(c => PLAN.nights[c] > minN(c));
       if (!from) { flash("Each city needs at least one night."); return; }
       PLAN.nights[from] -= 1;
     }
-    plSel = null; plMsg = `${totalNights()} nights, home on ${fmtDay(buildDays().at(-1).date)}.`; planChanged(); return;
+    DAYS = buildDays(); plMsg = `${totalNights()} nights, home on ${fmtDay(DAYS.at(-1).date)}.`; planChanged(); return;
   }
   const sb = t.closest("[data-n]");
-  if (sb) { // moving nights between cities never changes the trip length
-    const c = sb.dataset.n, i = ORDER.indexOf(c), d = +sb.dataset.d;
-    const nearby = [ORDER[i + 1], ORDER[i - 1], ...ORDER].filter((x, k, a) => x && x !== c && a.indexOf(x) === k);
-    if (d > 0) {
-      const donor = nearby.find(x => PLAN.nights[x] > 1);
-      if (!donor) { flash(`No other city has a night to spare. Add nights to the trip first.`); return; }
-      PLAN.nights[c] += 1; PLAN.nights[donor] -= 1;
-      plMsg = `${CITIES[c].en} ${PLAN.nights[c]} nights, ${CITIES[donor].en} ${PLAN.nights[donor]}.`;
-    } else {
-      if (PLAN.nights[c] <= 1) { flash(`${CITIES[c].en} needs at least one night.`); return; }
-      const to = nearby[0];
-      PLAN.nights[c] -= 1; PLAN.nights[to] += 1;
-      plMsg = `${CITIES[c].en} ${PLAN.nights[c]} night${PLAN.nights[c] > 1 ? "s" : ""}, ${CITIES[to].en} ${PLAN.nights[to]}.`;
-    }
-    plSel = null; planChanged(); return;
-  }
+  if (sb) { moveNights(sb.dataset.n, +sb.dataset.d); return; }
   const vs = t.closest("[data-vs]");
-  if (vs) { setVsOpt(vs.dataset.vs); plSel = null; planChanged(); return; }
+  if (vs) { setVsOpt(vs.dataset.vs); planChanged(); return; }
+  const zs = t.closest("[data-zs]");
+  if (zs) { setZsOpt(zs.dataset.zs); planChanged(); return; }
+  const pin = t.closest("[data-pin]");
+  if (pin && plSel != null) { const x = DAYS[plSel], p = placeBy[pin.dataset.pin], r = togglePin(pin.dataset.pin, x.iso); plMsg = pinMsg(r, p, x); planChanged(); return; }
+  const un = t.closest("[data-unpin]");
+  if (un) {
+    const iso = un.dataset.iso || DAYS[plSel]?.iso, arr = PLAN.pins[iso] || [], k = arr.indexOf(un.dataset.unpin);
+    if (k >= 0) arr.splice(k, 1); if (!arr.length) delete PLAN.pins[iso];
+    plMsg = `${placeBy[un.dataset.unpin].name} unpinned.`; planChanged(); return;
+  }
+  const mv = t.closest("[data-mv]");
+  if (mv && plSel != null) { // reorder: swap two of the day's valid pins in place
+    const x = DAYS[plSel], ks = pinsOn(x), j = +mv.dataset.mv, o = j + +mv.dataset.dir, arr = PLAN.pins[x.iso];
+    if (o < 0 || o >= ks.length) return;
+    const a = arr.indexOf(ks[j]), b = arr.indexOf(ks[o]); [arr[a], arr[b]] = [arr[b], arr[a]];
+    plMsg = ""; planChanged(); return;
+  }
   const act = t.closest("[data-act]")?.dataset.act;
   if (!act) return;
   const strip = () => { try { history.replaceState(null, "", location.pathname + location.hash); } catch (err) {} };
-  if (act === "keep") { sharedPending = null; strip(); plMsg = "Saved the shared plan as yours."; planChanged(); }
+  if (act === "settings") { plSetOpen = !plSetOpen; try { localStorage.setItem("planSettings", plSetOpen ? "open" : "closed"); } catch (err) {} renderPlanner(); }
+  else if (act === "play") playDay();
+  else if (act === "dayoff") exitDay();
+  else if (act === "dayon") goDay(plSel);
+  else if (act === "keep") { sharedPending = null; strip(); migratePlan(); plMsg = "Saved the shared plan as yours."; planChanged(); }
   else if (act === "discard") {
     sharedPending = null; strip();
     try { const raw = localStorage.getItem(PLAN_KEY); PLAN = raw ? normalizePlan(JSON.parse(raw)) : clone(PLAN_DEFAULT); } catch (err) { PLAN = clone(PLAN_DEFAULT); }
-    plMsg = "Back to your own plan."; planChanged();
+    migratePlan(); plMsg = "Back to your own plan."; planChanged();
   }
   else if (act === "link") copyText(`${location.origin}${location.pathname}?plan=${toCode(PLAN)}`, "Share link copied. Anyone who opens it gets a copy of this plan.");
   else if (act === "code") copyText(toCode(PLAN), "Plan code copied. Others can paste it with 'Paste a plan code'.");
   else if (act === "import") { plImport = !plImport; renderPlanner(); calPanel.querySelector("#pl-code")?.focus(); }
   else if (act === "load") {
-    try { PLAN = fromCode(calPanel.querySelector("#pl-code").value); plImport = false; plSel = null; plMsg = "Loaded the pasted plan."; planChanged(); }
+    try { PLAN = fromCode(calPanel.querySelector("#pl-code").value); migratePlan(); plImport = false; plMsg = "Loaded the pasted plan."; planChanged(); }
     catch (err) { flash("That code didn't work. Paste the whole code or share link."); }
   }
   else if (act === "reset") { plResetAsk = true; renderPlanner(); }
   else if (act === "reset-no") { plResetAsk = false; renderPlanner(); }
-  else if (act === "reset-yes") { PLAN = clone(PLAN_DEFAULT); plResetAsk = false; plSel = null; plMsg = "Back to the default plan."; planChanged(); }
+  else if (act === "reset-yes") { PLAN = clone(PLAN_DEFAULT); plResetAsk = false; plMsg = "Back to the default plan."; planChanged(); }
 });
+calPanel.addEventListener("toggle", e => { if (e.target.id === "pl-add") plAdd = e.target.open; }, true); // toggle doesn't bubble
 
 calPanel.addEventListener("change", e => {
   const t = e.target;
-  if (t.id === "pl-start" && t.value) { PLAN.start = t.value; plMsg = `Trip starts ${fmtDay(parseISO(t.value))}.`; planChanged(); }
-  else if (t.id === "pl-opt") { if (t.dataset.leg === "vs") setVsOpt(t.value); else PLAN.legs[t.dataset.leg].opt = t.value; planChanged(); }
-  else if (t.id === "pl-dep" && t.value) { PLAN.legs[t.dataset.leg].dep = t.value; planChanged(); }
-  else if (t.id === "pl-trip") {
-    const x = DAYS[plSel];
-    setTrip(t.value || null, t.value ? x.iso : null);
-    if (!t.value) delete PLAN.trips[x.iso];
-    const p = TRIPS.find(q => tripId(q) === t.value);
-    plMsg = p ? `${p.name} planned for ${fmtDay(x.date)}.` : `No day trip on ${fmtDay(x.date)}.`;
-    planChanged();
-  }
+  if (t.id === "pl-start" && t.value) { PLAN.start = t.value; DAYS = buildDays(); plMsg = `Trip starts ${fmtDay(parseISO(t.value))}.`; planChanged(); }
+  else if (t.id === "pl-opt") { const l = t.dataset.leg; if (l === "vs") setVsOpt(t.value); else if (l === "zs") setZsOpt(t.value); planChanged(); }
+  else if (t.id === "pl-dep" && t.value) { PLAN.legs[t.dataset.leg === "vz" ? "vs" : t.dataset.leg].dep = t.value; planChanged(); }
+  else if (t.dataset.stay) { PLAN.stays[t.dataset.stay] = t.value || null; plMsg = t.value ? `${PC[t.dataset.stay].en} days start and end at ${placeBy[`${t.dataset.stay}:${t.value}`].name}.` : ""; planChanged(); }
 });
 calPanel.addEventListener("input", e => {
   if (e.target.id !== "pl-note") return;
@@ -1637,7 +2025,7 @@ calPanel.addEventListener("input", e => {
   savePlan(); // no re-render while typing; the note dot appears on the next render
 });
 
-// drag a day trip onto a day
+// drag a day trip onto a day to pin it
 let dragTrip = null;
 calPanel.addEventListener("dragstart", e => {
   const chip = e.target.closest("[data-trip]"); if (!chip) return;
@@ -1647,21 +2035,22 @@ calPanel.addEventListener("dragstart", e => {
 calPanel.addEventListener("dragover", e => {
   const cell = e.target.closest("[data-day]"); if (!cell || !dragTrip) return;
   e.preventDefault();
-  const ok = canHost(DAYS[+cell.dataset.day], TRIPS.find(p => tripId(p) === dragTrip));
+  const x = DAYS[+cell.dataset.day], ok = canPin(x, placeBy[dragTrip]) && (pinsOn(x).length < PIN_MAX || pinsOn(x).includes(dragTrip));
   calPanel.querySelectorAll(".cd.drop-ok, .cd.drop-no").forEach(c => c.classList.remove("drop-ok", "drop-no"));
   cell.classList.add(ok ? "drop-ok" : "drop-no");
 });
 calPanel.addEventListener("drop", e => {
   const cell = e.target.closest("[data-day]"); if (!cell || !dragTrip) return;
   e.preventDefault();
-  const x = DAYS[+cell.dataset.day], p = TRIPS.find(q => tripId(q) === dragTrip);
+  const x = DAYS[+cell.dataset.day], p = placeBy[dragTrip];
   dragTrip = null;
-  if (!canHost(x, p)) {
+  if (!canPin(x, p)) {
     renderPlanner();
-    flash(x.kind === "stay" ? `${p.name} is a day trip from ${CITIES[p.city].en}. Drop it on a ${CITIES[p.city].en} day.` : `${fmtDay(x.date)} is a travel day. Pick a full day in ${CITIES[p.city].en}.`);
+    flash(x.kind === "travel" ? `${fmtDay(x.date)} is a travel day. Pick a full day in ${CITIES[p.city].en}.` : `${p.name} is a day trip from ${CITIES[p.city].en}. Drop it on a ${CITIES[p.city].en} day.`);
     return;
   }
-  setTrip(tripId(p), x.iso); plMsg = `${p.name} planned for ${fmtDay(x.date)}.`; planChanged();
+  if (pinsOn(x).includes(keyOf(p))) { renderPlanner(); return; }
+  plMsg = pinMsg(togglePin(keyOf(p), x.iso), p, x); planChanged();
 });
 calPanel.addEventListener("dragend", () => { dragTrip = null; calPanel.querySelectorAll(".cd.drop-ok, .cd.drop-no").forEach(c => c.classList.remove("drop-ok", "drop-no")); });
 
@@ -1683,14 +2072,226 @@ calPanel.addEventListener("pointerup", () => {
   if (!grip) return;
   const { city, from, to } = grip; grip = null;
   if (to == null || to === from) { renderPlanner(); return; }
-  const next = ORDER[ORDER.indexOf(city) + 1], delta = to - from;
+  const list = nightCities(), next = list[list.indexOf(city) + 1], delta = to - from;
   const a = PLAN.nights[city] + delta, b = PLAN.nights[next] - delta;
-  if (a < 1 || b < 1) { renderPlanner(); flash("Each city needs at least one night."); return; }
-  PLAN.nights[city] = a; PLAN.nights[next] = b; plSel = null;
-  plMsg = `${CITIES[city].en} ${a} night${a > 1 ? "s" : ""}, ${CITIES[next].en} ${b} night${b > 1 ? "s" : ""}.`;
+  if (a < minN(city) || b < minN(next)) { renderPlanner(); flash("Each city needs at least one night."); return; }
+  PLAN.nights[city] = a; PLAN.nights[next] = b;
+  plMsg = `${PC[city].en} ${a} night${a === 1 ? "" : "s"}, ${PC[next].en} ${b} night${b === 1 ? "" : "s"}.`;
   planChanged();
 });
 document.getElementById("calDates").textContent = planRange();
+
+// ---------- a day on the map ----------
+let daySl = null, playTok = 0; // the day on screen, when one is picked in the calendar
+const SL = () => daySl || slides[cur] || {};
+// how far along the Vienna → Split track Zagreb's station is, for days that ride only part of it
+function zagrebAt() {
+  const L = LEGS.vs, z = HUB.zagreb.rail.xy;
+  let best = 0, bd = Infinity;
+  L.pts.forEach((q, i) => { const d = Math.hypot(q[0] - z[0], q[1] - z[1]); if (d < bd) { bd = d; best = i; } });
+  return L.cum[best] / L.cum.at(-1);
+}
+function daySlide(x) {
+  const it = itinerary(x), pts = it.filter(e => e.stop).map(e => e.stop.xy);
+  const fly = x.leg === "vs" && PLAN.legs.vs.opt === "flight";
+  const fz = zagrebAt(), span = x.leg === "vz" ? [0, fz] : x.leg === "zs" ? [fz, 1] : null;
+  return { span, id: `day-${x.iso}`, day: x, i: x.i, it, city: dayCity(x), color: `--${dayCity(x)}`, label: `Day ${x.i + 1}: ${fmtDay(x.date)}`,
+    leg: x.kind === "travel" && !fly ? (x.leg === "pv" ? "pv" : "vs") : null, flight: fly ? "vs" : null,
+    focusKeys: new Set(pinsOn(x).map(k => k)), view: () => fitPts(pts, 70, 1.2), html: () => dayHTML(x, it) };
+}
+function goDay(i, { instant = false } = {}) {
+  if (!DAYS.length) return;
+  i = Math.max(0, Math.min(DAYS.length - 1, i));
+  playTok++; closePop(); closeMenu();
+  daySl = daySlide(DAYS[i]); plSel = i;
+  for (const e of daySl.it) if (e.stop) needCity(e.stop.place?.city || e.stop.city);
+  showSlide(daySl, instant);
+  try { history.replaceState(null, "", "#" + daySl.id); } catch (e) {}
+  renderPlanner();
+}
+function exitDay() {
+  playTok++;
+  if (!daySl) return;
+  daySl = null;
+  if (cur >= 0) go(cur); else renderPlanner();
+}
+function stepAny(dir) { if (daySl) goDay(daySl.i + dir); else go(stepFrom(cur, dir)); }
+
+function drawDay(sl) {
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.lineCap = "round"; ctx.lineJoin = "round";
+  const STYLE = { walk: [[1, 7], 3.5], city: [[], 3.5], transfer: [[9, 6], 3], regional: [[10, 6], 3] };
+  const chips = [];
+  for (const e of sl.it) {
+    const h = e.hop; if (!h || h.ride) continue;
+    const a = toS(h.a.xy), b = toS(h.b.xy), [dash, w] = STYLE[h.mode], col = C[h.b.city] || C[h.a.city] || C.ink2;
+    ctx.setLineDash([]); ctx.strokeStyle = C.halo; ctx.lineWidth = w + 3.5; ctx.globalAlpha = 0.9;
+    ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+    ctx.setLineDash(dash); ctx.strokeStyle = h.mode === "walk" ? C.ink2 : col; ctx.lineWidth = w; ctx.globalAlpha = 1;
+    ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+    if (Math.hypot(b[0] - a[0], b[1] - a[1]) > 70) chips.push([(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, `${HOP_ICON[h.mode]} ${h.short}`]);
+  }
+  ctx.setLineDash([]);
+  // home base, stations and airports
+  const seen = new Set(), named = [];
+  for (const e of sl.it) {
+    const s = e.stop; if (!s || s.kind === "place" || seen.has(s.name)) continue;
+    seen.add(s.name);
+    const [x, y] = toS(s.xy); if (!inView(x, y)) continue;
+    const crowded = named.some(([a, b]) => Math.abs(a - x) < 150 && Math.abs(b - y) < 18); // stops close together keep one label
+    if (!crowded) named.push([x, y]);
+    ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x - 11, y - 11, 22, 22, 5) : ctx.rect(x - 11, y - 11, 22, 22);
+    ctx.fillStyle = C.halo; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = C.ink; ctx.stroke();
+    text(HUB_ICON[s.kind], x, y + 1, { size: s.kind === "home" ? 15 : 12, weight: 700, color: C.ink, align: "center", halo: 0 });
+    if (!crowded && (s.kind !== "home" || !s.place)) text(s.name, x + 16, y, { size: 12, weight: 600, color: C.ink, halo: 3.5 });
+  }
+  for (const [x, y, t] of chips) text(t, x, y, { size: 11.5, weight: 600, fam: "--f-mono", color: C.ink, align: "center", halo: 4 });
+}
+// "Play the day": the camera flies stop to stop and opens each place, like the slides do
+async function playDay() {
+  if (!daySl) { if (plSel == null) return; goDay(plSel); await new Promise(r => setTimeout(r, 900)); }
+  const tok = ++playTok, stops = daySl.it.filter(e => e.stop).map(e => e.stop);
+  for (const s of stops) {
+    if (tok !== playTok || !daySl) return;
+    closePop();
+    const r = viewRect(), k = s.kind === "place" ? 420 : 180;
+    await new Promise(res => flyTo(d3.zoomIdentity.translate(r.x + r.w / 2 - s.xy[0] * k, r.y + r.h / 2 - s.xy[1] * k).scale(k), res));
+    if (tok !== playTok) return;
+    if (s.kind === "place") openPop(s.place);
+    await new Promise(res => setTimeout(res, s.kind === "place" ? 2200 : 1100));
+  }
+  if (tok === playTok && daySl) { closePop(); flyTo(daySl.view()); }
+}
+
+// ---------- menu bar: a menu per city, with its sights, food, stays and day trips ----------
+const menubar = document.getElementById("menubar"), mbItems = document.getElementById("mbItems"), mbMenu = document.getElementById("mbMenu");
+let mbOpen = null, mbPick = null; // the open menu, and the place being pinned (shows a day picker)
+function slideFor(p) {
+  if (p.type === "food" || p.type === "cafe") return PC[p.city] && CITIES[p.city] ? `${p.city}-eat` : p.city;
+  if (p.type === "stay") return `${p.city}-stay`;
+  if (p.type === "daytrip" || p.type === "nature") return `${p.city}-out`;
+  return p.city; // a city's sights, a day-trip area or the Zagreb stopover
+}
+function menuOf(sl) {
+  if (!sl || !sl.id) return null;
+  if (sl.day) return dayCity(sl.day);
+  if (["intro", "route", "in", "pv", "vs"].includes(sl.id)) return "trip";
+  return PC[sl.city] ? sl.city : DETAIL[sl.city]?.parent || null;
+}
+function menuList(id) {
+  const has = s => slides.some(x => x.id === s);
+  if (id === "trip") return [["go", "intro", "Intro: the trip at a glance"], ["go", "route", "The route"], ["go", "pv", "Train: Prague → Vienna"], ["go", "vs", "Vienna → Split"], ["go", "in", "Times & costs"]]
+    .filter(r => has(r[1])).map(([, g, t]) => ({ go: g, t }));
+  const out = [], own = PLACES.filter(p => p.city === id);
+  const sec = (t, go, list) => { if (!list.length) return; out.push({ sec: t, go }); for (const p of list) out.push({ p }); };
+  if (id === "zagreb") {
+    out.push({ go: "zagreb", t: "The stopover" });
+    sec("Sights", "zagreb", own.filter(p => p.type === "sight"));
+    sec("Eat & drink", "zagreb", own.filter(p => p.type === "food" || p.type === "cafe"));
+    out.push({ sec: "Getting here", go: "vs" }, { go: "vs", t: "Train from Vienna" });
+    return out;
+  }
+  out.push({ go: id, t: "Overview" });
+  sec("Sights", id, own.filter(p => p.type === "sight"));
+  sec("Eat & drink", `${id}-eat`, own.filter(p => p.type === "food" || p.type === "cafe"));
+  sec("Stay", `${id}-stay`, own.filter(p => p.type === "stay"));
+  sec("Day trips & nature", `${id}-out`, own.filter(p => p.type === "daytrip" || p.type === "nature"));
+  const leg = { vienna: ["pv", "Train from Prague"], split: ["vs", "From Vienna, by train or plane"] }[id];
+  if (leg) out.push({ sec: "Getting here", go: leg[0] }, { go: leg[0], t: leg[1] });
+  return out;
+}
+function menuItemsHTML(id) {
+  if (mbPick) { // pick a day for one place
+    const p = placeBy[mbPick], days = DAYS.filter(x => canPin(x, p));
+    return `<button role="menuitem" class="mi sec" data-mback="1">← Pin ${esc(p.name)} to…</button>${days.map(x => {
+      const on = pinsOn(x).includes(mbPick), n = pinsOn(x).length;
+      return `<button role="menuitem" class="mi" data-pinday="${x.iso}"${!on && n >= PIN_MAX ? " disabled" : ""}><span class="ck">${on ? "✓" : ""}</span>${fmtDay(x.date)} <span class="muted">· ${n}/${PIN_MAX}${plSel === x.i ? " · selected day" : ""}</span></button>`;
+    }).join("")}`;
+  }
+  return menuList(id).map(r => {
+    if (r.sec) return `<button role="menuitem" class="mi sec" data-go="${r.go}">${esc(r.sec)} <span>→</span></button>`;
+    if (r.go) return `<button role="menuitem" class="mi" data-go="${r.go}">${esc(r.t)}</button>`;
+    const p = r.p, k = keyOf(p), at = p.type !== "stay" && pinDays(k)[0];
+    const right = p.type === "stay"
+      ? `<button role="menuitem" class="mi side${PLAN.stays[p.city] === p.code ? " on" : ""}" data-home="${k}" title="Use as home base" aria-label="Use ${esc(p.name)} as home base">⌂</button>`
+      : `${p.detail ? `<button role="menuitem" class="mi side" data-go="${p.detail}" title="Zoom-in map" aria-label="Zoom into ${esc(p.name)}">↗</button>` : ""}<button role="menuitem" class="mi side${at ? " on" : ""}" data-mpin="${k}" title="${at ? `Pinned to ${fmtDay(at.date)}` : "Pin to a day"}" aria-label="Pin ${esc(p.name)} to a day">📌</button>`;
+    return `<div class="mrow" role="none" style="--c:var(--${homeOf(p)})"><button role="menuitem" class="mi" data-mp="${k}">${badge(p)}<span class="nm">${esc(p.name)}</span>${at ? `<span class="when">${fmtDay(at.date)}</span>` : ""}${p.type === "stay" && PLAN.stays[p.city] === p.code ? `<span class="when">home base</span>` : ""}</button>${right}</div>`;
+  }).join("");
+}
+const MENU_IDS = ["trip", ...NIGHT_ORDER];
+const menuTitle = id => id === "trip" ? "Trip" : PC[id].local;
+function buildMenu() {
+  const on = menuOf(SL());
+  mbItems.innerHTML = MENU_IDS.map(id => `<button role="menuitem" class="mbt${on === id ? " cur" : ""}${mbOpen === id ? " open" : ""}" data-menu="${id}" aria-haspopup="true" aria-expanded="${mbOpen === id}" style="--c:var(--${id === "trip" ? "ink-2" : id})">${menuTitle(id)}</button>`).join("");
+  if (!mbOpen) { mbMenu.hidden = true; return; }
+  const compact = menubar.classList.contains("compact");
+  mbMenu.innerHTML = compact && !mbPick
+    ? MENU_IDS.map(id => `<details${id === (menuOf(SL()) || "trip") ? " open" : ""}><summary style="--c:var(--${id === "trip" ? "ink-2" : id})">${menuTitle(id)}</summary>${menuItemsHTML(id)}</details>`).join("")
+    : menuItemsHTML(mbOpen);
+  mbMenu.hidden = false;
+  if (compact) { mbMenu.style.left = ""; return; }
+  const b = mbItems.querySelector(`[data-menu="${mbOpen}"]`).getBoundingClientRect();
+  mbMenu.style.left = Math.max(8, Math.min(innerWidth - mbMenu.offsetWidth - 8, b.left)) + "px";
+}
+function openMenu(id, focus) { mbOpen = id; mbPick = null; buildMenu(); if (focus) mbMenu.querySelector("[role=menuitem]")?.focus(); }
+function closeMenu() { if (!mbOpen) return; mbOpen = null; mbPick = null; buildMenu(); }
+mbItems.addEventListener("click", e => { const b = e.target.closest("[data-menu]"); if (!b) return; e.stopPropagation(); mbOpen === b.dataset.menu ? closeMenu() : openMenu(b.dataset.menu); });
+mbItems.addEventListener("pointerover", e => { const b = e.target.closest("[data-menu]"); if (b && mbOpen && mbOpen !== b.dataset.menu && !menubar.classList.contains("compact")) openMenu(b.dataset.menu); });
+document.getElementById("mbBurger").addEventListener("click", e => { e.stopPropagation(); mbOpen ? closeMenu() : openMenu(menuOf(SL()) || "trip"); });
+mbMenu.addEventListener("click", e => {
+  e.stopPropagation();
+  const t = e.target;
+  if (t.closest("summary")) return;
+  const g = t.closest("[data-go]");
+  if (g) { closeMenu(); go(slides.findIndex(s => s.id === g.dataset.go)); return; }
+  const mp = t.closest("[data-mp]");
+  if (mp) { // the place's slide on the card, then fly to the place itself
+    const p = placeBy[mp.dataset.mp], i = slides.findIndex(s => s.id === slideFor(p));
+    closeMenu(); if (i >= 0) go(i, { fly: false }); focusPlace(p); return;
+  }
+  const h = t.closest("[data-home]");
+  if (h) { setHome(h.dataset.home); return; }
+  const pin = t.closest("[data-mpin]");
+  if (pin) { mbPick = pin.dataset.mpin; buildMenu(); mbMenu.querySelector("[data-pinday]")?.focus(); return; }
+  if (t.closest("[data-mback]")) { mbPick = null; buildMenu(); return; }
+  const pd = t.closest("[data-pinday]");
+  if (pd) {
+    const p = placeBy[mbPick], x = DAYS.find(d => d.iso === pd.dataset.pinday);
+    plMsg = pinMsg(togglePin(mbPick, x.iso), p, x); planChanged(); buildMenu(); return;
+  }
+});
+menubar.addEventListener("keydown", e => {
+  const items = [...mbMenu.querySelectorAll("[role=menuitem]:not([disabled])")].filter(b => b.offsetParent);
+  const titles = [...mbItems.querySelectorAll("[data-menu]")], ti = titles.indexOf(document.activeElement), mi = items.indexOf(document.activeElement);
+  const k = e.key;
+  if (k === "Escape") { const id = mbOpen; closeMenu(); mbItems.querySelector(`[data-menu="${id}"]`)?.focus(); }
+  else if (ti >= 0 && (k === "ArrowRight" || k === "ArrowLeft")) { const n = titles[(ti + (k === "ArrowRight" ? 1 : -1) + titles.length) % titles.length]; n.focus(); if (mbOpen) openMenu(n.dataset.menu); }
+  else if (ti >= 0 && (k === "ArrowDown" || k === "Enter" || k === " ")) openMenu(titles[ti].dataset.menu, true);
+  else if (mi >= 0 && (k === "ArrowDown" || k === "ArrowUp")) items[(mi + (k === "ArrowDown" ? 1 : -1) + items.length) % items.length].focus();
+  else if (mi >= 0 && (k === "ArrowRight" || k === "ArrowLeft") && !menubar.classList.contains("compact")) { const n = titles[(titles.findIndex(b => b.dataset.menu === mbOpen) + (k === "ArrowRight" ? 1 : -1) + titles.length) % titles.length]; openMenu(n.dataset.menu, true); }
+  else if (k === "Tab") { closeMenu(); return; }
+  else return;
+  e.preventDefault(); e.stopPropagation();
+});
+document.addEventListener("click", e => { if (mbOpen && !e.target.closest("#menubar")) closeMenu(); });
+// the menu titles collapse to one Menu button when they'd run into the toolbar
+function fitMenubar() {
+  menubar.classList.remove("compact");
+  const a = mbItems.getBoundingClientRect(), b = document.getElementById("tools").getBoundingClientRect();
+  if (innerWidth < 760 || a.right > b.left - 12) menubar.classList.add("compact");
+  if (mbOpen) buildMenu();
+}
+
+// ---------- wide screens: the planner is locked on screen on the right ----------
+const DOCK = matchMedia("(min-aspect-ratio: 3/2) and (min-width: 1100px)");
+function applyDock() {
+  document.body.classList.toggle("dock", DOCK.matches);
+  setCal(DOCK.matches);
+  renderCard(); fitMenubar(); remeasure();
+  if (slides.length && !openPlace) cvSel.interrupt().call(zoom.transform, SL().view());
+}
+DOCK.addEventListener("change", applyDock);
+uiWatch.observe(calPanel);
 const tBtn = document.getElementById("transitBtn"), tMenu = document.getElementById("transitMenu");
 function syncTransitUI() {
   for (const m of Object.keys(TRANSIT)) document.getElementById(`t-${m}`).checked = TRANSIT[m];
@@ -1717,18 +2318,23 @@ addEventListener("keydown", e => {
     else return;
     e.preventDefault(); return;
   }
-  if (e.target.closest("input, textarea, select")) return;
-  if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); go(stepFrom(cur, 1)); }
-  else if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); go(stepFrom(cur, -1)); }
+  if (e.target.closest("input, textarea, select, #menubar")) return;
+  if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); stepAny(1); }
+  else if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); stepAny(-1); }
   else if (e.key === "Home") go(0);
   else if (e.key === "End") go(slides.length - 1);
-  else if (e.key === "Escape") { closePop(); tMenu.hidden = true; tBtn.setAttribute("aria-expanded", "false"); setCal(false); }
+  else if (e.key === "Escape") { closePop(); closeMenu(); playTok++; tMenu.hidden = true; tBtn.setAttribute("aria-expanded", "false"); setCal(false); }
   else if (e.key.toLowerCase() === "h") toggleRoam();
 });
 card.addEventListener("click", e => {
   const jump = e.target.closest("[data-go]");
   if (jump) { e.preventDefault(); e.stopPropagation(); go(slides.findIndex(s => s.id === jump.dataset.go)); return; }
   if (e.target.closest("[data-plan]")) { e.preventDefault(); e.stopPropagation(); setCal(true); return; }
+  const st = e.target.closest("[data-step]");
+  if (st) { e.stopPropagation(); stepAny(+st.dataset.step); return; }
+  const pd = e.target.closest("[data-plan-day]");
+  if (pd) { e.preventDefault(); e.stopPropagation(); plSel = +pd.dataset.planDay; plAdd = true; setCal(true); calPanel.querySelector(".dayv")?.scrollIntoView({ block: "nearest", behavior: reduce ? "auto" : "smooth" }); return; }
+  if (e.target.closest("[data-play]")) { e.preventDefault(); e.stopPropagation(); playDay(); return; }
   const li = e.target.closest("[data-p]"); if (!li) return;
   if (e.target.matches("img.thumb")) { openViewer(placeBy[li.dataset.p], 0); return; } // the photo opens big; the rest of the row flies there
   focusPlace(placeBy[li.dataset.p]);
@@ -1757,7 +2363,9 @@ cv.addEventListener("click", ev => {
   else if (h.city) go(slides.findIndex(s => s.id === h.city));
 });
 addEventListener("hashchange", () => {
-  const i = slides.findIndex(s => s.id === location.hash.slice(1));
+  const h = location.hash.slice(1), d = DAYS.findIndex(x => `day-${x.iso}` === h);
+  if (d >= 0) { if (!daySl || daySl.i !== d) goDay(d); return; }
+  const i = slides.findIndex(s => s.id === h);
   if (i >= 0 && i !== cur) go(i);
 });
 cv.addEventListener("mousemove", ev => cv.classList.toggle("pointing", !!hitAt(ev)));
@@ -1771,11 +2379,15 @@ async function boot() {
   buildRegion(region); buildLegs(legs); buildPlaces(places, stays, images); HOODS = hoods;
   for (const hs of Object.values(HOODS)) for (const h of hs) { h.path = new Path2D(); for (const ring of h.rings) addAbs(h.path, ring.flat(), true); }
   TRIPS = PLACES.filter(p => p.type === "nature" || p.type === "daytrip");
+  migratePlan();
   DAYS = buildDays();
   slides = slideDeck(); buildNav();
   document.getElementById("loading").remove();
-  const h = location.hash.slice(1), start = Math.max(0, slides.findIndex(s => s.id === h));
-  go(start, { instant: true });
+  document.body.classList.toggle("dock", DOCK.matches);
+  const h = location.hash.slice(1), start = Math.max(0, slides.findIndex(s => s.id === h)), d = DAYS.findIndex(x => `day-${x.iso}` === h);
+  cur = start;
+  if (d >= 0) goDay(d, { instant: true }); else go(start, { instant: true });
+  applyDock(); fitMenubar();
   if (sharedPending) setCal(true); // someone sent a plan: show it with the keep / discard choice
   document.fonts && document.fonts.ready.then(() => { invalidate(); });
   ensureTransit(); syncTransitUI();
