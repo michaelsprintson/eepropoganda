@@ -6,6 +6,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <style>
+@property --a { syntax: "<color>"; inherits: true; initial-value: transparent; }
+@property --b { syntax: "<color>"; inherits: true; initial-value: transparent; }
 /* Layout: full-bleed OSM map as the canvas; a floating "station card" panel drives the camera like Prezi frames. */
 :root {
   --bg: #d5dee2;
@@ -236,11 +238,15 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .seg button.on { background: var(--ink); color: var(--panel); }
 .cal.planner .cd { min-height: 62px; padding-bottom: 6px; }
 .cd.sel { box-shadow: 0 0 0 2px var(--ink); }
-.cd.drop-ok { box-shadow: 0 0 0 2px var(--ink), inset 0 0 0 999px color-mix(in srgb, var(--ink) 10%, transparent); }
 .cd .tr { font-size: 10px; font-weight: 700; line-height: 1.15; color: var(--ink); background: color-mix(in srgb, var(--panel) 70%, transparent); border-radius: 3px; padding: 1px 3px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .cd .nd { position: absolute; top: 6px; right: 6px; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); }
 .cd .grip { position: absolute; top: 18%; bottom: 18%; right: -4px; width: 8px; border-radius: 4px; background: var(--ink); opacity: .55; cursor: ew-resize; touch-action: none; z-index: 1; }
-.cd .grip:hover { opacity: 1; }
+.cd .grip:hover, .cd .grip.live { opacity: 1; }
+.cal.planner.dragging { cursor: ew-resize; user-select: none; }
+.cal.planner.dragging .cd { cursor: ew-resize; transition: --a .18s ease, --b .18s ease; }
+.cal.planner.dragging .cd:hover { background: color-mix(in srgb, var(--a) 26%, var(--panel)); }
+.cal.planner.dragging .cd.travel:hover { background: linear-gradient(135deg, color-mix(in srgb, var(--a) 30%, var(--panel)) 0 50%, color-mix(in srgb, var(--b) 30%, var(--panel)) 50%); }
+.cd .grip.live { width: 10px; right: -5px; box-shadow: 0 0 0 2px var(--panel), 0 2px 8px rgba(0,0,0,.3); }
 .pl-status { margin: 2px 0 10px; font-size: 12.5px; color: var(--ink-2); min-height: 1.4em; }
 .editor { border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px 4px; margin: 0 0 6px; background: color-mix(in srgb, var(--chip) 60%, transparent); }
 .editor .eh { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; margin: 0 0 10px; }
@@ -1056,22 +1062,22 @@ function dayViewHTML(x) {
     <div class="dact"><button class="mini" data-act="play"${n ? "" : " disabled"}>▶ Play the day</button>${daySl ? `<button class="mini ghost" data-act="dayoff">Back to the slides</button>` : `<button class="mini ghost" data-act="dayon">Show on the map</button>`}</div>
   </div>`;
 }
-function planHTML() {
-  const first = DAYS[0].date, lead = (first.getDay() + 6) % 7;
+function calCells(days = DAYS, live = null) {
+  const first = days[0].date, lead = (first.getDay() + 6) % 7;
   const cells = [];
   for (let k = 0; k < lead; k++) cells.push(`<div class="cd off"><span class="n">${addDays(first, k - lead).getDate()}</span></div>`);
   const ncs = nightCities(), lastStay = {};
   // the grip sits on the day of a city's last night, which is its arrival day when it has only one
-  DAYS.forEach(x => {
+  days.forEach(x => {
     const c = x.kind === "travel" ? (x.sleeper ? null : x.to) : x.kind === "depart" ? null : x.city;
     if (c && ncs.indexOf(c) < ncs.length - 1) lastStay[c] = x.i;
   });
-  DAYS.forEach(x => {
+  days.forEach(x => {
     const n = x.date.getDate(), m = n === 1 || x.i === 0 ? ` ${MON[x.date.getMonth()]}` : "";
     const pins = pinsOn(x).map(k => placeBy[k]), note = PLAN.notes[x.iso];
     const sel = plSel === x.i ? " sel" : "";
     const gc = Object.keys(lastStay).find(c => lastStay[c] === x.i);
-    const grip = gc ? `<span class="grip" data-grip="${gc}" title="Drag to change nights in ${PC[gc].en}"></span>` : "";
+    const grip = gc ? `<span class="grip${gc === live ? " live" : ""}" data-grip="${gc}" title="Drag to change nights in ${PC[gc].en}"></span>` : "";
     const style = x.kind === "travel" ? `--a:var(--${x.from});--b:var(--${x.to})` : `--a:var(--${x.city})`;
     const fly = x.kind === "arrive" || x.kind === "depart"; // flying in and home get their own look
     const label = x.kind === "travel" ? `${PC[x.from].local.slice(0, 3)}→${PC[x.to].local.slice(0, 3)}` : fly ? (x.kind === "arrive" ? "Fly in" : "Fly home") : PC[x.city].local;
@@ -1081,6 +1087,10 @@ function planHTML() {
       <span class="t">${label}</span>${pins.length ? `<span class="pr">${pins.map(pinBadge).join("")}</span>` : ""}${grip}</button>`);
   });
   while (cells.length % 7) cells.push(`<div class="cd off"></div>`);
+  return cells;
+}
+function planHTML() {
+  const cells = calCells();
   const travel = DAYS.filter(x => x.kind === "travel").map(x => { const s = legSummary(x.leg); return `<li><b>${fmtDay(x.date)}</b><span>${esc(s.info.label)}<br><span class="muted">${esc(s.text)}</span></span></li>`; }).join("");
 
   const lost = lostPins();
@@ -2026,36 +2036,65 @@ calPanel.addEventListener("input", e => {
 });
 
 // drag the handle on a city's last day to move nights between it and the next city (total trip length stays the same)
+// the nights after moving `city`'s last night by `delta` days, or an error: a city that grows takes from the cities
+// after it (skipping a Zagreb with no nights), one that shrinks hands its nights to the next city
+function gripNights(city, delta) {
+  const list = nightCities(), after = list.slice(list.indexOf(city) + 1), nights = clone(PLAN.nights);
+  if (nights[city] + delta < minN(city)) return { err: `${PC[city].en} needs at least one night.` };
+  nights[city] += delta;
+  if (delta < 0) nights[after[0]] -= delta;
+  else for (let d = delta; d > 0; d--) {
+    const c = after.find(x => nights[x] > minN(x));
+    if (!c) return { err: "Each city needs at least one night." };
+    nights[c]--;
+  }
+  const n = c => `${PC[c].en} ${nights[c]} night${nights[c] === 1 ? "" : "s"}`;
+  return { nights, msg: [city, ...after].filter(c => nights[c] !== PLAN.nights[c]).map(n).join(", ") + "." };
+}
 let grip = null;
 calPanel.addEventListener("pointerdown", e => {
   const g = e.target.closest("[data-grip]"); if (!g) return;
   e.preventDefault();
-  grip = { city: g.dataset.grip, from: +g.closest("[data-day]").dataset.day, to: null };
-  g.setPointerCapture(e.pointerId);
+  grip = { city: g.dataset.grip, from: +g.closest("[data-day]").dataset.day, delta: 0, res: null };
+  calPanel.setPointerCapture(e.pointerId); // the panel keeps the pointer while the cells under it are redrawn
+  calPanel.querySelector(".cal.planner").classList.add("dragging");
+  g.classList.add("live");
 });
 calPanel.addEventListener("pointermove", e => {
   if (!grip) return;
-  const cell = document.elementFromPoint(e.clientX, e.clientY)?.closest?.("[data-day]");
-  calPanel.querySelectorAll(".cd.drop-ok").forEach(c => c.classList.remove("drop-ok"));
-  if (cell) { grip.to = +cell.dataset.day; cell.classList.add("drop-ok"); }
+  const cell = document.elementFromPoint(e.clientX, e.clientY)?.closest?.(".cal.planner [data-day]");
+  if (!cell) return;
+  // past a city's limit the handle stops at the furthest split that works
+  let delta = +cell.dataset.day - grip.from, res = gripNights(grip.city, delta);
+  while (res.err && delta) { delta -= Math.sign(delta); res = gripNights(grip.city, delta); }
+  if (delta === grip.delta) return;
+  grip.delta = delta; grip.res = delta ? res : null;
+  previewCells(delta ? res.nights : PLAN.nights);
+  const st = calPanel.querySelector(".pl-status");
+  if (st) st.textContent = delta ? res.msg : "Drag to move nights between cities.";
 });
-calPanel.addEventListener("pointerup", () => {
+// patch the cells in place, so their colors fade to the new split instead of the grid being rebuilt
+function previewCells(nights) {
+  const days = buildDays({ ...PLAN, nights }), t = document.createElement("div");
+  t.innerHTML = calCells(days, grip.city).join("");
+  const now = calPanel.querySelectorAll(".cal.planner > .cd"), next = t.children;
+  if (now.length !== next.length) return;
+  now.forEach((c, k) => {
+    const n = next[k];
+    if (c.className !== n.className) c.className = n.className;
+    if (c.getAttribute("style") !== n.getAttribute("style")) c.setAttribute("style", n.getAttribute("style") || "");
+    if (c.innerHTML !== n.innerHTML) c.innerHTML = n.innerHTML;
+  });
+}
+function endGrip(apply) {
   if (!grip) return;
-  const { city, from, to } = grip; grip = null;
-  if (to == null || to === from) { renderPlanner(); return; }
-  const list = nightCities(), after = list.slice(list.indexOf(city) + 1), delta = to - from, keep = clone(PLAN.nights);
-  if (PLAN.nights[city] + delta < minN(city)) { renderPlanner(); flash(`${PC[city].en} needs at least one night.`); return; }
-  PLAN.nights[city] += delta;
-  if (delta < 0) PLAN.nights[after[0]] -= delta; // shrinking hands the nights to the next city (Wien's go to a Zagreb stopover)
-  else for (let d = delta; d > 0; d--) {
-    const c = after.find(x => PLAN.nights[x] > minN(x));
-    if (!c) { PLAN.nights = keep; renderPlanner(); flash("Each city needs at least one night."); return; }
-    PLAN.nights[c]--;
-  }
-  const n = c => `${PC[c].en} ${PLAN.nights[c]} night${PLAN.nights[c] === 1 ? "" : "s"}`;
-  plMsg = [city, ...after].filter(c => PLAN.nights[c] !== keep[c]).map(n).join(", ") + ".";
-  planChanged();
-});
+  const { res } = grip; grip = null;
+  if (apply && res) { PLAN.nights = res.nights; plMsg = res.msg; planChanged(); }
+  else renderPlanner();
+}
+calPanel.addEventListener("pointerup", () => endGrip(true));
+calPanel.addEventListener("pointercancel", () => endGrip(false));
+document.addEventListener("keydown", e => { if (grip && e.key === "Escape") { e.stopPropagation(); endGrip(false); } }, true);
 document.getElementById("calDates").textContent = planRange();
 
 // ---------- a day on the map ----------
