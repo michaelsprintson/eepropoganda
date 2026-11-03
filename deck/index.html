@@ -374,7 +374,8 @@ function slideDeck() {
   const order = [["prague", "pv", 1], ["vienna", "vs", 2], ["split", null, 3]];
   for (const [city, leg, n] of order) {
     s.push({ id: city, city, color: `--${city}`, focus: ["A", "B", "C", "D"], view: () => fitPts(cityPts(city, ["A", "B", "C", "D"]), 60), html: () => cityHTML(city, n) });
-    s.push({ id: `${city}-eat`, city, color: `--${city}`, focus: ["1", "2", "3", "C"], view: () => fitPts(cityPts(city, ["1", "2", "3", "C"]), 60), html: () => eatHTML(city) });
+    const eat = PLACES.filter(p => p.city === city && (p.type === "food" || p.type === "cafe")).map(p => p.code); // every restaurant + the café
+    s.push({ id: `${city}-eat`, city, color: `--${city}`, focus: eat, view: () => fitPts(cityPts(city, eat), 60), html: () => eatHTML(city) });
     s.push({ id: `${city}-stay`, city, color: `--${city}`, focus: ["H1", "H2", "H3"], view: () => { const pts = cityPts(city, ["H1", "H2", "H3"]); return pts.length ? fitPts(pts, 70, 2.6) : fitPts([CITIES[city].xy], 70, 4); }, html: () => stayHTML(city) });
     s.push({ id: `${city}-out`, city, color: `--${city}`, focus: ["T1", "T2", "T3", "T4"], view: () => fitPts([CITIES[city].xy, ...cityPts(city, ["T1", "T2", "T3", "T4"])], 70), html: () => outHTML(city) });
     for (const t of PLACES.filter(p => p.city === city && p.detail)) {
@@ -691,7 +692,7 @@ function buildPlaces(data, stays, images) {
   for (const [city, d] of Object.entries(data)) {
     if (d.detail) DETAIL[city] = { en: d.en, local: d.local, parent: d.parent };
     (d.food || []).forEach((p, i) => PLACES.push({ ...p, city, code: String(i + 1), type: "food" }));
-    if (d.cafe) PLACES.push({ ...d.cafe, city, code: "C", type: "cafe" });
+    if (d.cafe) PLACES.push({ ...d.cafe, city, code: "CF", label: "C", type: "cafe" }); // own code: sight "C" would collide
     d.sights.forEach((p, i) => PLACES.push({ ...p, city, code: "ABCDEFG"[i], type: "sight" }));
     (d.trips || []).forEach((p, i) => PLACES.push({ ...p, city, code: `T${i + 1}`, label: String(i + 1), type: p.kind === "nature" ? "nature" : "daytrip", tag: p.time }));
     const seen = [];
@@ -1204,7 +1205,7 @@ addEventListener("hashchange", () => {
 cv.addEventListener("mousemove", ev => cv.classList.toggle("pointing", !!hitAt(ev)));
 
 // ---------- boot ----------
-const DATA_V = "15"; // bump when data files change so browsers don't reuse stale copies
+const DATA_V = "16"; // bump when data files change so browsers don't reuse stale copies
 async function boot() {
   readTheme(); resize();
   requestAnimationFrame(loop);
