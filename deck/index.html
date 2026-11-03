@@ -582,10 +582,8 @@ const SUMMARY = [
   ["row", "6h 30", "Vienna → Zagreb · day train", "awake · over the Semmering railway", "€30–50", "a"],
   ["row", "~3h", "Evening in Zagreb", "dinner, old town", "—", "a"],
   ["row", "~9h", "Zagreb → Split · sleeper", "asleep", "€40–70", "a"],
-  ["sub", "~6.5 h awake + 1 night on the train", "€70–120", "a"],
   ["opt", "Option B · fly", "b"],
   ["row", "1h 15", "Vienna → Split · flight", "skips Zagreb · add a hotel night in Vienna", "€80–150", "b"],
-  ["sub", "1h 15 in the air + 1 extra hotel night in Vienna", "€80–150", "b"],
   ["sec", "Whole trip by rail, per person"],
   ["total", "With Option A (sleeper): ~10.5 h awake on trains", "€90–160", "a"],
   ["total", "With Option B (flight): ~5.5 h of travel", "€100–190", "b"],
@@ -1025,19 +1023,24 @@ function legAt(L, f) {
 }
 
 // flights drawn as dashed arcs: on their leg's slide, the route slide and the summary
-const FLIGHTS = [{ leg: "vs", from: "vienna", to: "split", label: "✈ 1h15" }];
+// airport to airport: Vienna Schwechat (VIE) and Split at Kaštela (SPU)
+const FLIGHTS = [{ leg: "vs", from: { code: "VIE", xy: P(16.5697, 48.1103) }, to: { code: "SPU", xy: P(16.2980, 43.5389) }, label: "✈ 1h15" }];
 function drawFlights() {
   const sl = slides[cur] || {};
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   for (const f of FLIGHTS) {
     if (!(sl.leg === f.leg || sl.id === "route" || sl.id === "in")) continue;
-    const a = toS(CITIES[f.from].xy), b = toS(CITIES[f.to].xy);
+    const a = toS(f.from.xy), b = toS(f.to.xy);
     const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = b[0] - a[0], dy = b[1] - a[1];
     const cx = mx + dy * 0.22, cy = my - dx * 0.22; // bow the arc to one side of the rail line
     ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.quadraticCurveTo(cx, cy, b[0], b[1]);
     ctx.setLineDash([2, 7]); ctx.lineCap = "round"; ctx.lineWidth = 3; ctx.strokeStyle = C.ink2; ctx.globalAlpha = 0.9; ctx.stroke(); ctx.setLineDash([]);
     const lx = 0.25 * a[0] + 0.5 * cx + 0.25 * b[0], ly = 0.25 * a[1] + 0.5 * cy + 0.25 * b[1];
     text(f.label, lx, ly, { size: 12, weight: 600, fam: "--f-mono", color: C.ink2, align: "center", halo: 3.5 });
+    for (const [end, [ax, ay], side] of [[f.from, a, 1], [f.to, b, -1]]) { // airport markers
+      ctx.beginPath(); ctx.arc(ax, ay, 5, 0, Math.PI * 2); ctx.fillStyle = C.halo; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = C.ink2; ctx.stroke();
+      text(`✈ ${end.code}`, ax + 9 * side, ay, { size: 11, weight: 600, fam: "--f-mono", color: C.ink2, align: side < 0 ? "right" : "left", halo: 3 });
+    }
     ctx.globalAlpha = 1;
   }
 }
@@ -1582,7 +1585,7 @@ addEventListener("hashchange", () => {
 cv.addEventListener("mousemove", ev => cv.classList.toggle("pointing", !!hitAt(ev)));
 
 // ---------- boot ----------
-const DATA_V = "18"; // bump when data files change so browsers don't reuse stale copies
+const DATA_V = "19"; // bump when data files change so browsers don't reuse stale copies
 async function boot() {
   readTheme(); resize();
   requestAnimationFrame(loop);
