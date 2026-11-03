@@ -1582,7 +1582,7 @@ addEventListener("hashchange", () => {
 cv.addEventListener("mousemove", ev => cv.classList.toggle("pointing", !!hitAt(ev)));
 
 // ---------- boot ----------
-const DATA_V = "17"; // bump when data files change so browsers don't reuse stale copies
+const DATA_V = "18"; // bump when data files change so browsers don't reuse stale copies
 async function boot() {
   readTheme(); resize();
   requestAnimationFrame(loop);
