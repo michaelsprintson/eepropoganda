@@ -176,6 +176,9 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
   background: color-mix(in srgb, var(--a) 26%, var(--panel)); border-top: 3px solid var(--a); min-width: 0; }
 .cd:hover, .cd:focus-visible { background: color-mix(in srgb, var(--a) 42%, var(--panel)); outline: none; }
 .cd:focus-visible { box-shadow: 0 0 0 2px var(--ink); }
+.cd.fly { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--ink) 14%, var(--panel)) 0 6px, var(--panel) 6px 12px); border-top: 3px dashed var(--a); }
+.cd.fly .t { font-weight: 700; }
+.cd.fly:hover, .cd.fly:focus-visible { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--ink) 22%, var(--panel)) 0 6px, var(--panel) 6px 12px); }
 .cd.travel { background: linear-gradient(135deg, color-mix(in srgb, var(--a) 30%, var(--panel)) 0 50%, color-mix(in srgb, var(--b) 30%, var(--panel)) 50%); border-top: 3px solid transparent; border-image: linear-gradient(90deg, var(--a), var(--b)) 1; }
 .cd.off { background: none; border-top: 3px solid var(--line); cursor: default; color: var(--ink-2); opacity: .45; }
 .cd .n { font: 600 12px var(--f-mono); font-variant-numeric: tabular-nums; }
@@ -595,7 +598,7 @@ const LEG_INFO = {
   vs: { sleeper: { label: "Day train to Zagreb, evening in Zagreb, sleeper to Split", min: 390 },
         flight: { label: "Flight Vienna → Split", min: 75 } },
 };
-const PLAN_DEFAULT = { v: 1, start: "2027-08-21", nights: { prague: 4, vienna: 4, split: 4 },
+const PLAN_DEFAULT = { v: 1, start: "2027-08-22", nights: { prague: 4, vienna: 4, split: 4 },
   legs: { pv: { opt: "train", dep: "09:00" }, vs: { opt: "sleeper", dep: "09:00" } }, trips: {}, notes: {} };
 const PLAN_KEY = "tripplan:split:v1";
 const WD = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -696,9 +699,10 @@ function planHTML() {
     const sel = plSel === x.i ? " sel" : "";
     const grip = lastStay[x.city] === x.i ? `<span class="grip" data-grip="${x.city}" title="Drag to change nights in ${CITIES[x.city].en}"></span>` : "";
     const style = x.kind === "travel" ? `--a:var(--${x.from});--b:var(--${x.to})` : `--a:var(--${x.city})`;
-    const label = x.kind === "travel" ? `${CITIES[x.from].local.slice(0, 3)}→${CITIES[x.to].local.slice(0, 3)}` : CITIES[x.city].local;
+    const fly = x.kind === "arrive" || x.kind === "depart"; // flying in and home get their own look
+    const label = x.kind === "travel" ? `${CITIES[x.from].local.slice(0, 3)}→${CITIES[x.to].local.slice(0, 3)}` : fly ? (x.kind === "arrive" ? "Fly in" : "Fly home") : CITIES[x.city].local;
     const icon = x.kind === "arrive" || x.kind === "depart" ? "✈︎" : x.leg === "vs" && PLAN.legs.vs.opt === "flight" ? "✈︎" : "";
-    cells.push(`<button class="cd${x.kind === "travel" ? " travel" : ""}${sel}" data-day="${x.i}" style="${style}" aria-label="${esc(fmtDay(x.date))}">
+    cells.push(`<button class="cd${x.kind === "travel" ? " travel" : ""}${fly ? " fly" : ""}${sel}" data-day="${x.i}" style="${style}" aria-label="${esc(fmtDay(x.date))}">
       <span class="n">${n}${m}</span>${icon ? `<span class="i">${icon}</span>` : ""}${note ? `<span class="nd" title="${esc(note)}"></span>` : ""}
       ${trip ? `<span class="tr">${esc(trip.name)}</span>` : `<span class="t">${label}</span>`}${grip}</button>`);
   });
@@ -1370,6 +1374,18 @@ function copyText(text, okMsg) {
   try { navigator.clipboard.writeText(text).then(() => flash(okMsg), box); } catch (e) { box(); }
 }
 calBtn.onclick = e => { e.stopPropagation(); setCal(calPanel.hidden); };
+// switching sleeper <-> flight keeps the end date: the night on the train becomes (or comes back from) a night in Vienna
+function setVsOpt(opt) {
+  const was = PLAN.legs.vs.opt;
+  if (opt === was) return;
+  PLAN.legs.vs.opt = opt;
+  if (opt === "flight") { PLAN.nights.vienna += 1; plMsg = `Flying Vienna → Split: the sleeper night becomes night ${PLAN.nights.vienna} in Vienna. Same end date.`; }
+  else {
+    const from = PLAN.nights.vienna > 1 ? "vienna" : "split";
+    if (PLAN.nights[from] > 1) PLAN.nights[from] -= 1;
+    plMsg = `Day train + sleeper via Zagreb: one ${CITIES[from].en} night becomes the night on the train. Same end date.`;
+  }
+}
 
 calPanel.addEventListener("click", e => {
   const t = e.target;
@@ -1385,7 +1401,7 @@ calPanel.addEventListener("click", e => {
     PLAN.nights[c] = n; plSel = null; plMsg = `${CITIES[c].en}: ${n} night${n > 1 ? "s" : ""}.`; planChanged(); return;
   }
   const vs = t.closest("[data-vs]");
-  if (vs) { PLAN.legs.vs.opt = vs.dataset.vs; plSel = null; plMsg = vs.dataset.vs === "flight" ? "Flying Vienna → Split: no night on the train." : "Day train + sleeper via Zagreb."; planChanged(); return; }
+  if (vs) { setVsOpt(vs.dataset.vs); plSel = null; planChanged(); return; }
   const act = t.closest("[data-act]")?.dataset.act;
   if (!act) return;
   const strip = () => { try { history.replaceState(null, "", location.pathname + location.hash); } catch (err) {} };
@@ -1410,7 +1426,7 @@ calPanel.addEventListener("click", e => {
 calPanel.addEventListener("change", e => {
   const t = e.target;
   if (t.id === "pl-start" && t.value) { PLAN.start = t.value; plMsg = `Trip starts ${fmtDay(parseISO(t.value))}.`; planChanged(); }
-  else if (t.id === "pl-opt") { PLAN.legs[t.dataset.leg].opt = t.value; planChanged(); }
+  else if (t.id === "pl-opt") { if (t.dataset.leg === "vs") setVsOpt(t.value); else PLAN.legs[t.dataset.leg].opt = t.value; planChanged(); }
   else if (t.id === "pl-dep" && t.value) { PLAN.legs[t.dataset.leg].dep = t.value; planChanged(); }
   else if (t.id === "pl-trip") {
     const x = DAYS[plSel];
@@ -1542,7 +1558,7 @@ addEventListener("hashchange", () => {
 cv.addEventListener("mousemove", ev => cv.classList.toggle("pointing", !!hitAt(ev)));
 
 // ---------- boot ----------
-const DATA_V = "16"; // bump when data files change so browsers don't reuse stale copies
+const DATA_V = "17"; // bump when data files change so browsers don't reuse stale copies
 async function boot() {
   readTheme(); resize();
   requestAnimationFrame(loop);

@@ -21,7 +21,7 @@ R = 6378.137  # km
 ORIGIN = (14.0, 49.0)
 
 REGION_BOX = (-2.0, 40.0, 32.0, 58.5)  # lon/lat
-HIGHLIGHT = {"AUT", "CZE", "DEU"}
+HIGHLIGHT = {"AUT", "CZE", "HRV"}  # the countries this trip visits
 
 CITY_BOXES = {  # (west, south, east, north), matches fetch.py
     "vienna": ((16.265, 48.160, 16.430, 48.270), (16.345, 48.192, 16.395, 48.222)),
