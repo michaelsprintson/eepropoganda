@@ -214,11 +214,63 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .btn.wide { min-width: 250px; justify-content: flex-start; gap: 10px; }
 .btn.wide .dates { margin-left: auto; font: 500 11.5px var(--f-mono); color: var(--ink-2); letter-spacing: .02em; }
 #calBtn[aria-expanded="true"] { border-bottom: 3px solid var(--ink-2); }
-.calpanel { position: fixed; z-index: 7; top: calc(70px + env(safe-area-inset-top, 0px)); right: var(--gr); width: min(470px, calc(100vw - 32px)); max-height: calc(100% - 160px); overflow-y: auto;
+.calpanel { position: fixed; z-index: 7; top: calc(70px + env(safe-area-inset-top, 0px)); right: var(--gr); width: min(540px, calc(100vw - 32px)); max-height: calc(100% - 160px); overflow-y: auto;
   background: var(--panel); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 14px 40px rgba(10,20,25,.28); padding: 20px 22px 18px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .calpanel .x { position: absolute; top: 8px; right: 8px; width: 34px; height: 34px; border: 0; background: none; color: var(--ink-2); font-size: 22px; cursor: pointer; border-radius: 4px; }
 .calpanel .x:hover { background: var(--chip); }
 .calpanel .cd { min-height: 58px; }
+/* planner */
+.pl-top { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin: 0 0 10px; }
+.fld { display: grid; gap: 4px; font-size: 13px; margin: 0 0 10px; }
+.fld > span { font: 600 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.fld.inline { display: flex; align-items: center; gap: 8px; margin: 0; }
+.fld input, .fld select, .fld textarea, .imp textarea { font: inherit; font-size: 14px; color: var(--ink); background: var(--chip); border: 1px solid var(--line); border-radius: 5px; padding: 6px 8px; min-width: 0; width: 100%; }
+.fld.inline input { width: auto; }
+.fld textarea, .imp textarea { resize: vertical; }
+.seg { display: inline-flex; align-items: center; gap: 0; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; font-size: 13px; }
+.seg span { padding: 0 10px; font: 600 10.5px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+.seg button { font: 600 13px var(--f-body); border: 0; border-left: 1px solid var(--line); background: none; color: var(--ink); padding: 7px 12px; cursor: pointer; }
+.seg button.on { background: var(--ink); color: var(--panel); }
+.steps { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 12px; }
+.step { display: inline-flex; align-items: center; gap: 6px; padding: 4px 6px 4px 10px; border: 1px solid var(--line); border-left: 3px solid var(--c); border-radius: 5px; font-size: 13px; }
+.step .sw { display: none; }
+.step .nv { min-width: 1.4em; text-align: center; font: 600 14px var(--f-mono); font-variant-numeric: tabular-nums; }
+.sb { width: 28px; height: 28px; border: 1px solid var(--line); border-radius: 4px; background: var(--chip); color: var(--ink); font-size: 16px; line-height: 1; cursor: pointer; }
+.sb:hover { border-color: var(--ink-2); }
+.steps .tot { margin-left: auto; font: 600 11px var(--f-mono); color: var(--ink-2); letter-spacing: .04em; }
+.cal.planner .cd { min-height: 62px; padding-bottom: 6px; }
+.cd.sel { box-shadow: 0 0 0 2px var(--ink); }
+.cd.drop-ok { box-shadow: 0 0 0 2px var(--ink), inset 0 0 0 999px color-mix(in srgb, var(--ink) 10%, transparent); }
+.cd.drop-no { box-shadow: 0 0 0 2px #c2453a; }
+.cd .tr { font-size: 10px; font-weight: 700; line-height: 1.15; color: var(--ink); background: color-mix(in srgb, var(--panel) 70%, transparent); border-radius: 3px; padding: 1px 3px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.cd .nd { position: absolute; top: 6px; right: 6px; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); }
+.cd .grip { position: absolute; top: 18%; bottom: 18%; right: -4px; width: 8px; border-radius: 4px; background: var(--ink); opacity: .55; cursor: ew-resize; touch-action: none; z-index: 1; }
+.cd .grip:hover { opacity: 1; }
+.pl-status { margin: 2px 0 10px; font-size: 12.5px; color: var(--ink-2); min-height: 1.4em; }
+.editor { border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px 4px; margin: 0 0 6px; background: color-mix(in srgb, var(--chip) 60%, transparent); }
+.editor .eh { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; margin: 0 0 10px; }
+.editor .eh b { font: 600 13px var(--f-mono); }
+.editor p a, .planned a, .hint a { color: var(--ink); font-weight: 600; }
+.small { font-size: 12px; margin: -4px 0 10px; }
+.palette { display: grid; gap: 8px; }
+.pg { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.pgl { font: 600 10.5px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); min-width: 54px; border-left: 3px solid var(--c); padding-left: 6px; }
+.tchip { display: inline-grid; gap: 1px; padding: 5px 9px; border-radius: 5px; border: 1px dashed var(--c); font-size: 12.5px; font-weight: 600; cursor: grab; user-select: none; background: var(--panel); }
+.tchip em { font: 500 10px var(--f-mono); font-style: normal; color: var(--ink-2); }
+.tchip.on { border-style: solid; background: color-mix(in srgb, var(--c) 18%, var(--panel)); }
+.tchip.lost em { color: #c2453a; }
+.share { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.mini { font: 600 12.5px var(--f-body); color: var(--panel); background: var(--ink); border: 1px solid var(--ink); border-radius: 5px; padding: 6px 10px; cursor: pointer; }
+.mini.ghost { background: none; color: var(--ink); border-color: var(--line); }
+.confirm { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; }
+.imp { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 8px; align-items: start; }
+.copybox { width: 100%; margin-top: 8px; font: 11px var(--f-mono); color: var(--ink); background: var(--chip); border: 1px solid var(--line); border-radius: 5px; padding: 6px; }
+.banner { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 12px; margin: 0 0 12px; border-radius: 6px; background: color-mix(in srgb, var(--ink) 10%, var(--panel)); font-size: 13.5px; font-weight: 600; }
+.banner span { margin-right: auto; }
+.planned { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; margin: 6px 0 10px; font-size: 13px; }
+.planned > span { font: 600 10px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--panel); background: var(--c, var(--ink)); padding: 1px 6px; border-radius: 3px; }
+.planned.none > span { background: var(--chip); color: var(--ink-2); }
+.board.sum.pick-a tr[data-g="b"], .board.sum.pick-a tr[data-t="b"], .board.sum.pick-b tr[data-g="a"], .board.sum.pick-b tr[data-t="a"] { opacity: .38; }
 .menu { position: absolute; right: 0; top: calc(100% + 8px); width: 250px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; box-shadow: 0 10px 30px rgba(10,20,25,.22); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: grid; gap: 4px; }
 .menu .mh { margin: 0 0 4px; font: 600 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
 .menu label { display: flex; align-items: center; gap: 10px; font-size: 14px; padding: 6px 4px; border-radius: 4px; cursor: pointer; }
@@ -260,6 +312,9 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
   #count { display: none; }
   .btn .lbl { display: none; }
   .btn.wide { min-width: 0; flex: 1; }
+  .calpanel { top: auto; bottom: calc(72px + env(safe-area-inset-bottom, 0px)); left: var(--gl); right: var(--gr); width: auto; max-height: 72%; padding: 16px 16px 14px; }
+  .cal.planner .cd { min-height: 54px; padding: 3px 3px 5px; }
+  .cd .t, .cd .tr { font-size: 9.5px; }
   #tools { left: var(--gl); }
   .places li { grid-template-columns: 68px 1fr; gap: 12px; }
   .thumb { width: 68px; height: 68px; }
@@ -273,8 +328,8 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 <div id="loading">Loading map…</div>
 <aside id="panel" aria-live="polite"><div id="card"></div></aside>
 <div id="tools">
-  <button class="btn wide" id="calBtn" aria-expanded="false" aria-controls="calPanel" title="Day-by-day calendar">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Calendar</span><span class="dates" id="calDates"></span>
+  <button class="btn wide" id="calBtn" aria-expanded="false" aria-controls="calPanel" title="Plan the trip day by day">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Plan</span><span class="dates" id="calDates"></span>
   </button>
   <div class="tmenu">
     <button class="btn" id="transitBtn" aria-expanded="false" aria-controls="transitMenu" title="Show subway, tram and bus lines">
@@ -301,7 +356,7 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
   <button class="btn primary" id="next" title="Next (→)" aria-label="Next slide"><span class="lbl">Next</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
 </nav>
 <div id="pop" hidden></div>
-<div id="calPanel" class="calpanel" role="dialog" aria-label="Day-by-day calendar" hidden></div>
+<div id="calPanel" class="calpanel" role="dialog" aria-label="Trip planner" hidden></div>
 <div id="tip" role="tooltip" hidden></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
@@ -320,6 +375,7 @@ const CITIES = {
   split: { en: "Split", local: "Split", ll: [16.4401, 43.5081], nights: 4 },
 };
 for (const c of Object.values(CITIES)) c.xy = P(...c.ll);
+for (const id of Object.keys(CITIES)) Object.defineProperty(CITIES[id], "nights", { get: () => PLAN.nights[id] }); // edited in the planner
 
 
 const TOWNS = [["Bratislava", 17.107, 48.148], ["Budapest", 19.040, 47.498], ["Dresden", 13.738, 51.050], ["Berlin", 13.405, 52.520],
@@ -405,18 +461,19 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 const KIND = { regional: "Regional", splurge: "Splurge", cafe: "Café", world: "World food", nature: "Nature", daytrip: "Day trip" };
 
 function introHTML() {
-  return `<p class="eyebrow">Late August 2027 · about two weeks</p>
+  const fly = PLAN.legs.vs.opt === "flight";
+  return `<p class="eyebrow">${planRange()} ${DAYS[0].date.getFullYear()} · ${DAYS.length} days</p>
   <h1>Praha <span class="arrow">→</span> Wien <span class="arrow">→</span> Split</h1>
   <p class="lede">Two old imperial capitals, then a sleeper train down to the Adriatic. Castles, coffee houses and wine taverns first, then sea, islands and old stone.</p>
-  <dl class="stats"><div><dt>Cities</dt><dd>3</dd></div><div><dt>Nights</dt><dd>13</dd></div><div><dt>Of us</dt><dd>11</dd></div><div><dt>Awake on trains</dt><dd>~10.5 h</dd></div></dl>
-  <p class="hint">Press <kbd>→</kbd> or Next to fly through it. Drag, scroll or pinch the map anytime, and click pins for details.</p>`;
+  <dl class="stats"><div><dt>Cities</dt><dd>3</dd></div><div><dt>Nights</dt><dd>${totalNights()}</dd></div><div><dt>Of us</dt><dd>11</dd></div><div><dt>${fly ? "Travel" : "Awake on trains"}</dt><dd>${fly ? "~5.5 h" : "~10.5 h"}</dd></div></dl>
+  <p class="hint">Press <kbd>→</kbd> or Next to fly through it, or open <b>Plan</b> at the top to move dates, nights and day trips around. Your plan is saved in this browser.</p>`;
 }
 function routeHTML() {
   const stop = (c, extra) => `<li class="stop" style="--c:var(--${c})"><span class="node"></span><div><b>${CITIES[c].en}</b><span>${CITIES[c].nights} nights${extra ? " · " + extra : ""}</span></div></li>`;
   const ride = (t, opt) => `<li class="ride${opt ? " opt" : ""}"><div>${t}</div></li>`;
   return `<p class="eyebrow">The plan</p><h2>One line across the map</h2>
   <p class="lede">Fly into Prague, ride the rails south to the sea, fly home from Split.</p>
-  <ol class="strip">${stop("prague", "fly in to PRG")}${ride("Railjet · ~4 h")}${stop("vienna")}${ride("Day train to Zagreb · ~6.5 h, evening in Zagreb, sleeper to Split · overnight")}${stop("split", "fly home from SPU")}</ol>`;
+  <ol class="strip">${stop("prague", "fly in to PRG")}${ride("Railjet · ~4 h")}${stop("vienna")}${ride(PLAN.legs.vs.opt === "flight" ? "Flight · 1h 15" : "Day train to Zagreb · ~6.5 h, evening in Zagreb, sleeper to Split · overnight")}${stop("split", "fly home from SPU")}</ol>`;
 }
 function badge(p) {
   return `<span class="badge ${p.type}"><span>${p.label || p.code}</span></span>`;
@@ -434,6 +491,10 @@ function hoodList(city) {
   return `<h3 class="sub"><span class="ring"></span>Historic neighborhoods</h3>
   <ul class="hoods">${hs.map(h => `<li><b>${esc(h.name)}</b> ${esc(h.blurb)}</li>`).join("")}</ul>`;
 }
+function plannedChip(p) {
+  const at = tripDate(tripId(p));
+  return `<p class="planned${at ? "" : " none"}"><span>${at ? "Planned" : "Not planned"}</span> ${at ? fmtDay(at.date) : ""} <a href="#" data-plan="1">${at ? "Change" : "Plan it"}</a></p>`;
+}
 function outHTML(city) {
   const c = CITIES[city];
   const trips = PLACES.filter(p => p.city === city && (p.type === "nature" || p.type === "daytrip"));
@@ -441,7 +502,7 @@ function outHTML(city) {
   return `<p class="eyebrow"><span class="dot"></span>${c.local} · Out of town</p>
   <h2>Day trips &amp; nature</h2>
   <p class="lede">Easy escapes when we want a break from the city. Times are from the main station.</p>
-  <ul class="places">${trips.map(p => li({ ...p, kind: null }, `<p class="when"><span class="chip">${KINDT[p.type]}</span> ${esc(p.time)}</p>${p.detail ? `<p><a href="#${p.detail}" data-go="${p.detail}">Zoom into the map →</a></p>` : ""}${p.url ? `<p><a href="${esc(p.url)}" target="_blank" rel="noopener">See the tour ↗</a></p>` : ""}`)).join("")}</ul>`;
+  <ul class="places">${trips.map(p => li({ ...p, kind: null }, `<p class="when"><span class="chip">${KINDT[p.type]}</span> ${esc(p.time)}</p>${p.detail ? `<p><a href="#${p.detail}" data-go="${p.detail}">Zoom into the map →</a></p>` : ""}${p.url ? `<p><a href="${esc(p.url)}" target="_blank" rel="noopener">See the tour ↗</a></p>` : ""}${plannedChip(p)}`)).join("")}</ul>`;
 }
 function stopHTML(dc) {
   const d = DETAIL[dc];
@@ -458,6 +519,7 @@ function detailHTML(dc, trip) {
   return `<p class="back"><a href="#${d.parent}-out" data-go="${d.parent}-out">← All day trips from ${parent.en}</a><span>Side trip ${n} of ${sibs.length}</span></p>
   <p class="eyebrow"><span class="dot"></span>Day trip from ${parent.en} · ${esc(trip.time)}</p>
   <h2>${esc(d.local)}</h2>
+  ${plannedChip(trip)}
   <p class="lede">${esc(trip.blurb)}</p>
   <ul class="places">${sights.map(p => li(p)).join("")}</ul>`;
 }
@@ -493,9 +555,11 @@ function stayHTML(city) {
 }
 function legHTML(leg, n) {
   const L = LEGS[leg], B = BOARDS[leg], from = L.stations[0][0], to = L.stations[L.stations.length - 1][0];
-  const title = leg === "mv" ? "Home, or back to Vienna" : leg === "vs" ? "Vienna to Split, by sleeper" : `${CITIES[L.from].en} to ${CITIES[L.to].en}`;
+  const title = leg === "mv" ? "Home, or back to Vienna" : leg === "vs" ? `Vienna to Split, by ${PLAN.legs.vs.opt === "flight" ? "plane" : "sleeper"}` : `${CITIES[L.from].en} to ${CITIES[L.to].en}`;
+  const ld = legDay(leg), planned = ld && PLAN.legs[leg] ? `<p class="planned"><span>Planned</span> ${fmtDay(ld.date)} · ${esc(LEG_INFO[leg][PLAN.legs[leg].opt].label)} · ${esc(legSummary(leg).text)} <a href="#" data-plan="1">Change</a></p>` : "";
   return `<p class="eyebrow" style="--c:var(--${L.from})"><span class="dot"></span>Leg ${n}${L.optional ? " · optional" : ""} · ${from} → ${to}</p>
   <h2>${title}</h2>
+  ${planned}
   <div class="board"><table><thead><tr><th>TIME</th><th>SERVICE</th><th style="text-align:right">FROM</th></tr></thead>
   <tbody>${B.rows.map(r => r[0] === "" ? `<tr class="opt"><td colspan="3">${r[1]}</td></tr>` : `<tr><td class="t">${r[0]}</td><td class="op">${r[1]}<span class="sub2">${r[2]}</span></td><td class="c">${r[3]}</td></tr>`).join("")}</tbody></table>
   <div class="foot">APPROXIMATE · CHECK OEBB.AT · CD.CZ · HZPP.HR BEFORE BOOKING</div></div>
@@ -518,44 +582,186 @@ const SUMMARY = [
   ["row", "1h 15", "Vienna → Split · flight", "skips Zagreb · add a hotel night in Vienna", "€80–150", "b"],
   ["sub", "1h 15 in the air + 1 extra hotel night in Vienna", "€80–150", "b"],
   ["sec", "Whole trip by rail, per person"],
-  ["total", "With Option A (sleeper): ~10.5 h awake on trains", "€90–160"],
-  ["total", "With Option B (flight): ~5.5 h of travel", "€100–190"],
+  ["total", "With Option A (sleeper): ~10.5 h awake on trains", "€90–160", "a"],
+  ["total", "With Option B (flight): ~5.5 h of travel", "€100–190", "b"],
   ["sec", "Getting home"],
   ["row", "Fly home", "Split (SPU) → home", "depends on origin", "—"],
 ];
-// ---------- day-by-day calendar (example dates until we pick real ones) ----------
-const TRIP_START = new Date(2027, 7, 21); // Sat 21 Aug 2027
-const DAYS = [
-  { city: "prague", note: "Fly in to Prague" }, { city: "prague" }, { city: "prague" }, { city: "prague" },
-  { from: "prague", to: "vienna", go: "pv", train: "Railjet Prague → Vienna", time: "morning departure · about 4 h" },
-  { city: "vienna" }, { city: "vienna" }, { city: "vienna" },
-  { from: "vienna", to: "split", go: "vs", train: "Day train Vienna → Zagreb, evening in Zagreb, sleeper to Split", time: "morning departure · about 6.5 h awake, overnight on the sleeper" },
-  { city: "split", note: "Sleeper arrives early morning" }, { city: "split" }, { city: "split" }, { city: "split" },
-  { city: "split", note: "Fly home from Split" },
-];
+// ---------- trip plan: each person's own copy, saved in their browser ----------
+const ORDER = Object.keys(CITIES);                       // prague, vienna, split
+const LEG_AFTER = { prague: "pv", vienna: "vs" };          // the leg that leaves each city
+const LEG_INFO = {
+  pv: { train: { label: "Railjet Prague → Vienna", min: 240 } },
+  vs: { sleeper: { label: "Day train to Zagreb, evening in Zagreb, sleeper to Split", min: 390 },
+        flight: { label: "Flight Vienna → Split", min: 75 } },
+};
+const PLAN_DEFAULT = { v: 1, start: "2027-08-21", nights: { prague: 4, vienna: 4, split: 4 },
+  legs: { pv: { opt: "train", dep: "09:00" }, vs: { opt: "sleeper", dep: "09:00" } }, trips: {}, notes: {} };
+const PLAN_KEY = "tripplan:split:v1";
 const WD = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-function dayDate(i) { const d = new Date(TRIP_START); d.setDate(d.getDate() + i); return d; }
-function calendarHTML() {
-  const first = dayDate(0), lead = (first.getDay() + 6) % 7; // Monday-first grid
+const clone = o => JSON.parse(JSON.stringify(o));
+
+function normalizePlan(p) {
+  const d = clone(PLAN_DEFAULT);
+  if (!p || typeof p !== "object") return d;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(p.start || "")) d.start = p.start;
+  for (const c of ORDER) { const n = +((p.nights || {})[c]); if (n >= 1 && n <= 30) d.nights[c] = Math.round(n); }
+  for (const l of Object.keys(d.legs)) {
+    const q = (p.legs || {})[l] || {};
+    if (LEG_INFO[l][q.opt]) d.legs[l].opt = q.opt;
+    if (/^\d{2}:\d{2}$/.test(q.dep || "")) d.legs[l].dep = q.dep;
+  }
+  for (const k of ["trips", "notes"]) for (const [date, v] of Object.entries(p[k] || {}))
+    if (/^\d{4}-\d{2}-\d{2}$/.test(date) && typeof v === "string" && v) d[k][date] = v.slice(0, 500);
+  return d;
+}
+const toCode = p => btoa(unescape(encodeURIComponent(JSON.stringify(p)))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+function fromCode(s) {
+  s = String(s).trim().replace(/^.*[?&]plan=/, "").replace(/[&#].*$/, "").replace(/-/g, "+").replace(/_/g, "/");
+  return normalizePlan(JSON.parse(decodeURIComponent(escape(atob(s)))));
+}
+let PLAN = clone(PLAN_DEFAULT), sharedPending = null;
+(() => {
+  try { const raw = localStorage.getItem(PLAN_KEY); if (raw) PLAN = normalizePlan(JSON.parse(raw)); } catch (e) {}
+  try { const q = new URLSearchParams(location.search).get("plan"); if (q) sharedPending = fromCode(q); } catch (e) {}
+  if (sharedPending) PLAN = sharedPending; // shown with a keep / discard banner
+})();
+function savePlan() { if (sharedPending) return; try { localStorage.setItem(PLAN_KEY, JSON.stringify(PLAN)); } catch (e) {} }
+
+const isoDate = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const parseISO = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+const fmtDay = d => `${WD[(d.getDay() + 6) % 7]} ${d.getDate()} ${MON[d.getMonth()]}`;
+const hm = m => `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, "0")}`;
+const addTime = (t, min) => { const [h, m] = t.split(":").map(Number), x = h * 60 + m + min; return `${String(Math.floor(x / 60) % 24).padStart(2, "0")}:${String(x % 60).padStart(2, "0")}`; };
+
+// Derive the day list from the plan. Each night is spent somewhere; a day sits between two nights.
+function buildDays(plan = PLAN) {
+  const nights = [];
+  for (const c of ORDER) {
+    for (let k = 0; k < plan.nights[c]; k++) nights.push(c);
+    if (c === "vienna" && plan.legs.vs.opt === "sleeper") nights.push("train");
+  }
+  const start = parseISO(plan.start), days = [];
+  for (let d = 0; d <= nights.length; d++) {
+    const prev = nights[d - 1], cur = nights[d], date = addDays(start, d), base = { i: d, date, iso: isoDate(date) };
+    if (d === 0) days.push({ ...base, kind: "arrive", city: cur, note0: "Fly in to Prague" });
+    else if (d === nights.length) days.push({ ...base, kind: "depart", city: prev, note0: `Fly home from ${CITIES[prev].en}` });
+    else if (prev === cur) days.push({ ...base, kind: "stay", city: cur });
+    else if (cur === "train") days.push({ ...base, kind: "travel", leg: "vs", from: prev, to: "split", sleeper: true });
+    else if (prev === "train") days.push({ ...base, kind: "stay", city: cur, note0: "Sleeper arrives early morning" });
+    else days.push({ ...base, kind: "travel", leg: LEG_AFTER[prev], from: prev, to: cur });
+  }
+  return days;
+}
+let DAYS = buildDays();
+const totalNights = () => DAYS.length - 1;
+const dayCity = x => x.city || x.from;
+
+// day trips that can be scheduled: every trip from a city's "Day trips & nature" slide
+let TRIPS = [];
+const tripId = p => p.detail || `${p.city}-${p.code}`;
+function tripDate(id) { // the planned date of a trip, if it still lands on a valid day
+  for (const [date, t] of Object.entries(PLAN.trips)) if (t === id) {
+    const x = DAYS.find(d => d.iso === date), trip = TRIPS.find(p => tripId(p) === id);
+    if (x && trip && canHost(x, trip)) return x;
+  }
+  return null;
+}
+const canHost = (x, trip) => x.kind === "stay" && x.city === trip.city;
+function setTrip(id, date) {
+  for (const [d, t] of Object.entries(PLAN.trips)) if (t === id || d === date) delete PLAN.trips[d];
+  if (id && date) PLAN.trips[date] = id;
+}
+function legDay(leg) { return DAYS.find(d => d.leg === leg); }
+function legSummary(leg) {
+  const o = PLAN.legs[leg], info = LEG_INFO[leg][o.opt];
+  const arr = o.opt === "sleeper" ? "sleeper arrives next morning" : `arrives ~${addTime(o.dep, info.min)}`;
+  return { info, text: `dep ${o.dep} · ${hm(info.min)}${o.opt === "sleeper" ? " awake" : ""} · ${arr}` };
+}
+function planRange() { return `${DAYS[0].date.getDate()} ${MON[DAYS[0].date.getMonth()]} – ${DAYS.at(-1).date.getDate()} ${MON[DAYS.at(-1).date.getMonth()]}`; }
+
+// ---------- planner panel ----------
+let plSel = null, plMsg = "", plResetAsk = false, plImport = false;
+function planHTML() {
+  const first = DAYS[0].date, lead = (first.getDay() + 6) % 7;
   const cells = [];
-  for (let k = 0; k < lead; k++) { const d = new Date(first); d.setDate(d.getDate() - lead + k); cells.push(`<div class="cd off"><span class="n">${d.getDate()}</span></div>`); }
-  DAYS.forEach((x, i) => {
-    const d = dayDate(i), n = d.getDate(), m = n === 1 || i === 0 ? ` ${MON[d.getMonth()]}` : "";
-    const go = x.go || x.city;
-    if (x.from) cells.push(`<button class="cd travel" data-go="${go}" style="--a:var(--${x.from});--b:var(--${x.to})" title="${esc(x.train)}"><span class="n">${n}${m}</span><span class="t">${CITIES[x.from].local.slice(0, 3)}→${CITIES[x.to].local.slice(0, 3)}</span></button>`);
-    else cells.push(`<button class="cd" data-go="${go}" style="--a:var(--${x.city})" title="${esc(CITIES[x.city].en + (x.note ? " · " + x.note : ""))}"><span class="n">${n}${m}</span><span class="t">${CITIES[x.city].local}</span>${x.note ? `<span class="i">${x.note.startsWith("Fly") ? "✈\uFE0E" : "•"}</span>` : ""}</button>`);
+  for (let k = 0; k < lead; k++) cells.push(`<div class="cd off"><span class="n">${addDays(first, k - lead).getDate()}</span></div>`);
+  const lastStay = {}; DAYS.forEach(x => { if (x.kind === "stay" && LEG_AFTER[x.city]) lastStay[x.city] = x.i; });
+  DAYS.forEach(x => {
+    const n = x.date.getDate(), m = n === 1 || x.i === 0 ? ` ${MON[x.date.getMonth()]}` : "";
+    const trip = TRIPS.find(p => tripId(p) === PLAN.trips[x.iso] && canHost(x, p));
+    const note = PLAN.notes[x.iso];
+    const sel = plSel === x.i ? " sel" : "";
+    const grip = lastStay[x.city] === x.i ? `<span class="grip" data-grip="${x.city}" title="Drag to change nights in ${CITIES[x.city].en}"></span>` : "";
+    const style = x.kind === "travel" ? `--a:var(--${x.from});--b:var(--${x.to})` : `--a:var(--${x.city})`;
+    const label = x.kind === "travel" ? `${CITIES[x.from].local.slice(0, 3)}→${CITIES[x.to].local.slice(0, 3)}` : CITIES[x.city].local;
+    const icon = x.kind === "arrive" || x.kind === "depart" ? "✈︎" : x.leg === "vs" && PLAN.legs.vs.opt === "flight" ? "✈︎" : "";
+    cells.push(`<button class="cd${x.kind === "travel" ? " travel" : ""}${sel}" data-day="${x.i}" style="${style}" aria-label="${esc(fmtDay(x.date))}">
+      <span class="n">${n}${m}</span>${icon ? `<span class="i">${icon}</span>` : ""}${note ? `<span class="nd" title="${esc(note)}"></span>` : ""}
+      ${trip ? `<span class="tr">${esc(trip.name)}</span>` : `<span class="t">${label}</span>`}${grip}</button>`);
   });
   while (cells.length % 7) cells.push(`<div class="cd off"></div>`);
-  const fmt = d => `${WD[(d.getDay() + 6) % 7]} ${d.getDate()} ${MON[d.getMonth()]}`;
-  const travel = DAYS.map((x, i) => [x, dayDate(i)]).filter(([x]) => x.from || x.note);
-  const last = dayDate(DAYS.length - 1);
-  return `<button class="x" id="calClose" aria-label="Close calendar">×</button>
-  <p class="eyebrow">Example dates · ${fmt(first)} – ${fmt(last)}</p><h2>Day by day</h2>
-  <div class="cal">${WD.map(w => `<div class="wd">${w}</div>`).join("")}${cells.join("")}</div>
-  <h3 class="sub">Travel days</h3>
-  <ul class="trav">${travel.map(([x, d]) => `<li><b>${fmt(d)}</b><span>${x.from ? `${esc(x.train)}<br><span class="muted">${esc(x.time)}</span>` : esc(x.note)}</span></li>`).join("")}</ul>
-  <p class="note">Dates are a placeholder until we vote. Train times are typical departure windows; exact timetables come out a few months ahead. Flying Vienna → Split instead swaps the sleeper night for a 5th night in Vienna.</p>`;
+
+  const steppers = ORDER.map(c => `<div class="step" style="--c:var(--${c})"><span class="sw"></span><b>${CITIES[c].local}</b>
+    <button class="sb" data-n="${c}" data-d="-1" aria-label="One night less in ${CITIES[c].en}">−</button><span class="nv">${PLAN.nights[c]}</span>
+    <button class="sb" data-n="${c}" data-d="1" aria-label="One night more in ${CITIES[c].en}">+</button></div>`).join("");
+  const vs = PLAN.legs.vs.opt;
+  const travel = DAYS.filter(x => x.kind === "travel").map(x => { const s = legSummary(x.leg); return `<li><b>${fmtDay(x.date)}</b><span>${esc(s.info.label)}<br><span class="muted">${esc(s.text)}</span></span></li>`; }).join("");
+
+  // day editor
+  let editor = "";
+  if (plSel != null && DAYS[plSel]) {
+    const x = DAYS[plSel], city = dayCity(x);
+    let body = "";
+    if (x.kind === "travel") {
+      const o = PLAN.legs[x.leg];
+      const opts = Object.entries(LEG_INFO[x.leg]).map(([k, v]) => `<option value="${k}"${o.opt === k ? " selected" : ""}>${esc(v.label)}</option>`).join("");
+      body += `<label class="fld"><span>How</span><select id="pl-opt" data-leg="${x.leg}">${opts}</select></label>
+        <label class="fld"><span>Departs</span><input type="time" id="pl-dep" data-leg="${x.leg}" value="${o.dep}"></label>
+        <p class="muted small">${esc(legSummary(x.leg).text)}</p>`;
+    } else if (x.kind === "stay") {
+      const here = TRIPS.filter(p => p.city === x.city);
+      const curId = PLAN.trips[x.iso] || "";
+      body += `<label class="fld"><span>Day trip</span><select id="pl-trip"><option value="">— none, stay in ${esc(CITIES[x.city].en)} —</option>${here.map(p => `<option value="${tripId(p)}"${curId === tripId(p) ? " selected" : ""}>${esc(p.name)} · ${esc(p.time)}</option>`).join("")}</select></label>`;
+    }
+    const go = x.kind === "travel" ? x.leg : PLAN.trips[x.iso] && TRIPS.some(p => tripId(p) === PLAN.trips[x.iso] && canHost(x, p)) ? PLAN.trips[x.iso] : city;
+    editor = `<div class="editor"><div class="eh"><b>${fmtDay(x.date)}</b><span class="muted">${x.kind === "travel" ? `${CITIES[x.from].en} → ${CITIES[x.to].en}` : CITIES[x.city].en}${x.note0 ? " · " + esc(x.note0) : ""}</span></div>
+      ${body}<label class="fld"><span>Note</span><textarea id="pl-note" rows="2" placeholder="e.g. dinner reservation 20:00">${esc(PLAN.notes[x.iso] || "")}</textarea></label>
+      <p><a href="#${go}" data-go="${go}">Show this on the map →</a></p></div>`;
+  }
+
+  // day-trip palette, grouped by city
+  const palette = ORDER.map(c => {
+    const ts = TRIPS.filter(p => p.city === c);
+    if (!ts.length) return "";
+    return `<div class="pg"><span class="pgl" style="--c:var(--${c})">${CITIES[c].local}</span>${ts.map(p => {
+      const at = tripDate(tripId(p)), lost = !at && Object.values(PLAN.trips).includes(tripId(p));
+      return `<span class="tchip${at ? " on" : ""}${lost ? " lost" : ""}" draggable="true" data-trip="${tripId(p)}" style="--c:var(--${c})" title="Drag onto a ${CITIES[c].en} day">${esc(p.name)}<em>${at ? fmtDay(at.date) : lost ? "needs a new day" : "drag to a day"}</em></span>`;
+    }).join("")}</div>`;
+  }).join("");
+
+  const shareLink = /github\.io$|^localhost$|^127\.0\.0\.1$/.test(location.hostname);
+  const outside = Object.keys(PLAN.notes).filter(d => !DAYS.some(x => x.iso === d));
+  return `<button class="x" id="calClose" aria-label="Close planner">×</button>
+  <p class="eyebrow">Your plan · saved in this browser</p><h2>Day by day</h2>
+  ${sharedPending ? `<div class="banner"><span>You opened a shared plan.</span><button class="mini" data-act="keep">Keep it as mine</button><button class="mini ghost" data-act="discard">Use my own</button></div>` : ""}
+  <div class="pl-top"><label class="fld inline"><span>Start</span><input type="date" id="pl-start" value="${PLAN.start}"></label>
+    <div class="seg" role="group" aria-label="Vienna to Split"><span>Vienna → Split</span><button data-vs="sleeper" class="${vs === "sleeper" ? "on" : ""}">Sleeper</button><button data-vs="flight" class="${vs === "flight" ? "on" : ""}">Flight</button></div></div>
+  <div class="steps">${steppers}<span class="tot">${totalNights()} nights</span></div>
+  <div class="cal planner">${WD.map(w => `<div class="wd">${w}</div>`).join("")}${cells.join("")}</div>
+  <p class="pl-status" role="status">${esc(plMsg || "Click a day to edit it. Drag a day trip onto a day, or drag the handle on a city's last day to change its nights.")}</p>
+  ${editor}
+  <h3 class="sub">Day trips</h3><div class="palette">${palette}</div>
+  <h3 class="sub">Travel days</h3><ul class="trav">${travel}</ul>
+  ${outside.length ? `<p class="note">Notes on ${outside.length} date${outside.length > 1 ? "s" : ""} outside the trip are kept in case the dates move back.</p>` : ""}
+  <h3 class="sub">Share</h3>
+  <div class="share">${shareLink ? `<button class="mini" data-act="link">Copy share link</button>` : ""}<button class="mini" data-act="code">Copy plan code</button>
+    <button class="mini ghost" data-act="import">Paste a plan code</button>
+    ${plResetAsk ? `<span class="confirm">Reset everything? <button class="mini" data-act="reset-yes">Reset</button><button class="mini ghost" data-act="reset-no">Cancel</button></span>` : `<button class="mini ghost" data-act="reset">Reset to the default plan</button>`}</div>
+  ${plImport ? `<div class="imp"><textarea id="pl-code" rows="2" placeholder="Paste a plan code or share link"></textarea><button class="mini" data-act="load">Load plan</button></div>` : ""}
+  <textarea id="pl-copy" class="copybox" readonly hidden></textarea>`;
 }
 
 function wrapHTML() {
@@ -564,13 +770,13 @@ function wrapHTML() {
       r[0] === "sec" ? `<tr class="sec"><td colspan="3">${esc(r[1])}</td></tr>`
     : r[0] === "opt" ? `<tr class="opt"${g(r[2])}><td colspan="3">${esc(r[1])}</td></tr>`
     : r[0] === "sub" ? `<tr class="subt"${g(r[3])}><td></td><td class="op">${esc(r[1])}</td><td class="c">${r[2]}</td></tr>`
-    : r[0] === "total" ? `<tr class="total"><td></td><td class="op">${esc(r[1])}</td><td class="c">${r[2]}</td></tr>`
+    : r[0] === "total" ? `<tr class="total" data-t="${r[3]}"><td></td><td class="op">${esc(r[1])}</td><td class="c">${r[2]}</td></tr>`
     : `<tr${g(r[5])}><td class="t">${r[1]}</td><td class="op">${esc(r[2])}${r[3] ? `<span class="sub2">${esc(r[3])}</span>` : ""}</td><td class="c">${r[4]}</td></tr>`).join("");
   return `<p class="eyebrow">The whole trip</p><h2>Times &amp; costs</h2>
   <p class="lede">Every journey between cities, per person. Day trips are on each city's slides.</p>
-  <div class="board sum"><table><thead><tr><th>TIME</th><th>JOURNEY</th><th style="text-align:right">COST</th></tr></thead><tbody>${rows}</tbody></table>
+  <div class="board sum pick-${PLAN.legs.vs.opt === "flight" ? "b" : "a"}"><table><thead><tr><th>TIME</th><th>JOURNEY</th><th style="text-align:right">COST</th></tr></thead><tbody>${rows}</tbody></table>
   <div class="foot">APPROXIMATE, BOOKED ~2 MONTHS AHEAD · SLEEPER PRICE IS A COUCHETTE</div></div>
-  <p class="hint">Next: pick dates, book the sleeper early (summer cabins sell out), and vote on the Airbnbs.</p>`;
+  <p class="hint">Your plan uses Option ${PLAN.legs.vs.opt === "flight" ? "B (flight)" : "A (sleeper)"}, ${planRange()}. Change it in <a href="#" data-plan="1">Plan</a>.</p>`;
 }
 
 // ---------- canvas + state ----------
@@ -945,7 +1151,9 @@ function drawPins() {
   for (const L of labels) {
     const o = { size: L.f ? 13.5 : 12, weight: L.f ? 600 : 500, fam: "--f-body" };
     ctx.font = fontFor(o);
-    const w = ctx.measureText(L.p.name).width, h = o.size * 1.3, g = L.r + 6;
+    const at = isTrip(L.p) ? tripDate(tripId(L.p)) : null;
+    L.text = at ? `${L.p.name} · ${fmtDay(at.date)}` : L.p.name;
+    const w = ctx.measureText(L.text).width, h = o.size * 1.3, g = L.r + 6;
     const opts = [
       [L.x + g, L.y, "left", [L.x + g, L.y - h / 2, L.x + g + w, L.y + h / 2]],
       [L.x - g, L.y, "right", [L.x - g - w, L.y - h / 2, L.x - g, L.y + h / 2]],
@@ -956,7 +1164,7 @@ function drawPins() {
     if (!ok) continue;
     taken.push(ok[3]);
     ctx.globalAlpha = L.vis * (L.f || !sl.city ? 1 : 0.75);
-    text(L.p.name, ok[0], ok[1], { ...o, color: L.f ? C.ink : C.ink2, align: ok[2], halo: 3.5 });
+    text(L.text, ok[0], ok[1], { ...o, color: L.f ? C.ink : C.ink2, align: ok[2], halo: 3.5 });
   }
   ctx.globalAlpha = 1;
 }
@@ -1136,16 +1344,144 @@ function toggleRoam() {
 }
 document.getElementById("roam").onclick = toggleRoam;
 const calBtn = document.getElementById("calBtn"), calPanel = document.getElementById("calPanel");
+function renderPlanner() {
+  if (calPanel.hidden) return;
+  const y = calPanel.scrollTop;
+  calPanel.innerHTML = planHTML();
+  calPanel.scrollTop = y;
+  calPanel.querySelector("#calClose").onclick = () => setCal(false);
+}
 function setCal(open) {
-  if (open) { calPanel.innerHTML = calendarHTML(); calPanel.querySelector("#calClose").onclick = () => setCal(false); }
   calPanel.hidden = !open; calBtn.setAttribute("aria-expanded", open);
+  if (open) renderPlanner();
+}
+// one place to apply a plan change: recompute days, save, refresh whatever shows the plan
+function planChanged({ rerender = true } = {}) {
+  DAYS = buildDays();
+  savePlan();
+  document.getElementById("calDates").textContent = planRange();
+  if (slides[cur]) card.innerHTML = slides[cur].html();
+  dirty = true;
+  if (rerender) renderPlanner();
+}
+function flash(msg) { plMsg = msg; const s = calPanel.querySelector(".pl-status"); if (s) s.textContent = msg; }
+function copyText(text, okMsg) {
+  const box = () => { const b = calPanel.querySelector("#pl-copy"); if (b) { b.hidden = false; b.value = text; b.select(); } flash("Copy the text below (it's selected)."); };
+  try { navigator.clipboard.writeText(text).then(() => flash(okMsg), box); } catch (e) { box(); }
 }
 calBtn.onclick = e => { e.stopPropagation(); setCal(calPanel.hidden); };
+
 calPanel.addEventListener("click", e => {
-  const day = e.target.closest("[data-go]"); if (!day) return;
-  setCal(false); go(slides.findIndex(s => s.id === day.dataset.go));
+  const t = e.target;
+  const jump = t.closest("[data-go]");
+  if (jump) { e.preventDefault(); setCal(false); go(slides.findIndex(s => s.id === jump.dataset.go)); return; }
+  const day = t.closest("[data-day]");
+  if (day && !t.closest("[data-grip]")) { const i = +day.dataset.day; plSel = plSel === i ? null : i; plMsg = ""; renderPlanner(); return; }
+  const sb = t.closest("[data-n]");
+  if (sb) {
+    const c = sb.dataset.n, n = PLAN.nights[c] + +sb.dataset.d;
+    if (n < 1) { flash(`${CITIES[c].en} needs at least one night.`); return; }
+    if (n > 21) return;
+    PLAN.nights[c] = n; plSel = null; plMsg = `${CITIES[c].en}: ${n} night${n > 1 ? "s" : ""}.`; planChanged(); return;
+  }
+  const vs = t.closest("[data-vs]");
+  if (vs) { PLAN.legs.vs.opt = vs.dataset.vs; plSel = null; plMsg = vs.dataset.vs === "flight" ? "Flying Vienna → Split: no night on the train." : "Day train + sleeper via Zagreb."; planChanged(); return; }
+  const act = t.closest("[data-act]")?.dataset.act;
+  if (!act) return;
+  const strip = () => { try { history.replaceState(null, "", location.pathname + location.hash); } catch (err) {} };
+  if (act === "keep") { sharedPending = null; strip(); plMsg = "Saved the shared plan as yours."; planChanged(); }
+  else if (act === "discard") {
+    sharedPending = null; strip();
+    try { const raw = localStorage.getItem(PLAN_KEY); PLAN = raw ? normalizePlan(JSON.parse(raw)) : clone(PLAN_DEFAULT); } catch (err) { PLAN = clone(PLAN_DEFAULT); }
+    plMsg = "Back to your own plan."; planChanged();
+  }
+  else if (act === "link") copyText(`${location.origin}${location.pathname}?plan=${toCode(PLAN)}`, "Share link copied. Anyone who opens it gets a copy of this plan.");
+  else if (act === "code") copyText(toCode(PLAN), "Plan code copied. Others can paste it with 'Paste a plan code'.");
+  else if (act === "import") { plImport = !plImport; renderPlanner(); calPanel.querySelector("#pl-code")?.focus(); }
+  else if (act === "load") {
+    try { PLAN = fromCode(calPanel.querySelector("#pl-code").value); plImport = false; plSel = null; plMsg = "Loaded the pasted plan."; planChanged(); }
+    catch (err) { flash("That code didn't work. Paste the whole code or share link."); }
+  }
+  else if (act === "reset") { plResetAsk = true; renderPlanner(); }
+  else if (act === "reset-no") { plResetAsk = false; renderPlanner(); }
+  else if (act === "reset-yes") { PLAN = clone(PLAN_DEFAULT); plResetAsk = false; plSel = null; plMsg = "Back to the default plan."; planChanged(); }
 });
-{ const a = dayDate(0), b = dayDate(DAYS.length - 1); document.getElementById("calDates").textContent = `${a.getDate()} ${MON[a.getMonth()]} – ${b.getDate()} ${MON[b.getMonth()]}`; }
+
+calPanel.addEventListener("change", e => {
+  const t = e.target;
+  if (t.id === "pl-start" && t.value) { PLAN.start = t.value; plMsg = `Trip starts ${fmtDay(parseISO(t.value))}.`; planChanged(); }
+  else if (t.id === "pl-opt") { PLAN.legs[t.dataset.leg].opt = t.value; planChanged(); }
+  else if (t.id === "pl-dep" && t.value) { PLAN.legs[t.dataset.leg].dep = t.value; planChanged(); }
+  else if (t.id === "pl-trip") {
+    const x = DAYS[plSel];
+    setTrip(t.value || null, t.value ? x.iso : null);
+    if (!t.value) delete PLAN.trips[x.iso];
+    const p = TRIPS.find(q => tripId(q) === t.value);
+    plMsg = p ? `${p.name} planned for ${fmtDay(x.date)}.` : `No day trip on ${fmtDay(x.date)}.`;
+    planChanged();
+  }
+});
+calPanel.addEventListener("input", e => {
+  if (e.target.id !== "pl-note") return;
+  const x = DAYS[plSel], v = e.target.value.trim();
+  if (v) PLAN.notes[x.iso] = e.target.value.slice(0, 500); else delete PLAN.notes[x.iso];
+  savePlan(); // no re-render while typing; the note dot appears on the next render
+});
+
+// drag a day trip onto a day
+let dragTrip = null;
+calPanel.addEventListener("dragstart", e => {
+  const chip = e.target.closest("[data-trip]"); if (!chip) return;
+  dragTrip = chip.dataset.trip;
+  e.dataTransfer.setData("text/plain", dragTrip); e.dataTransfer.effectAllowed = "move";
+});
+calPanel.addEventListener("dragover", e => {
+  const cell = e.target.closest("[data-day]"); if (!cell || !dragTrip) return;
+  e.preventDefault();
+  const ok = canHost(DAYS[+cell.dataset.day], TRIPS.find(p => tripId(p) === dragTrip));
+  calPanel.querySelectorAll(".cd.drop-ok, .cd.drop-no").forEach(c => c.classList.remove("drop-ok", "drop-no"));
+  cell.classList.add(ok ? "drop-ok" : "drop-no");
+});
+calPanel.addEventListener("drop", e => {
+  const cell = e.target.closest("[data-day]"); if (!cell || !dragTrip) return;
+  e.preventDefault();
+  const x = DAYS[+cell.dataset.day], p = TRIPS.find(q => tripId(q) === dragTrip);
+  dragTrip = null;
+  if (!canHost(x, p)) {
+    renderPlanner();
+    flash(x.kind === "stay" ? `${p.name} is a day trip from ${CITIES[p.city].en}. Drop it on a ${CITIES[p.city].en} day.` : `${fmtDay(x.date)} is a travel day. Pick a full day in ${CITIES[p.city].en}.`);
+    return;
+  }
+  setTrip(tripId(p), x.iso); plMsg = `${p.name} planned for ${fmtDay(x.date)}.`; planChanged();
+});
+calPanel.addEventListener("dragend", () => { dragTrip = null; calPanel.querySelectorAll(".cd.drop-ok, .cd.drop-no").forEach(c => c.classList.remove("drop-ok", "drop-no")); });
+
+// drag the handle on a city's last day to move nights between it and the next city (total trip length stays the same)
+let grip = null;
+calPanel.addEventListener("pointerdown", e => {
+  const g = e.target.closest("[data-grip]"); if (!g) return;
+  e.preventDefault();
+  grip = { city: g.dataset.grip, from: +g.closest("[data-day]").dataset.day, to: null };
+  g.setPointerCapture(e.pointerId);
+});
+calPanel.addEventListener("pointermove", e => {
+  if (!grip) return;
+  const cell = document.elementFromPoint(e.clientX, e.clientY)?.closest?.("[data-day]");
+  calPanel.querySelectorAll(".cd.drop-ok").forEach(c => c.classList.remove("drop-ok"));
+  if (cell) { grip.to = +cell.dataset.day; cell.classList.add("drop-ok"); }
+});
+calPanel.addEventListener("pointerup", () => {
+  if (!grip) return;
+  const { city, from, to } = grip; grip = null;
+  if (to == null || to === from) { renderPlanner(); return; }
+  const next = ORDER[ORDER.indexOf(city) + 1], delta = to - from;
+  const a = PLAN.nights[city] + delta, b = PLAN.nights[next] - delta;
+  if (a < 1 || b < 1) { renderPlanner(); flash("Each city needs at least one night."); return; }
+  PLAN.nights[city] = a; PLAN.nights[next] = b; plSel = null;
+  plMsg = `${CITIES[city].en} ${a} night${a > 1 ? "s" : ""}, ${CITIES[next].en} ${b} night${b > 1 ? "s" : ""}.`;
+  planChanged();
+});
+document.getElementById("calDates").textContent = planRange();
 const tBtn = document.getElementById("transitBtn"), tMenu = document.getElementById("transitMenu");
 function syncTransitUI() {
   for (const m of Object.keys(TRANSIT)) document.getElementById(`t-${m}`).checked = TRANSIT[m];
@@ -1161,7 +1497,7 @@ tMenu.addEventListener("change", e => {
 });
 document.addEventListener("click", e => { if (!tMenu.hidden && !e.target.closest(".tmenu")) { tMenu.hidden = true; tBtn.setAttribute("aria-expanded", "false"); } });
 addEventListener("keydown", e => {
-  if (e.target.closest("input, textarea")) return;
+  if (e.target.closest("input, textarea, select")) return;
   if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); go(stepFrom(cur, 1)); }
   else if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); go(stepFrom(cur, -1)); }
   else if (e.key === "Home") go(0);
@@ -1172,6 +1508,7 @@ addEventListener("keydown", e => {
 card.addEventListener("click", e => {
   const jump = e.target.closest("[data-go]");
   if (jump) { e.preventDefault(); e.stopPropagation(); go(slides.findIndex(s => s.id === jump.dataset.go)); return; }
+  if (e.target.closest("[data-plan]")) { e.preventDefault(); e.stopPropagation(); setCal(true); return; }
   const li = e.target.closest("[data-p]"); if (!li) return;
   focusPlace(placeBy[li.dataset.p]);
 });
@@ -1211,10 +1548,13 @@ async function boot() {
   requestAnimationFrame(loop);
   const [region, places, stays, images, legs, hoods] = await Promise.all(["region", "places", "stays", "images", "legs", "hoods"].map(n => fetch(`data/${n}.json?v=${DATA_V}`).then(r => r.json())));
   buildRegion(region); buildLegs(legs); buildPlaces(places, stays, images); HOODS = hoods;
+  TRIPS = PLACES.filter(p => p.type === "nature" || p.type === "daytrip");
+  DAYS = buildDays();
   slides = slideDeck(); buildNav();
   document.getElementById("loading").remove();
   const h = location.hash.slice(1), start = Math.max(0, slides.findIndex(s => s.id === h));
   go(start, { instant: true });
+  if (sharedPending) setCal(true); // someone sent a plan: show it with the keep / discard choice
   document.fonts && document.fonts.ready.then(() => { dirty = true; });
   ensureTransit(); syncTransitUI();
   readTheme();
