@@ -269,11 +269,6 @@
   "credit": "C.Stadler/Bwag · CC BY-SA 4.0 · Wikimedia Commons",
   "link": "https://commons.wikimedia.org/wiki/File:D%C3%B6bling_(Wien)_-_Leopoldsberg_(2).JPG"
  },
- "Grinzing": {
-  "img": "img/kahlenberg-s3.jpg",
-  "credit": "Geiserich77 · CC BY-SA 3.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Karte_Wien-Grinzing.png"
- },
  "Marktplatz": {
   "img": "img/hallstatt-s0.jpg",
   "credit": "C.Stadler/Bwag · CC BY-SA 4.0 · Wikimedia Commons",
@@ -464,5 +459,10 @@
   "img": "img/kutnahora-s2.jpg",
   "credit": "Palickap · CC BY-SA 4.0 · Wikimedia Commons",
   "link": "https://commons.wikimedia.org/wiki/File:Kutn%C3%A1_Hora,_Vla%C5%A1sk%C3%BD_dv%C5%AFr,_n%C3%A1dvo%C5%99%C3%AD.jpg"
+ },
+ "Grinzing": {
+  "img": "img/kahlenberg-s3.jpg",
+  "credit": "Clemens Mosch · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Himmelstr7.jpg"
  }
 }

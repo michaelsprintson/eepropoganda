@@ -116,6 +116,9 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .places .name .badge.stay { padding-top: 4px; }
 .places .txt { min-width: 0; }
 .thumb { width: 92px; height: 92px; object-fit: cover; border-radius: 4px; background: var(--chip); display: block; }
+.back { display: flex; justify-content: space-between; gap: 8px; margin: -4px 0 12px; font-size: 13px; color: var(--ink-2); }
+.back a { color: var(--ink); font-weight: 600; }
+.back span { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; align-self: center; }
 .sub { display: flex; align-items: center; gap: 8px; margin: 18px 0 6px; font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); font-weight: 600; }
 .sub .ring { width: 16px; height: 16px; }
 .hoods { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 13px; color: var(--ink-2); }
@@ -326,7 +329,7 @@ function slideDeck() {
     s.push({ id: `${city}-out`, city, color: `--${city}`, focus: ["T1", "T2", "T3", "T4"], view: () => fitPts([CITIES[city].xy, ...cityPts(city, ["T1", "T2", "T3", "T4"])], 70), html: () => outHTML(city) });
     for (const t of PLACES.filter(p => p.city === city && p.detail)) {
       const dc = t.detail;
-      s.push({ id: dc, city: dc, color: `--${city}`, focus: ["A", "B", "C", "D"], view: () => fitPts(cityPts(dc, ["A", "B", "C", "D"]), 60), html: () => detailHTML(dc, t) });
+      s.push({ id: dc, city: dc, side: `${city}-out`, color: `--${city}`, focus: ["A", "B", "C", "D"], view: () => fitPts(cityPts(dc, ["A", "B", "C", "D"]), 60), html: () => detailHTML(dc, t) });
     }
     s.push({ id: leg, leg, color: `--${LEGS[leg].from}`, color2: `--${LEGS[leg].to}`, view: () => fitPts(LEGS[leg].pts, 70), html: () => legHTML(leg, n) });
   }
@@ -388,7 +391,9 @@ function outHTML(city) {
 function detailHTML(dc, trip) {
   const d = DETAIL[dc], parent = CITIES[d.parent];
   const sights = PLACES.filter(p => p.city === dc);
-  return `<p class="eyebrow"><span class="dot"></span>Day trip from ${parent.en} · ${esc(trip.time)}</p>
+  const sibs = slides.filter(x => x.side === `${d.parent}-out`), n = sibs.findIndex(x => x.id === dc) + 1;
+  return `<p class="back"><a href="#${d.parent}-out" data-go="${d.parent}-out">← All day trips from ${parent.en}</a><span>Side trip ${n} of ${sibs.length}</span></p>
+  <p class="eyebrow"><span class="dot"></span>Day trip from ${parent.en} · ${esc(trip.time)}</p>
   <h2>${esc(d.local)}</h2>
   <p class="lede">${esc(trip.blurb)}</p>
   <ul class="places">${sights.map(p => li(p)).join("")}</ul>`;
@@ -922,11 +927,18 @@ function placePop() {
 
 // ---------- slides ----------
 const card = document.getElementById("card"), progress = document.getElementById("progress");
+let MAIN = []; // indices of slides on the progress bar (side trips are reached from their day-trip slide)
+const mainOf = i => slides[i].side ? slides.findIndex(x => x.id === slides[i].side) : i;
+function stepFrom(i, dir) {
+  let j = i + dir;
+  if (!slides[i].side) while (slides[j] && slides[j].side) j += dir; // main flow skips side trips
+  return Math.max(0, Math.min(slides.length - 1, j));
+}
 function go(i, { instant = false } = {}) {
   i = Math.max(0, Math.min(slides.length - 1, i));
   const sl = slides[i];
   cur = i; legT0 = 0; closePop();
-  document.getElementById("next").style.setProperty("--nc", `var(${(slides[i + 1] || sl).color})`);
+  document.getElementById("next").style.setProperty("--nc", `var(${slides[stepFrom(i, 1)].color})`);
   card.classList.add("swap");
   setTimeout(() => {
     card.innerHTML = sl.html();
@@ -937,17 +949,20 @@ function go(i, { instant = false } = {}) {
     if (instant) { cvSel.call(zoom.transform, t1); if (sl.leg) legT0 = performance.now(); }
     else flyTo(t1, () => { if (sl.leg) legT0 = performance.now(); });
   }, instant || reduce ? 0 : 180);
-  [...progress.children].forEach((b, j) => { b.classList.toggle("on", j === i); b.setAttribute("aria-current", j === i ? "step" : "false"); });
+  const m = MAIN.indexOf(mainOf(i));
+  progress.querySelectorAll("button").forEach((b, j) => { b.classList.toggle("on", j === m); b.setAttribute("aria-current", j === m ? "step" : "false"); });
   document.getElementById("count")?.remove();
-  progress.insertAdjacentHTML("beforeend", `<span id="count">${String(i + 1).padStart(2, "0")} / ${slides.length}</span>`);
+  progress.insertAdjacentHTML("beforeend", `<span id="count">${String(m + 1).padStart(2, "0")} / ${MAIN.length}</span>`);
   try { history.replaceState(null, "", "#" + sl.id); } catch (e) {}
   dirty = true;
 }
 function buildNav() {
-  progress.innerHTML = slides.map((s, i) => `<button aria-label="Slide ${i + 1}: ${esc(s.label)}" style="--c:var(${s.color})"><i style="${s.color2 ? `background:linear-gradient(90deg,var(${s.color}),var(${s.color2}))` : ""}"></i></button>`).join("");
+  MAIN = slides.map((s, i) => s.side ? -1 : i).filter(i => i >= 0);
+  progress.innerHTML = MAIN.map((si, k) => { const s = slides[si]; return `<button aria-label="Slide ${k + 1}: ${esc(s.label)}" style="--c:var(${s.color})"><i style="${s.color2 ? `background:linear-gradient(90deg,var(${s.color}),var(${s.color2}))` : ""}"></i></button>`; }).join("");
   const tip = document.getElementById("tip");
-  const showTip = (b, i) => {
-    tip.innerHTML = `<span class="n">${String(i + 1).padStart(2, "0")} / ${slides.length}${i === cur ? " · you are here" : ""}</span>${esc(slides[i].label)}`;
+  const showTip = (b, k) => {
+    const i = MAIN[k], sides = slides.filter(x => x.side === slides[i].id).length;
+    tip.innerHTML = `<span class="n">${String(k + 1).padStart(2, "0")} / ${MAIN.length}${i === mainOf(cur) ? " · you are here" : ""}</span>${esc(slides[i].label)}${sides ? ` <span class="n">+ ${sides} side-trip maps</span>` : ""}`;
     tip.style.setProperty("--c", `var(${slides[i].color})`);
     tip.hidden = false;
     const r = b.getBoundingClientRect(), pr = progress.getBoundingClientRect(), w = tip.offsetWidth;
@@ -955,15 +970,15 @@ function buildNav() {
     tip.style.top = (pr.top - tip.offsetHeight - 8) + "px";
   };
   progress.querySelectorAll("button").forEach((b, i) => {
-    b.onclick = () => { go(i); tip.hidden = true; };
+    b.onclick = () => { go(MAIN[i]); tip.hidden = true; };
     b.addEventListener("pointerenter", () => showTip(b, i));
     b.addEventListener("focus", () => showTip(b, i));
     b.addEventListener("pointerleave", () => { tip.hidden = true; });
     b.addEventListener("blur", () => { tip.hidden = true; });
   });
 }
-document.getElementById("next").onclick = () => go(cur + 1);
-document.getElementById("prev").onclick = () => go(cur - 1);
+document.getElementById("next").onclick = () => go(stepFrom(cur, 1));
+document.getElementById("prev").onclick = () => go(stepFrom(cur, -1));
 document.getElementById("overview").onclick = () => { closePop(); flyTo(fitPts(Object.values(CITIES).map(c => c.xy), 70)); };
 function toggleRoam() {
   const on = document.body.classList.toggle("roam");
@@ -987,8 +1002,8 @@ tMenu.addEventListener("change", e => {
 document.addEventListener("click", e => { if (!tMenu.hidden && !e.target.closest(".tmenu")) { tMenu.hidden = true; tBtn.setAttribute("aria-expanded", "false"); } });
 addEventListener("keydown", e => {
   if (e.target.closest("input, textarea")) return;
-  if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); go(cur + 1); }
-  else if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); go(cur - 1); }
+  if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); go(stepFrom(cur, 1)); }
+  else if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); go(stepFrom(cur, -1)); }
   else if (e.key === "Home") go(0);
   else if (e.key === "End") go(slides.length - 1);
   else if (e.key === "Escape") { closePop(); tMenu.hidden = true; tBtn.setAttribute("aria-expanded", "false"); }
@@ -1030,7 +1045,7 @@ addEventListener("hashchange", () => {
 cv.addEventListener("mousemove", ev => cv.classList.toggle("pointing", !!hitAt(ev)));
 
 // ---------- boot ----------
-const DATA_V = "12"; // bump when data files change so browsers don't reuse stale copies
+const DATA_V = "13"; // bump when data files change so browsers don't reuse stale copies
 async function boot() {
   readTheme(); resize();
   requestAnimationFrame(loop);

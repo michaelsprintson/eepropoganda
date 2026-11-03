@@ -58,7 +58,7 @@ SOURCES = {
     "Kahlenberg viewpoint": [('commons', 'Blick vom Kahlenberg auf Wien')],
     "Leopoldsberg": [('wiki', 'en:Leopoldsberg')],
     "Kahlenbergerdorf": [('commons', 'Kahlenbergerdorf Wien'), ('wiki', 'de:Kahlenbergerdorf')],
-    "Grinzing": [('wiki', 'en:Grinzing')],
+    "Grinzing": [('commons', 'Grinzing Heuriger'), ('commons', 'Grinzing Himmelstraße'), ('wiki', 'en:Grinzing')],
     "Marktplatz": [('wiki', 'en:Hallstatt')],
     "Skywalk World Heritage View": [('commons', 'Welterbeblick Hallstatt'), ('commons', 'Hallstatt Skywalk')],
     "Salt mine": [('wiki', 'en:Hallstatt Salt Mine'), ('commons', 'Salzwelten Hallstatt')],
