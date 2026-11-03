@@ -240,6 +240,8 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .step .nv { min-width: 1.4em; text-align: center; font: 600 14px var(--f-mono); font-variant-numeric: tabular-nums; }
 .sb { width: 28px; height: 28px; border: 1px solid var(--line); border-radius: 4px; background: var(--chip); color: var(--ink); font-size: 16px; line-height: 1; cursor: pointer; }
 .sb:hover { border-color: var(--ink-2); }
+.step.total { border-left: 3px solid var(--ink); }
+.step.total .end { font: 500 11.5px var(--f-mono); color: var(--ink-2); margin-left: 2px; padding-right: 4px; }
 .steps .tot { margin-left: auto; font: 600 11px var(--f-mono); color: var(--ink-2); letter-spacing: .04em; }
 .cal.planner .cd { min-height: 62px; padding-bottom: 6px; }
 .cd.sel { box-shadow: 0 0 0 2px var(--ink); }
@@ -752,8 +754,9 @@ function planHTML() {
   <p class="eyebrow">Your plan · saved in this browser</p><h2>Day by day</h2>
   ${sharedPending ? `<div class="banner"><span>You opened a shared plan.</span><button class="mini" data-act="keep">Keep it as mine</button><button class="mini ghost" data-act="discard">Use my own</button></div>` : ""}
   <div class="pl-top"><label class="fld inline"><span>Start</span><input type="date" id="pl-start" value="${PLAN.start}"></label>
+    <div class="step total"><b>Nights</b><button class="sb" data-total="-1" aria-label="Shorter trip">−</button><span class="nv">${totalNights()}</span><button class="sb" data-total="1" aria-label="Longer trip">+</button><span class="end">→ ${fmtDay(DAYS.at(-1).date)}</span></div>
     <div class="seg" role="group" aria-label="Vienna to Split"><span>Vienna → Split</span><button data-vs="sleeper" class="${vs === "sleeper" ? "on" : ""}">Sleeper</button><button data-vs="flight" class="${vs === "flight" ? "on" : ""}">Flight</button></div></div>
-  <div class="steps">${steppers}<span class="tot">${totalNights()} nights</span></div>
+  <div class="steps">${steppers}<span class="tot">move nights between cities</span></div>
   <div class="cal planner">${WD.map(w => `<div class="wd">${w}</div>`).join("")}${cells.join("")}</div>
   <p class="pl-status" role="status">${esc(plMsg || "Click a day to edit it. Drag a day trip onto a day, or drag the handle on a city's last day to change its nights.")}</p>
   ${editor}
@@ -1393,12 +1396,33 @@ calPanel.addEventListener("click", e => {
   if (jump) { e.preventDefault(); setCal(false); go(slides.findIndex(s => s.id === jump.dataset.go)); return; }
   const day = t.closest("[data-day]");
   if (day && !t.closest("[data-grip]")) { const i = +day.dataset.day; plSel = plSel === i ? null : i; plMsg = ""; renderPlanner(); return; }
+  const tb = t.closest("[data-total]");
+  if (tb) { // the trip length: extra nights go to (and come from) the last city first
+    const d = +tb.dataset.total;
+    if (d > 0) { if (totalNights() >= 30) return; PLAN.nights[ORDER.at(-1)] += 1; }
+    else {
+      const from = [...ORDER].reverse().find(c => PLAN.nights[c] > 1);
+      if (!from) { flash("Each city needs at least one night."); return; }
+      PLAN.nights[from] -= 1;
+    }
+    plSel = null; plMsg = `${totalNights()} nights, home on ${fmtDay(buildDays().at(-1).date)}.`; planChanged(); return;
+  }
   const sb = t.closest("[data-n]");
-  if (sb) {
-    const c = sb.dataset.n, n = PLAN.nights[c] + +sb.dataset.d;
-    if (n < 1) { flash(`${CITIES[c].en} needs at least one night.`); return; }
-    if (n > 21) return;
-    PLAN.nights[c] = n; plSel = null; plMsg = `${CITIES[c].en}: ${n} night${n > 1 ? "s" : ""}.`; planChanged(); return;
+  if (sb) { // moving nights between cities never changes the trip length
+    const c = sb.dataset.n, i = ORDER.indexOf(c), d = +sb.dataset.d;
+    const nearby = [ORDER[i + 1], ORDER[i - 1], ...ORDER].filter((x, k, a) => x && x !== c && a.indexOf(x) === k);
+    if (d > 0) {
+      const donor = nearby.find(x => PLAN.nights[x] > 1);
+      if (!donor) { flash(`No other city has a night to spare. Add nights to the trip first.`); return; }
+      PLAN.nights[c] += 1; PLAN.nights[donor] -= 1;
+      plMsg = `${CITIES[c].en} ${PLAN.nights[c]} nights, ${CITIES[donor].en} ${PLAN.nights[donor]}.`;
+    } else {
+      if (PLAN.nights[c] <= 1) { flash(`${CITIES[c].en} needs at least one night.`); return; }
+      const to = nearby[0];
+      PLAN.nights[c] -= 1; PLAN.nights[to] += 1;
+      plMsg = `${CITIES[c].en} ${PLAN.nights[c]} night${PLAN.nights[c] > 1 ? "s" : ""}, ${CITIES[to].en} ${PLAN.nights[to]}.`;
+    }
+    plSel = null; planChanged(); return;
   }
   const vs = t.closest("[data-vs]");
   if (vs) { setVsOpt(vs.dataset.vs); plSel = null; planChanged(); return; }
