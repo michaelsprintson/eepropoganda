@@ -579,7 +579,7 @@ function slideDeck() {
     s.push({ id: leg, leg, color: `--${LEGS[leg].from}`, color2: `--${LEGS[leg].to}`, view: () => fitPts(LEGS[leg].pts, 70), html: () => legHTML(leg, n) });
     // stopovers on this leg (e.g. an evening in Zagreb between trains) follow the leg in the main flow
     for (const [dc, d] of Object.entries(DETAIL)) if (d.stop === leg)
-      s.push({ id: dc, city: dc, color: `--${LEGS[leg].to}`, focus: ["A", "B", "C", "D", "1"], view: () => fitPts(cityPts(dc, ["A", "B", "C", "D", "1"]), 60), html: () => stopHTML(dc) });
+      s.push({ id: dc, city: dc, color: `--${PC[dc] ? dc : LEGS[leg].to}`, focus: ["A", "B", "C", "D", "1"], view: () => fitPts(cityPts(dc, ["A", "B", "C", "D", "1"]), 60), html: () => stopHTML(dc) });
   }
   s.push({ id: "in", color: "--ink-2", view: () => fitPts(Object.values(CITIES).map(c => c.xy), 70), html: wrapHTML });
   // human-readable names for the progress bar preview
@@ -603,18 +603,18 @@ function railHours() { // hours awake on trains: Prague–Vienna, Vienna–Zagre
 function introHTML() {
   const fly = PLAN.legs.vs.opt === "flight", zn = byRail() ? PLAN.nights.zagreb : 0;
   return `<p class="eyebrow">${planRange()} ${DAYS[0].date.getFullYear()} · ${DAYS.length} days</p>
-  <h1>Praha <span class="arrow">→</span> Wien <span class="arrow">→</span> Split</h1>
+  <h1>Praha <span class="arrow">→</span> Wien <span class="arrow">→</span> ${fly ? "" : `Zagreb <span class="arrow">→</span> `}Split</h1>
   <p class="lede">Two old imperial capitals, then a sleeper train down to the Adriatic. Castles, coffee houses and wine taverns first, then sea, islands and old stone.</p>
-  <dl class="stats"><div><dt>Cities</dt><dd>${zn ? 4 : 3}</dd></div><div><dt>Nights</dt><dd>${totalNights()}</dd></div><div><dt>Of us</dt><dd>11</dd></div><div><dt>${fly ? "Travel" : "Awake on trains"}</dt><dd>${fly ? "~5.5 h" : `~${+railHours().toFixed(1)} h`}</dd></div></dl>
+  <dl class="stats"><div><dt>Cities</dt><dd>${fly ? 3 : 4}</dd></div><div><dt>Nights</dt><dd>${totalNights()}</dd></div><div><dt>Of us</dt><dd>11</dd></div><div><dt>${fly ? "Travel" : "Awake on trains"}</dt><dd>${fly ? "~5.5 h" : `~${+railHours().toFixed(1)} h`}</dd></div></dl>
   <p class="hint">Press <kbd>→</kbd> or Next to fly through it, use the city menus at the top, or pick a day in <b>Plan</b> to see its route and pin places to it. Your plan is saved in this browser.</p>`;
 }
 function routeHTML() {
-  const stop = (c, extra) => `<li class="stop" style="--c:var(--${c})"><span class="node"></span><div><b>${PC[c].en}</b><span>${PC[c].nights} night${PC[c].nights === 1 ? "" : "s"}${extra ? " · " + extra : ""}</span></div></li>`;
+  const stop = (c, extra) => `<li class="stop" style="--c:var(--${c})"><span class="node"></span><div><b>${PC[c].en}</b><span>${PC[c].nights ? `${PC[c].nights} night${PC[c].nights === 1 ? "" : "s"}${extra ? " · " + extra : ""}` : extra}</span></div></li>`;
   const zn = byRail() ? PLAN.nights.zagreb : 0, zs = PLAN.legs.zs.opt === "sleeper" ? "Sleeper to Split · overnight" : "Day train to Split · ~6 h 15";
   const ride = (t, opt) => `<li class="ride${opt ? " opt" : ""}"><div>${t}</div></li>`;
   return `<p class="eyebrow">The plan</p><h2>One line across the map</h2>
   <p class="lede">Fly into Prague, ride the rails south to the sea, fly home from Split.</p>
-  <ol class="strip">${stop("prague", "fly in to PRG")}${ride("Railjet · ~4 h")}${stop("vienna")}${zn ? `${ride("Day train to Zagreb · ~6.5 h")}${stop("zagreb")}${ride(zs)}` : ride(PLAN.legs.vs.opt === "flight" ? "Flight · 1h 15" : "Day train to Zagreb · ~6.5 h, evening in Zagreb, sleeper to Split · overnight")}${stop("split", "fly home from SPU")}</ol>`;
+  <ol class="strip">${stop("prague", "fly in to PRG")}${ride("Railjet · ~4 h")}${stop("vienna")}${byRail() ? `${ride("Day train to Zagreb · ~6.5 h")}${stop("zagreb", zn ? "" : "an evening between trains")}${ride(zn ? zs : "Sleeper to Split · overnight")}` : ride("Flight · 1h 15")}${stop("split", "fly home from SPU")}</ol>`;
 }
 function badge(p) {
   return `<span class="badge ${p.type}"><span>${p.label || p.code}</span></span>`;
@@ -1508,7 +1508,12 @@ function drawLegs() {
     ctx.setTransform(dpr * k, 0, 0, dpr * k, dpr * T.x, dpr * T.y);
     const a = L.pts[0], b = L.pts[L.pts.length - 1];
     const g = ctx.createLinearGradient(a[0], a[1], b[0], b[1]);
-    g.addColorStop(0.1, C[L.from]); g.addColorStop(0.9, C[L.to]);
+    g.addColorStop(0.1, C[L.from]);
+    if (id === "vs" && byRail()) { // where the track passes Zagreb, projected onto the gradient's axis
+      const z = ZAGREB.xy, dx = b[0] - a[0], dy = b[1] - a[1], t = ((z[0] - a[0]) * dx + (z[1] - a[1]) * dy) / (dx * dx + dy * dy);
+      g.addColorStop(Math.max(0.15, Math.min(0.85, t)), C.zagreb);
+    }
+    g.addColorStop(0.9, C[L.to]);
     ctx.globalAlpha = dim ? 0.5 : 1;
     const w = active ? 5 : 3;
     ctx.setLineDash([]);
@@ -1655,7 +1660,7 @@ function drawMarkers() {
     }
     ctx.globalAlpha = 1;
   }
-  for (const [id, c] of Object.entries(CITIES)) {
+  for (const [id, c] of Object.entries(byRail() ? PC : CITIES)) {
     const [x, y] = toS(c.xy); if (!inView(x, y, 120)) continue;
     const big = 1 - smooth(16, 30, k);
     if (big <= 0) continue;
@@ -1664,7 +1669,7 @@ function drawMarkers() {
     ctx.beginPath(); ctx.arc(x, y, 8, 0, Math.PI * 2); ctx.fillStyle = C[id]; ctx.fill();
     const size = Math.min(30, 18 + k * 1.2);
     text(c.local, x + 16, y - 4, { size, weight: 700, fam: "--f-display", upper: true, ls: 0.6, halo: 4 });
-    text(`${c.en} · ${c.nights} nights`, x + 16, y + size * 0.55, { size: 11, weight: 500, fam: "--f-mono", color: C.ink2, halo: 3 });
+    text(`${c.en} · ${c.nights ? `${c.nights} night${c.nights === 1 ? "" : "s"}` : "evening stop"}`, x + 16, y + size * 0.55, { size: 11, weight: 500, fam: "--f-mono", color: C.ink2, halo: 3 });
     hits.push({ x, y, r: 22, city: id });
     ctx.globalAlpha = 1;
   }
