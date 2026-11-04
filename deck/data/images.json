@@ -156,10 +156,11 @@
  },
  "Kahlenberg & Vienna Woods": {
   "img": "img/vienna-t1.webp",
-  "credit": "Karlunun · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Wien_III_Belvedereaussicht_Kahlenberg_Stephansdom_Leopoldsberg_7317_201703.jpg",
   "thumb": "img/vienna-t1-t.webp",
-  "full": "img/full/vienna-t1.webp"
+  "full": "img/full/vienna-t1.webp",
+  "credit": "Photo: thumbs.dreamstime.com",
+  "link": "https://thumbs.dreamstime.com/b/view-kahlenberg-hill-vienna-cityscape-tourist-spot-view-kahlenberg-hill-vienna-cityscape-tourist-spot-137503811.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthumbs.dreamstime.com%2Fb%2Fview-kahlenberg-hill-vienna-cityscape-tourist-spot-view-kahlenberg-hill-vienna-cityscape-tourist-spot-137503811.jpg&f=1&nofb=1&ipt=22b939ee7d43385dd70ec575644488be1f0499ed494f3aa865068fa0d900d8d4&ipo=images"
  },
  "The Minaret": {
   "img": "img/lednice-s1.webp",
@@ -193,10 +194,11 @@
  },
  "Kuenringer Castle ruin": {
   "img": "img/wachau-s1.webp",
-  "credit": "Uoaei1 · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:D%C3%BCrnstein_Panorama_02.jpg",
   "thumb": "img/wachau-s1-t.webp",
-  "full": "img/full/wachau-s1.webp"
+  "full": "img/full/wachau-s1.webp",
+  "credit": "Photo: c.pxhere.com",
+  "link": "https://c.pxhere.com/photos/07/4e/castle_ruins_mountains_snow_forest_trees_woods_architecture-1252291.jpg!d",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fc.pxhere.com%2Fphotos%2F07%2F4e%2Fcastle_ruins_mountains_snow_forest_trees_woods_architecture-1252291.jpg!d&f=1&nofb=1&ipt=f08cb8b1eb0f0791fda52e27b46c342ffd2c321bf6ef081053f3eef1d288674a&ipo=images"
  },
  "Weißenkirchen": {
   "img": "img/wachau-s2.webp",
@@ -214,17 +216,19 @@
  },
  "Kahlenberg viewpoint": {
   "img": "img/kahlenberg-s0.webp",
-  "credit": "Steffen Flor · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Blick_auf_Wien_vom_Kahlenberg_bei_Nacht.jpg",
   "thumb": "img/kahlenberg-s0-t.webp",
-  "full": "img/full/kahlenberg-s0.webp"
+  "full": "img/full/kahlenberg-s0.webp",
+  "credit": "Photo: thumbs.dreamstime.com",
+  "link": "https://thumbs.dreamstime.com/b/view-kahlenberg-hill-vienna-cityscape-tourist-spot-view-kahlenberg-hill-vienna-cityscape-tourist-spot-137503811.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthumbs.dreamstime.com%2Fb%2Fview-kahlenberg-hill-vienna-cityscape-tourist-spot-view-kahlenberg-hill-vienna-cityscape-tourist-spot-137503811.jpg&f=1&nofb=1&ipt=22b939ee7d43385dd70ec575644488be1f0499ed494f3aa865068fa0d900d8d4&ipo=images"
  },
  "Leopoldsberg": {
   "img": "img/kahlenberg-s1.webp",
-  "credit": "C.Stadler/Bwag · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:D%C3%B6bling_(Wien)_-_Leopoldsberg_(2).JPG",
   "thumb": "img/kahlenberg-s1-t.webp",
-  "full": "img/full/kahlenberg-s1.webp"
+  "full": "img/full/kahlenberg-s1.webp",
+  "credit": "Photo: live.staticflickr.com",
+  "link": "https://live.staticflickr.com/65535/52338723319_e18452871f_b.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flive.staticflickr.com%2F65535%2F52338723319_e18452871f_b.jpg&f=1&nofb=1&ipt=3e1f5da9a22714f58d465ec0df8b5c8c06c56af4aebdd61e85f472688e723333&ipo=images"
  },
  "Marktplatz": {
   "img": "img/hallstatt-s0.webp",
@@ -235,17 +239,19 @@
  },
  "Salt mine": {
   "img": "img/hallstatt-s2.webp",
-  "credit": "Balou46 · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:A-Hallstatt-salzw-eingang-stollen.jpg",
   "thumb": "img/hallstatt-s2-t.webp",
-  "full": "img/full/hallstatt-s2.webp"
+  "full": "img/full/hallstatt-s2.webp",
+  "credit": "Photo: 1.bp.blogspot.com",
+  "link": "https://1.bp.blogspot.com/-XUZFHbg8PY4/Xi3z3x5rlBI/AAAAAAAApxs/bTqYKOfVZU8cIcdEM4NK1fsk3E49duYuwCLcBGAsYHQ/s1600/hallstatt_salt.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2F1.bp.blogspot.com%2F-XUZFHbg8PY4%2FXi3z3x5rlBI%2FAAAAAAAApxs%2FbTqYKOfVZU8cIcdEM4NK1fsk3E49duYuwCLcBGAsYHQ%2Fs1600%2Fhallstatt_salt.jpg&f=1&nofb=1&ipt=e0f2bf6295717ab1d61db6058e72e7ded270b103a68e559bf1f4887408caf0e4&ipo=images"
  },
  "Bone House": {
   "img": "img/hallstatt-s3.webp",
-  "credit": "Wolfgang Sauber · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Hallstatt_-_Beinhaus_4a.jpg",
   "thumb": "img/hallstatt-s3-t.webp",
-  "full": "img/full/hallstatt-s3.webp"
+  "full": "img/full/hallstatt-s3.webp",
+  "credit": "Photo: cdn.bubblyliving.com",
+  "link": "https://cdn.bubblyliving.com/wp-content/uploads/2026/04/hallstatt-lake-view-from-cemetery.webp",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.bubblyliving.com%2Fwp-content%2Fuploads%2F2026%2F04%2Fhallstatt-lake-view-from-cemetery.webp&f=1&nofb=1&ipt=4753ccaa5e739d5082bea13576caff47f5aba495726c64904e967e38c715abf3&ipo=images"
  },
  "Karlštejn village": {
   "img": "img/karlstejn-s1.webp",
@@ -383,38 +389,43 @@
  },
  "Dürnstein Abbey": {
   "img": "img/wachau-s0.webp",
-  "credit": "Conny Duck · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:D%C3%BCrnstein_Herbst_2022.jpg",
   "thumb": "img/wachau-s0-t.webp",
-  "full": "img/full/wachau-s0.webp"
+  "full": "img/full/wachau-s0.webp",
+  "credit": "Photo: assets.artworkarchive.com",
+  "link": "https://assets.artworkarchive.com/image/upload/t_jpg_large/v1/user_119824/Day_13_Wachau_River_Valley_on_the_Danube50-Edit_pla2ji",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fassets.artworkarchive.com%2Fimage%2Fupload%2Ft_jpg_large%2Fv1%2Fuser_119824%2FDay_13_Wachau_River_Valley_on_the_Danube50-Edit_pla2ji&f=1&nofb=1&ipt=9856c94b21fdef3bdec77cf2c7d2932b0c205db5a97a33b1e75f0d087492482e&ipo=images"
  },
  "Kahlenbergerdorf": {
   "img": "img/kahlenberg-s2.webp",
-  "credit": "Paterpattor · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Haltestelle_Kahlenbergerdorf.jpg",
   "thumb": "img/kahlenberg-s2-t.webp",
-  "full": "img/full/kahlenberg-s2.webp"
+  "full": "img/full/kahlenberg-s2.webp",
+  "credit": "Photo: thumb.wikimedia.org",
+  "link": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/Kahlenbergerdorf-Vienna.jpg/250px-Kahlenbergerdorf-Vienna.jpg",
+  "user": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/Kahlenbergerdorf-Vienna.jpg/250px-Kahlenbergerdorf-Vienna.jpg"
  },
  "Skywalk World Heritage View": {
   "img": "img/hallstatt-s1.webp",
-  "credit": "C.Stadler/Bwag · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Hallstatt_-_Rudolfsturm.JPG",
   "thumb": "img/hallstatt-s1-t.webp",
-  "full": "img/full/hallstatt-s1.webp"
+  "full": "img/full/hallstatt-s1.webp",
+  "credit": "Photo: hallstattaustria.eu",
+  "link": "https://www.hallstattaustria.eu/wp-content/uploads/2025/04/Hallstatt-funicular-tickets-World-Heritage-view-Skywalk-1.jpeg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.hallstattaustria.eu%2Fwp-content%2Fuploads%2F2025%2F04%2FHallstatt-funicular-tickets-World-Heritage-view-Skywalk-1.jpeg&f=1&nofb=1&ipt=aafda10a800313f49c3e255307f4051cb62be27a69cebd55b54eb62d70686806&ipo=images"
  },
  "Italian Court": {
   "img": "img/kutnahora-s2.webp",
-  "credit": "Palickap · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Kutn%C3%A1_Hora,_Vla%C5%A1sk%C3%BD_dv%C5%AFr,_n%C3%A1dvo%C5%99%C3%AD.jpg",
   "thumb": "img/kutnahora-s2-t.webp",
-  "full": "img/full/kutnahora-s2.webp"
+  "full": "img/full/kutnahora-s2.webp",
+  "credit": "Photo: upload.wikimedia.org",
+  "link": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Kutn%C3%A1_Hora%2C_Italian_Court_-_panoramio_(3).jpg/960px-Kutn%C3%A1_Hora%2C_Italian_Court_-_panoramio_(3).jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F8%2F82%2FKutn%25C3%25A1_Hora%252C_Italian_Court_-_panoramio_(3).jpg%2F960px-Kutn%25C3%25A1_Hora%252C_Italian_Court_-_panoramio_(3).jpg&f=1&nofb=1&ipt=eeaee0bb606b5c22f470bdaf0df28d76045baf504ba31d0c0da2c739abf5b6dd&ipo=images"
  },
  "Grinzing": {
   "img": "img/kahlenberg-s3.webp",
-  "credit": "Clemens Mosch · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Himmelstr7.jpg",
   "thumb": "img/kahlenberg-s3-t.webp",
-  "full": "img/full/kahlenberg-s3.webp"
+  "full": "img/full/kahlenberg-s3.webp",
+  "credit": "Photo: gorealtravel.com",
+  "link": "https://www.gorealtravel.com/blog/wp-content/uploads/2024/09/Grinzing-blog.jpeg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.gorealtravel.com%2Fblog%2Fwp-content%2Fuploads%2F2024%2F09%2FGrinzing-blog.jpeg&f=1&nofb=1&ipt=3621a379019530aee0907a6cc839a520c78afa8e9d57e7b24bc9cb2b891b2f62&ipo=images"
  },
  "Konoba Matejuška": {
   "img": "img/split-f1.webp",
@@ -455,10 +466,11 @@
  },
  "Cathedral of St. Lawrence": {
   "img": "img/trogir-s0.webp",
-  "credit": "Helmlechner · CC0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Cathedral_of_St._Lawrence_Trogir_03.jpg",
   "thumb": "img/trogir-s0-t.webp",
-  "full": "img/full/trogir-s0.webp"
+  "full": "img/full/trogir-s0.webp",
+  "credit": "Photo: encrypted-tbn0.gstatic.com",
+  "link": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLjdVMrWQVuIMGVAacUAqA3UdrLfsP2t8f3ksCqnB9kFh4BT7dtQwfoaI&s=10",
+  "user": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLjdVMrWQVuIMGVAacUAqA3UdrLfsP2t8f3ksCqnB9kFh4BT7dtQwfoaI&s=10"
  },
  "Kamerlengo Fortress": {
   "img": "img/trogir-s1.webp",
@@ -469,24 +481,27 @@
  },
  "Trogir waterfront": {
   "img": "img/trogir-s2.webp",
-  "credit": "Jerzy Strzelecki · CC BY-SA 3.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Trogir_Riva_02_(js).jpg",
   "thumb": "img/trogir-s2-t.webp",
-  "full": "img/full/trogir-s2.webp"
+  "full": "img/full/trogir-s2.webp",
+  "credit": "Photo: media02.stockfood.com",
+  "link": "https://media02.stockfood.com/largepreviews/MjIwMjA3OTE0MQ==/71034811-Trogir-waterfront-Obala-Bana-Berislavica-Trogir-UNESCO-World-Heritage-Site-Dalmatian-Coast-Adriatic-Croatia.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmedia02.stockfood.com%2Flargepreviews%2FMjIwMjA3OTE0MQ%3D%3D%2F71034811-Trogir-waterfront-Obala-Bana-Berislavica-Trogir-UNESCO-World-Heritage-Site-Dalmatian-Coast-Adriatic-Croatia.jpg&f=1&nofb=1&ipt=dcae57306303ea28dfcdb6d9a318f4208724fe6638e10c8b17bd4618b5cb19f6&ipo=images"
  },
  "Fortica fortress": {
   "img": "img/hvar-s0.webp",
-  "credit": "Quahadi Añtó 17:13, 26 November 2015 (UTC) · CC BY-SA 3.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Fortica,_Hvar_00522.JPG",
   "thumb": "img/hvar-s0-t.webp",
-  "full": "img/full/hvar-s0.webp"
+  "full": "img/full/hvar-s0.webp",
+  "credit": "Photo: encrypted-tbn0.gstatic.com",
+  "link": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlsQBeDg2RgnKDk68k4mL1mIfh8WFrVhFQH0yMAj8avVF5MEyDPhpbEJOW&s=10",
+  "user": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlsQBeDg2RgnKDk68k4mL1mIfh8WFrVhFQH0yMAj8avVF5MEyDPhpbEJOW&s=10"
  },
  "St. Stephen's Square": {
   "img": "img/hvar-s1.webp",
-  "credit": "Samuli Lintula · CC BY 3.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Trg_Sv._Stjepana,_Hvar.jpg",
   "thumb": "img/hvar-s1-t.webp",
-  "full": "img/full/hvar-s1.webp"
+  "full": "img/full/hvar-s1.webp",
+  "credit": "Photo: images.pexels.com",
+  "link": "https://images.pexels.com/photos/18191218/pexels-photo-18191218/free-photo-of-square-near-st-stephens-basilica-in-budapest.jpeg?auto=compress&w=1260&h=750&dpr=1",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F18191218%2Fpexels-photo-18191218%2Ffree-photo-of-square-near-st-stephens-basilica-in-budapest.jpeg%3Fauto%3Dcompress%26w%3D1260%26h%3D750%26dpr%3D1&f=1&nofb=1&ipt=246afe714bf45c9f57e6e736260ef03d5a7f59961cbde9a7725b20a0761a9175&ipo=images"
  },
  "Skradinski buk": {
   "img": "img/krka-s0.webp",
@@ -548,10 +563,11 @@
  },
  "Visovac monastery": {
   "img": "img/krka-s2.webp",
-  "credit": "CroatianPalpatine · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Visovac_2.jpg",
   "thumb": "img/krka-s2-t.webp",
-  "full": "img/full/krka-s2.webp"
+  "full": "img/full/krka-s2.webp",
+  "credit": "Photo: visovac.com",
+  "link": "https://www.visovac.com/media/Destinacije/visovac1.jpg",
+  "user": "https://www.visovac.com/media/Destinacije/visovac1.jpg"
  },
  "Dvor": {
   "img": "img/split-f3.webp",
