@@ -74,10 +74,16 @@ canvas#map:active { cursor: grabbing; }
 #card {
   pointer-events: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
   box-shadow: 0 10px 40px rgba(10, 20, 25, 0.16); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  padding: 22px 24px 20px; overflow-y: auto; max-height: 100%; min-width: 0;
+  padding: 22px 24px 20px; overflow-y: auto; min-height: 0; min-width: 0; flex: 1 1 auto; /* fills the column, so the slide buttons sit at the same spot on every slide */
   transition: opacity .25s ease, transform .25s ease;
 }
 #card.swap { opacity: 0; transform: translateY(6px); }
+/* back / forward through the city's slides: its own bar under the card, so it never scrolls away */
+#cardNav { pointer-events: auto; flex: none; display: flex; justify-content: space-between; gap: 8px; margin-top: 8px; }
+#cardNav[hidden] { display: none; }
+#cardNav .mini { flex: 0 1 auto; max-width: 49%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; background: var(--panel); color: var(--ink); border-color: var(--line); box-shadow: 0 6px 20px rgba(10, 20, 25, 0.14); padding: 8px 12px; }
+#cardNav .mini:hover { background: var(--chip); }
+#cardNav .next { margin-left: auto; }
 body.roam #panel { display: none; }
 
 .eyebrow { font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 8px; display: flex; gap: 8px; align-items: center; }
@@ -97,27 +103,12 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .stats dt { font-family: var(--f-mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
 .stats dd { margin: 0; font-family: var(--f-display); font-weight: 700; font-size: 30px; line-height: 1.1; font-variant-numeric: tabular-nums; }
 
-/* strip map, like the line diagram above train doors */
-.strip { list-style: none; margin: 4px 0 0; padding: 0; }
-.strip li { display: grid; grid-template-columns: 22px 1fr; gap: 12px; position: relative; }
-.strip li::before { content: ""; position: absolute; left: 10px; top: 0; bottom: 0; width: 3px; background: var(--line); }
-.strip li:first-child::before { top: 12px; }
-.strip li:last-child::before { bottom: calc(100% - 12px); }
-.strip .stop .node { width: 22px; height: 22px; border-radius: 50%; background: var(--c); border: 3px solid var(--panel); box-shadow: 0 0 0 2px var(--c); position: relative; z-index: 1; margin-top: 1px; }
-.strip .stop b { font-family: var(--f-display); font-size: 22px; font-weight: 700; line-height: 1.1; display: block; }
-.strip .stop span { font-size: 13px; color: var(--ink-2); }
-.strip .stop div { padding-bottom: 6px; }
-.strip .ride { min-height: 34px; }
-.strip .ride div { grid-column: 2; font-family: var(--f-mono); font-size: 12px; color: var(--ink-2); padding: 6px 0 10px; }
-.strip .ride.opt::before { background: repeating-linear-gradient(var(--line) 0 5px, transparent 5px 9px); }
 
 .places { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
 .places li { display: grid; grid-template-columns: 92px 1fr; gap: 14px; padding: 9px 8px; margin: 0 -8px; border-radius: 5px; cursor: pointer; }
 .places li:hover, .places li:focus-visible { background: var(--chip); outline: none; }
 .places li:focus-visible { box-shadow: inset 0 0 0 2px var(--c); }
 .places .name { font-weight: 600; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; line-height: 1.25; }
-.places .name .badge { width: 20px; height: 20px; font-size: 12px; margin: 0; flex: none; }
-.places .name .badge.stay { padding-top: 4px; }
 .places .txt { min-width: 0; }
 .thumb { width: 92px; height: 92px; object-fit: cover; border-radius: 4px; background: var(--chip); display: block; }
 .back { display: flex; justify-content: space-between; gap: 8px; margin: -4px 0 12px; font-size: 13px; color: var(--ink-2); }
@@ -129,19 +120,11 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .hoods b { color: var(--ink); font-weight: 600; margin-right: 4px; }
 .when { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .places a[data-go] { color: var(--ink); }
-.badge.nature { clip-path: polygon(50% 4%, 100% 96%, 0 96%); border-radius: 0; padding-top: 7px; }
-.badge.daytrip { border-radius: 50%; box-shadow: inset 0 0 0 3px color-mix(in srgb, #000 22%, var(--c)); }
 .legend { display: grid; grid-template-columns: 28px 1fr; gap: 10px; margin: 14px 0 0; font-size: 13px; color: var(--ink-2); align-items: start; }
 .legend b { color: var(--ink); font-weight: 600; }
 .ring { display: inline-block; flex: none; border: 2px solid var(--c); border-radius: 4px; background: color-mix(in srgb, var(--c) 14%, transparent); }
 .legend .ring { width: 24px; height: 20px; margin-top: 2px; }
 .places p { margin: 2px 0 0; font-size: 13.5px; color: var(--ink-2); line-height: 1.45; }
-.badge { width: 24px; height: 24px; display: grid; place-items: center; background: var(--c); color: #fff; font-family: var(--f-display); font-weight: 700; font-size: 14px; margin-top: 1px; }
-.badge.food { border-radius: 50%; }
-.badge.cafe { border-radius: 5px; }
-.badge.sight { transform: rotate(45deg) scale(.82); border-radius: 3px; }
-.badge.sight span { transform: rotate(-45deg); }
-.badge.stay { clip-path: polygon(50% 0, 100% 42%, 100% 100%, 0 100%, 0 42%); border-radius: 0; padding-top: 5px; }
 .places a { color: var(--ink); font-weight: 600; font-size: 13.5px; }
 .chip { font-family: var(--f-mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; background: var(--chip); color: var(--ink-2); padding: 1px 6px; border-radius: 3px; font-weight: 500; }
 .chip.regional { background: color-mix(in srgb, var(--c) 18%, transparent); color: var(--ink); }
@@ -181,15 +164,16 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .cd:focus-visible { box-shadow: 0 0 0 2px var(--ink); }
 .cd.fly { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--ink) 14%, var(--panel)) 0 6px, var(--panel) 6px 12px); border-top: 3px dashed var(--a); }
 .cd.fly .t { font-weight: 700; }
+/* Wien → an evening in Zagreb → sleeper to Split: a Zagreb day, Wien's stripe on top and Split's along the bottom */
+.cd.travel.via, .cal.planner.dragging .cd.travel.via:hover { background: color-mix(in srgb, var(--zagreb) 30%, var(--panel)); border-top: 3px solid var(--a); border-image: none; box-shadow: inset 0 -3px 0 var(--b); }
+.cd.travel.via:hover { background: color-mix(in srgb, var(--zagreb) 44%, var(--panel)); }
+.cd.travel.via.sel { box-shadow: inset 0 -3px 0 var(--b), 0 0 0 2px var(--ink); }
 .cd.fly:hover, .cd.fly:focus-visible { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--ink) 22%, var(--panel)) 0 6px, var(--panel) 6px 12px); }
 .cd.travel { background: linear-gradient(135deg, color-mix(in srgb, var(--a) 30%, var(--panel)) 0 50%, color-mix(in srgb, var(--b) 30%, var(--panel)) 50%); border-top: 3px solid transparent; border-image: linear-gradient(90deg, var(--a), var(--b)) 1; }
 .cd.off { background: none; border-top: 3px solid var(--line); cursor: default; color: var(--ink-2); opacity: .45; }
 .cd .n { font: 600 12px var(--f-mono); font-variant-numeric: tabular-nums; }
 .cd .t { font-size: 10.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cd .i { position: absolute; top: 3px; right: 4px; font-size: 11px; }
-.trav { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 13px; }
-.trav li { display: grid; grid-template-columns: 92px 1fr; gap: 10px; }
-.trav b { font-family: var(--f-mono); font-size: 11.5px; font-weight: 600; }
 .checks { list-style: none; padding: 0; margin: 0 0 8px; display: grid; gap: 8px; }
 .checks li { display: grid; grid-template-columns: 18px 1fr; gap: 10px; }
 .checks li::before { content: ""; width: 14px; height: 14px; border: 2px solid var(--ink); border-radius: 3px; margin-top: 3px; }
@@ -222,12 +206,13 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 #calBtn[aria-expanded="true"] { border-bottom: 3px solid var(--ink-2); }
 .calpanel { position: fixed; z-index: 7; top: calc(70px + env(safe-area-inset-top, 0px)); right: var(--gr); width: min(540px, calc(100vw - 32px)); max-height: calc(100% - 160px); overflow-y: auto;
   background: var(--panel); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 14px 40px rgba(10,20,25,.28); padding: 20px 22px 18px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-.calpanel .x { position: absolute; top: 8px; right: 8px; width: 34px; height: 34px; border: 0; background: none; color: var(--ink-2); font-size: 22px; cursor: pointer; border-radius: 4px; }
+.calpanel .x { position: absolute; z-index: 8; top: 8px; right: 8px; width: 34px; height: 34px; border: 0; background: none; color: var(--ink-2); font-size: 22px; cursor: pointer; border-radius: 4px; }
 .calpanel .x:hover { background: var(--chip); }
 .calpanel .cd { min-height: 58px; }
 /* planner */
 .fld { display: grid; gap: 4px; font-size: 13px; margin: 0 0 10px; }
 .fld > span { font: 600 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.fld .how { font-size: 14px; font-weight: 600; line-height: 1.3; padding: 7px 0; }
 .fld.inline { display: flex; align-items: center; gap: 8px; margin: 0; }
 .fld input, .fld select, .fld textarea, .imp textarea { font: inherit; font-size: 14px; color: var(--ink); background: var(--chip); border: 1px solid var(--line); border-radius: 5px; padding: 6px 8px; min-width: 0; width: 100%; }
 .fld.inline input { width: auto; }
@@ -253,9 +238,10 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .editor .eh b { font: 600 13px var(--f-mono); }
 .editor p a, .planned a, .hint a { color: var(--ink); font-weight: 600; }
 .small { font-size: 12px; margin: -4px 0 10px; }
-.share { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .mini { font: 600 12.5px var(--f-body); color: var(--panel); background: var(--ink); border: 1px solid var(--ink); border-radius: 5px; padding: 6px 10px; cursor: pointer; }
 .mini.ghost { background: none; color: var(--ink); border-color: var(--line); }
+.mini:disabled { opacity: .35; cursor: default; }
+.dayv .dh .play { white-space: nowrap; }
 .confirm { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; }
 .imp { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 8px; align-items: start; }
 .copybox { width: 100%; margin-top: 8px; font: 11px var(--f-mono); color: var(--ink); background: var(--chip); border: 1px solid var(--line); border-radius: 5px; padding: 6px; }
@@ -318,6 +304,8 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .mbt::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 3px; height: 3px; border-radius: 2px; background: var(--c); opacity: .25; }
 .mbt.cur::after { opacity: 1; }
 .mbt:hover, .mbt.open { background: var(--chip); }
+.mbt:disabled { color: var(--ink-2); opacity: .45; cursor: default; background: none; }
+.mbt:disabled::after { opacity: .12; }
 .mbt:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
 .mbburger { display: none; }
 #menubar.compact .mbitems { display: none; }
@@ -335,14 +323,25 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .mi.side { width: 34px; flex: none; justify-content: center; padding: 5px 0; opacity: .5; }
 .mi.side.on, .mi.side:hover, .mi.side:focus-visible { opacity: 1; }
 .mi .ck { width: 14px; font-weight: 700; }
-.mi .badge, .pchip .badge, .pinl .badge, .lostl .badge, .itin .badge { width: 20px; height: 20px; font-size: 12px; flex: none; margin: 0; }
 .mbmenu details summary { font: 700 16px var(--f-display); padding: 8px 8px 8px 10px; cursor: pointer; border-left: 3px solid var(--c); margin: 4px 0; }
 .mbmenu details[open] summary { background: var(--chip); border-radius: 0 4px 4px 0; }
 
 /* planner settings: one row per setting, labels in a column */
 .pset { border: 1px solid var(--line); border-radius: 6px; margin: 0 0 12px; overflow: hidden; }
-.psum { display: flex; width: 100%; justify-content: space-between; gap: 10px; align-items: center; background: var(--chip); border: 0; padding: 9px 12px; font: 600 12px var(--f-mono); color: var(--ink); cursor: pointer; text-align: left; }
-.psum em { font-style: normal; color: var(--ink-2); font-weight: 500; white-space: nowrap; }
+.pset > .prow:first-child { border-top: 0; }
+/* the panel's header: one thin centered line, pinned to the top as the panel scrolls, with the Share menu at its right */
+.calpanel .phead { position: sticky; top: -20px; z-index: 6; margin: -20px -22px 10px; padding: 14px 22px 8px; background: var(--panel); border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
+.calpanel .phead h2 { grid-column: 2; margin: 0; font: 600 12px var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); }
+.shareb { grid-column: 3; justify-self: end; font: 600 12.5px var(--f-body); color: var(--ink); background: none; border: 1px solid var(--line); border-radius: 5px; padding: 4px 9px; cursor: pointer; }
+.shareb:hover, .shareb.on { background: var(--chip); }
+.shareb span { font-size: 10px; margin-left: 2px; }
+body:not(.dock) .shareb { margin-right: 34px; } /* clear of the close button */
+.smenu { position: absolute; top: calc(100% + 4px); right: 12px; width: 260px; display: grid; gap: 2px; padding: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 10px 30px rgba(10, 20, 25, .22); }
+.smenu > button { text-align: left; font: 500 13.5px var(--f-body); color: var(--ink); background: none; border: 0; border-radius: 4px; padding: 7px 10px; cursor: pointer; }
+.smenu > button:hover, .smenu > button:focus-visible { background: var(--chip); outline: none; }
+.smenu hr { border: 0; border-top: 1px solid var(--line); margin: 4px 2px; width: auto; }
+.smenu .imp, .smenu .copybox { margin: 2px 4px 4px; width: auto; }
+.smenu .confirm { padding: 4px 6px; flex-wrap: wrap; }
 .prow { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 10px; align-items: center; padding: 9px 12px; border-top: 1px solid var(--line); }
 .prow .lab { font: 600 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
 .prow .lab em { font: 500 11px var(--f-body); letter-spacing: 0; text-transform: none; font-style: normal; margin-left: 6px; }
@@ -369,24 +368,34 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .cd .pr { display: flex; gap: 2px; flex-wrap: wrap; margin-top: 2px; }
 .cd.drop-ok { box-shadow: 0 0 0 2px var(--ink), inset 0 0 0 999px color-mix(in srgb, var(--ink) 10%, transparent); }
 .cd.drop-no { opacity: .55; }
-.cd .pb[draggable], .pinl li[draggable], .mi[draggable] { cursor: grab; }
+.cd .pb[draggable], .mi[draggable] { cursor: grab; }
 canvas#map.grab { cursor: grab; }
 body.pindrag, body.pindrag canvas#map { cursor: grabbing; }
 #ghost { position: fixed; left: 0; top: 0; z-index: 30; pointer-events: none; display: flex; align-items: center; gap: 6px; padding: 5px 9px 5px 6px;
   background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--c); border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,.25); font-size: 13px; font-weight: 600; white-space: nowrap; }
-.cd .pb { font: 700 9.5px var(--f-display); font-style: normal; min-width: 15px; height: 15px; padding: 0 2px; border-radius: 3px; background: var(--c); color: #fff; display: inline-grid; place-items: center; }
+.pb { font: 700 10px var(--f-display); font-style: normal; height: 17px; padding: 0 4px 0 3px; border-radius: 4px; background: var(--c); color: #fff; display: inline-flex; align-items: center; gap: 2px; line-height: 1; }
+.pb svg { width: 10px; height: 10px; flex: none; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.pb.eat { border-radius: 9px; } /* round like the restaurant markers on the map */
+.pb.trip { background: var(--panel); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--c); } /* outlined: a whole day out */
+.pb.trip svg { stroke: var(--c); }
+/* the same chips, a size up, in the day's list, the place picker, the drag ghost */
+.itin .pb, .pchip .pb, .lostl .pb, #ghost .pb, .places .pb, .mi .pb { height: 21px; font-size: 12px; padding: 0 6px 0 5px; gap: 3px; flex: none; }
+.itin .pb svg, .pchip .pb svg, .lostl .pb svg, #ghost .pb svg, .places .pb svg, .mi .pb svg { width: 12px; height: 12px; }
+.itin .pb.eat, .pchip .pb.eat, .lostl .pb.eat, #ghost .pb.eat, .places .pb.eat, .mi .pb.eat { border-radius: 11px; }
+.dayv .itin .st { grid-template-columns: 40px 1fr auto; }
+.dayv .itin .hp { grid-template-columns: 40px 1fr; }
 
 /* the selected day, in the planner */
 .dayv { border: 1px solid var(--line); border-top: 3px solid var(--a); border-radius: 6px; padding: 10px 12px; margin: 0 0 8px; background: color-mix(in srgb, var(--chip) 60%, transparent); }
-.dayv .dh { display: grid; grid-template-columns: 30px 1fr 30px; gap: 8px; align-items: center; margin-bottom: 8px; }
+.dayv .dh { display: grid; grid-template-columns: 30px 1fr auto 30px; gap: 8px; align-items: center; margin-bottom: 8px; }
 .dayv .dh b { font: 600 14px var(--f-mono); display: block; }
 .dayv .dh span { font-size: 12px; color: var(--ink-2); }
 .dayv h4 { font: 600 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); margin: 8px 0 6px; display: flex; justify-content: space-between; }
 .ib { width: 28px; height: 28px; flex: none; border: 1px solid var(--line); border-radius: 4px; background: var(--panel); color: var(--ink); cursor: pointer; font-size: 14px; line-height: 1; }
 .ib:disabled { opacity: .35; cursor: default; }
-.pinl, .lostl { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 4px; }
-.pinl li, .lostl li { display: flex; align-items: center; gap: 6px; font-size: 13.5px; }
-.pinl .nm, .lostl li > span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lostl { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 4px; }
+.lostl li { display: flex; align-items: center; gap: 6px; font-size: 13.5px; }
+.lostl li > span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .add summary { cursor: pointer; font: 600 13px var(--f-body); margin: 4px 0 8px; }
 .pkg { border-left: 3px solid var(--c); padding-left: 8px; margin: 0 0 10px; }
 .pkh { font: 700 15px var(--f-display); display: block; margin-bottom: 4px; }
@@ -399,7 +408,6 @@ body.pindrag, body.pindrag canvas#map { cursor: grabbing; }
 .pchip:disabled { opacity: .4; cursor: default; }
 .pchip.in { font-size: 11.5px; }
 .two { display: grid; grid-template-columns: minmax(0, 1fr) 120px; gap: 8px; }
-.dact { display: flex; gap: 8px; flex-wrap: wrap; }
 
 /* a day's route, on the card */
 .itin { list-style: none; margin: 4px 0 12px; padding: 0; }
@@ -407,6 +415,8 @@ body.pindrag, body.pindrag canvas#map { cursor: grabbing; }
 .itin .st[data-p] { cursor: pointer; }
 .itin .st[data-p]:hover, .itin .st[data-p]:focus-visible { background: var(--chip); outline: none; }
 .itin .st .mk { display: grid; place-items: center; }
+.itin .st .ctl { display: flex; gap: 4px; }
+.itin .st[draggable] { cursor: grab; }
 .itin .st b { font-weight: 600; display: block; line-height: 1.25; }
 .itin .st small { color: var(--ink-2); font-size: 12px; }
 .itin .hub { width: 24px; height: 24px; border: 2px solid var(--ink); border-radius: 5px; display: grid; place-items: center; font-size: 13px; font-weight: 700; background: var(--panel); }
@@ -416,12 +426,11 @@ body.pindrag, body.pindrag canvas#map { cursor: grabbing; }
 .itin .hp.regional .ln, .itin .hp.transfer .ln { border-left-style: dashed; }
 .itin .hp.train .ln, .itin .hp.sleeper .ln, .itin .hp.flight .ln { border-left-width: 5px; border-left-color: var(--ink); }
 .itin .hp.flight .ln { border-left-style: dotted; }
-.cfoot { display: flex; justify-content: space-between; gap: 8px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
-.cfoot .mini { max-width: 49%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pplan { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
 .pplan select { flex: 1; min-width: 0; font: inherit; font-size: 13px; color: var(--ink); background: var(--chip); border: 1px solid var(--line); border-radius: 5px; padding: 5px 6px; }
 
 /* wide screens: the planner is locked on screen and takes over from the bottom bar */
+body.dock .calpanel .phead { top: -18px; margin: -18px -16px 10px; padding-inline: 16px; }
 body.dock .calpanel { box-sizing: border-box; top: calc(16px + env(safe-area-inset-top, 0px)); bottom: 16px; right: var(--gr); width: 420px; padding: 18px 16px 16px; max-height: none; box-shadow: 0 10px 40px rgba(10,20,25,.16); }
 body.dock #nav, body.dock #calBtn, body.dock #calClose { display: none; }
 body.dock #tools { right: calc(var(--gr) + 432px); }
@@ -440,6 +449,7 @@ body.dock #panel { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
   .btn .lbl { display: none; }
   .btn.wide { min-width: 0; flex: 1; }
   .calpanel { top: auto; bottom: calc(72px + env(safe-area-inset-bottom, 0px)); left: var(--gl); right: var(--gr); width: auto; max-height: 72%; padding: 16px 16px 14px; }
+  .calpanel .phead { top: -16px; margin: -16px -16px 10px; padding: 10px 16px 8px; }
   .cal.planner .cd { min-height: 54px; padding: 3px 3px 5px; }
   .cd .t, .cd .tr { font-size: 9.5px; }
   #tools { left: calc(var(--gl) + 52px); }
@@ -455,7 +465,7 @@ body.dock #panel { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
 
 <canvas id="map" aria-label="Map of Prague, Vienna and Split with train routes"></canvas>
 <div id="loading">Loading map…</div>
-<aside id="panel" aria-live="polite"><div id="card"></div></aside>
+<aside id="panel" aria-live="polite"><div id="card"></div><nav id="cardNav" aria-label="This city's slides" hidden></nav></aside>
 <nav id="menubar" aria-label="Sections">
   <button class="btn mbburger" id="mbBurger" aria-haspopup="true" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="lbl">Menu</span></button>
   <div id="mbItems" class="mbitems" role="menubar" aria-label="Sections"></div>
@@ -570,14 +580,14 @@ const placeBy = {};     // `${city}:${code}`
 function slideDeck() {
   const s = [];
   s.push({ id: "intro", color: "--ink-2", view: () => fitLL([11.5, 42.8, 19.5, 51.2]), html: introHTML });
-  s.push({ id: "route", color: "--ink-2", view: () => fitPts(Object.values(CITIES).map(c => c.xy), 70), html: routeHTML });
   const order = [["prague", "pv", 1], ["vienna", "vs", 2], ["split", null, 3]];
   for (const [city, leg, n] of order) {
     s.push({ id: city, city, color: `--${city}`, focus: ["A", "B", "C", "D"], view: () => fitPts(cityPts(city, ["A", "B", "C", "D"]), 60), html: () => cityHTML(city, n) });
     const eat = PLACES.filter(p => p.city === city && (p.type === "food" || p.type === "cafe")).map(p => p.code); // every restaurant + the café
     s.push({ id: `${city}-eat`, city, color: `--${city}`, focus: eat, view: () => fitPts(cityPts(city, eat), 60), html: () => eatHTML(city) });
     s.push({ id: `${city}-stay`, city, color: `--${city}`, focus: ["H1", "H2", "H3"], view: () => { const pts = cityPts(city, ["H1", "H2", "H3"]); return pts.length ? fitPts(pts, 70, 2.6) : fitPts([CITIES[city].xy], 70, 4); }, html: () => stayHTML(city) });
-    s.push({ id: `${city}-out`, city, color: `--${city}`, focus: ["T1", "T2", "T3", "T4"], view: () => fitPts([CITIES[city].xy, ...cityPts(city, ["T1", "T2", "T3", "T4"])], 70), html: () => outHTML(city) });
+    const trips = PLACES.filter(p => p.city === city && (p.type === "daytrip" || p.type === "nature")).map(p => p.code); // every trip, however many
+    s.push({ id: `${city}-out`, city, color: `--${city}`, focus: trips, view: () => fitPts([CITIES[city].xy, ...cityPts(city, trips)], 70), html: () => outHTML(city) });
     for (const t of PLACES.filter(p => p.city === city && p.detail)) {
       const dc = t.detail;
       s.push({ id: dc, city: dc, side: `${city}-out`, color: `--${city}`, focus: ["A", "B", "C", "D"], view: () => fitPts(cityPts(dc, ["A", "B", "C", "D"]), 60), html: () => detailHTML(dc, t) });
@@ -615,16 +625,8 @@ function introHTML() {
   <dl class="stats"><div><dt>Cities</dt><dd>${fly ? 3 : 4}</dd></div><div><dt>Nights</dt><dd>${totalNights()}</dd></div><div><dt>Of us</dt><dd>11</dd></div><div><dt>${fly ? "Travel" : "Awake on trains"}</dt><dd>${fly ? "~5.5 h" : `~${+railHours().toFixed(1)} h`}</dd></div></dl>
   <p class="hint">Press <kbd>→</kbd> or Next to fly through it, use the city menus at the top, or pick a day in <b>Plan</b> to see its route and pin places to it. Your plan is saved in this browser.</p>`;
 }
-function routeHTML() {
-  const stop = (c, extra) => `<li class="stop" style="--c:var(--${c})"><span class="node"></span><div><b>${PC[c].en}</b><span>${PC[c].nights ? `${PC[c].nights} night${PC[c].nights === 1 ? "" : "s"}${extra ? " · " + extra : ""}` : extra}</span></div></li>`;
-  const zn = byRail() ? PLAN.nights.zagreb : 0, zs = PLAN.legs.zs.opt === "sleeper" ? "Sleeper to Split · overnight" : "Day train to Split · ~6 h 15";
-  const ride = (t, opt) => `<li class="ride${opt ? " opt" : ""}"><div>${t}</div></li>`;
-  return `<p class="eyebrow">The plan</p><h2>One line across the map</h2>
-  <p class="lede">Fly into Prague, ride the rails south to the sea, fly home from Split.</p>
-  <ol class="strip">${stop("prague", "fly in to PRG")}${ride("Railjet · ~4 h")}${stop("vienna")}${byRail() ? `${ride("Day train to Zagreb · ~6.5 h")}${stop("zagreb", zn ? "" : "an evening between trains")}${ride(zn ? zs : "Sleeper to Split · overnight")}` : ride("Flight · 1h 15")}${stop("split", "fly home from SPU")}</ol>`;
-}
 function badge(p) {
-  return `<span class="badge ${p.type}"><span>${p.label || p.code}</span></span>`;
+  return pinBadge(p);
 }
 function thumb(p) {
   return p.img ? `<img class="thumb" src="${esc(p.thumb || p.img)}" alt="${esc(p.name)}" loading="lazy" decoding="async">` : `<span class="thumb"></span>`;
@@ -633,7 +635,8 @@ function li(p, extra = "") {
   const chip = p.kind ? `<span class="chip ${p.kind === "regional" ? "regional" : ""}">${KIND[p.kind]} · ${esc(p.tag)}</span>` : "";
   const at = !/stay|daytrip|nature/.test(p.type) && pinDays(keyOf(p))[0]; // day trips show theirs in a fuller line
   if (at) extra = `<p class="planned"><span>Pinned</span> ${fmtDay(at.date)}</p>` + extra;
-  return `<li tabindex="0" data-p="${p.city}:${p.code}">${thumb(p)}<div class="txt"><div class="name">${badge(p)}<span>${esc(p.name)}</span> ${chip}</div><p>${esc(p.blurb)}</p>${extra}</div></li>`;
+  const drag = p.type === "stay" ? "" : ` draggable="true" data-dpin="${p.city}:${p.code}" title="Drag onto a day in the plan"`;
+  return `<li tabindex="0" data-p="${p.city}:${p.code}"${drag}>${thumb(p)}<div class="txt"><div class="name">${badge(p)}<span>${esc(p.name)}</span> ${chip}</div><p>${esc(p.blurb)}</p>${extra}</div></li>`;
 }
 function hoodList(city) {
   const hs = HOODS[city] || [];
@@ -752,12 +755,13 @@ const LEG_INFO = {
   vz: { train: { label: "Day train Vienna → Zagreb", min: 390 } },
   zs: { sleeper: { label: "Sleeper Zagreb → Split", min: 540 }, day: { label: "Day train Zagreb → Split", min: 375 } },
 };
-const PIN_MAX = 3;
+const PIN_MAX = 4; // plan codes store 1–4 pins a day in 2 bits: raising this needs a new code version
 const PLAN_DEFAULT = { v: 2, start: "2027-08-22", nights: { prague: 4, vienna: 4, zagreb: 0, split: 4 },
   legs: { pv: { opt: "train", dep: "09:00" }, vs: { opt: "sleeper", dep: "09:00" }, zs: { opt: "sleeper", dep: "21:30" } },
   pins: {}, notes: {}, stays: { prague: "H1", vienna: "H1", zagreb: null, split: null } };
 const PLAN_KEY = "tripplan:split:v1";
 const WD = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const WD_CAL = ["Sun", ...WD.slice(0, 6)]; // calendars run Sunday to Saturday: the trip fits in fewer rows
 const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const clone = o => JSON.parse(JSON.stringify(o));
 const minN = c => c === "zagreb" ? 0 : 1;
@@ -783,10 +787,88 @@ function normalizePlan(p) {
   for (const c of Object.keys(d.stays)) if (p.stays && c in p.stays && (p.stays[c] === null || /^H\d$/.test(p.stays[c] || ""))) d.stays[c] = p.stays[c];
   return d;
 }
-const toCode = p => btoa(unescape(encodeURIComponent(JSON.stringify(p)))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+// Plan codes: the plan packed as bits, only what differs from the default, then written 14 bits per character as
+// CJK ideographs (U+4E00 up). A default plan is one character; each pinned place adds under one; notes ride along as
+// UTF-8 bytes. Trailing zero bits read back as "nothing more", so they are trimmed.
+const CODE_BASE = 0x4E00, CODE_BITS = 14, CODE_EPOCH = Date.UTC(2025, 0, 1);
+// fixed order, never reorder: append new cities at the end (4 bits, so up to 16)
+const CODE_CITIES = ["prague", "vienna", "split", "zagreb", "lednice", "wachau", "kahlenberg", "hallstatt", "karlstejn", "kutnahora", "bohemian", "trogir", "hvar", "krka"];
+const dayNo = iso => { const [y, m, d] = iso.split("-").map(Number); return Math.round((Date.UTC(y, m - 1, d) - CODE_EPOCH) / 864e5); };
+const dayIso = n => new Date(CODE_EPOCH + n * 864e5).toISOString().slice(0, 10);
+const pinBits = code => code === "CF" ? [1, 7] : /^[A-G]$/.test(code) ? [0, code.charCodeAt(0) - 65]
+  : /^[1-7]$/.test(code) ? [1, +code - 1] : /^T[1-8]$/.test(code) ? [2, +code[1] - 1] : /^H[1-8]$/.test(code) ? [3, +code[1] - 1] : null;
+const pinCode = (k, i) => k === 0 ? "ABCDEFGH"[i] : k === 1 ? (i === 7 ? "CF" : String(i + 1)) : `${"TH"[k - 2]}${i + 1}`;
+
+function toCode(p) {
+  const bits = [], put = (v, n) => { for (let i = n - 1; i >= 0; i--) bits.push((v >> i) & 1); }, D = PLAN_DEFAULT;
+  put(1, 2); // format version
+  const start = dayNo(p.start);
+  put(p.start !== D.start, 1); if (p.start !== D.start) put(start, 12);
+  const nightsSame = NIGHT_ORDER.every(c => p.nights[c] === D.nights[c]);
+  put(!nightsSame, 1); if (!nightsSame) NIGHT_ORDER.forEach(c => put(p.nights[c], 5));
+  put(p.legs.vs.opt === "flight", 1); put(p.legs.zs.opt === "day", 1);
+  for (const l of ["pv", "vs", "zs"]) {
+    const dep = p.legs[l].dep, [h, m] = dep.split(":").map(Number), min = h * 60 + m;
+    put(dep !== D.legs[l].dep, 1);
+    if (dep !== D.legs[l].dep) { put(min % 15 !== 0, 1); min % 15 ? put(min, 11) : put(min / 15, 7); }
+  }
+  const staysSame = NIGHT_ORDER.every(c => p.stays[c] === D.stays[c]);
+  put(!staysSame, 1); if (!staysSame) NIGHT_ORDER.forEach(c => put(p.stays[c] ? +p.stays[c].slice(1) : 0, 4));
+  for (const [iso, ks] of Object.entries(p.pins)) {
+    const off = dayNo(iso) - start + 32, pins = ks.map(k => { const [c, code] = k.split(":"); return [CODE_CITIES.indexOf(c), pinBits(code)]; }).filter(([c, b]) => c >= 0 && b);
+    if (off < 0 || off > 127 || !pins.length) continue;
+    put(1, 1); put(off, 7); put(pins.length - 1, 2);
+    for (const [c, [k, i]] of pins) { put(c, 4); put(k, 2); put(i, 3); }
+  }
+  put(0, 1);
+  for (const [iso, text] of Object.entries(p.notes)) {
+    const off = dayNo(iso) - start + 32, bytes = [...new TextEncoder().encode(text)].slice(0, 2047);
+    if (off < 0 || off > 127 || !bytes.length) continue;
+    put(1, 1); put(off, 7); put(bytes.length, 11); bytes.forEach(b => put(b, 8));
+  }
+  while (bits.length && !bits[bits.length - 1]) bits.pop(); // trailing zeros come back as "nothing more"
+  let s = "";
+  for (let i = 0; i < bits.length; i += CODE_BITS) {
+    let v = 0; for (let j = 0; j < CODE_BITS; j++) v = v * 2 + (bits[i + j] || 0);
+    s += String.fromCharCode(CODE_BASE + v);
+  }
+  return s;
+}
 function fromCode(s) {
-  s = String(s).trim().replace(/^.*[?&]plan=/, "").replace(/[&#].*$/, "").replace(/-/g, "+").replace(/_/g, "/");
-  return normalizePlan(JSON.parse(decodeURIComponent(escape(atob(s)))));
+  s = String(s).trim().replace(/^.*[?&]plan=/, "").replace(/[&#].*$/, "");
+  if (/%[0-9A-F]{2}/i.test(s)) s = decodeURIComponent(s);
+  if (s.charCodeAt(0) < CODE_BASE) { // the older base64 JSON codes
+    s = s.replace(/-/g, "+").replace(/_/g, "/");
+    return normalizePlan(JSON.parse(decodeURIComponent(escape(atob(s)))));
+  }
+  const bits = [];
+  for (const ch of s) {
+    const v = ch.charCodeAt(0) - CODE_BASE;
+    if (v < 0 || v >= 1 << CODE_BITS) throw new Error("bad code");
+    for (let i = CODE_BITS - 1; i >= 0; i--) bits.push((v >> i) & 1);
+  }
+  let at = 0;
+  const get = n => { let v = 0; for (let i = 0; i < n; i++) v = v * 2 + (bits[at++] || 0); return v; };
+  if (get(2) !== 1) throw new Error("unknown code version");
+  const p = clone(PLAN_DEFAULT);
+  if (get(1)) p.start = dayIso(get(12));
+  const start = dayNo(p.start);
+  if (get(1)) NIGHT_ORDER.forEach(c => p.nights[c] = get(5));
+  p.legs.vs.opt = get(1) ? "flight" : "sleeper"; p.legs.zs.opt = get(1) ? "day" : "sleeper";
+  for (const l of ["pv", "vs", "zs"]) if (get(1)) {
+    const min = get(1) ? get(11) : get(7) * 15;
+    p.legs[l].dep = `${String(Math.floor(min / 60)).padStart(2, "0")}:${String(min % 60).padStart(2, "0")}`;
+  }
+  if (get(1)) NIGHT_ORDER.forEach(c => { const n = get(4); p.stays[c] = n ? `H${n}` : null; });
+  while (get(1)) {
+    const iso = dayIso(start + get(7) - 32), n = get(2) + 1;
+    p.pins[iso] = Array.from({ length: n }, () => { const c = get(4), k = get(2), i = get(3); return `${CODE_CITIES[c]}:${pinCode(k, i)}`; });
+  }
+  while (get(1)) {
+    const iso = dayIso(start + get(7) - 32), len = get(11);
+    p.notes[iso] = new TextDecoder().decode(new Uint8Array(Array.from({ length: len }, () => get(8))));
+  }
+  return normalizePlan(p);
 }
 let PLAN = clone(PLAN_DEFAULT), sharedPending = null;
 (() => {
@@ -938,10 +1020,13 @@ function hop(a, b) {
   if (air) return { mode: "transfer", text: `${air.hub.how} · ~${air.hub.min} min`, short: `${air.hub.min}′`, a, b };
   const d = trueKm(a.xy, b.xy);
   if (d < 1.3) { const m = Math.max(2, Math.round(d * 1.3 / 4.5 * 60)); return { mode: "walk", text: `${m} min walk`, short: `${m}′`, a, b }; }
-  const t = d > 20 && (tripFor(b.place) || tripFor(a.place));
+  const far = [b.place, a.place].find(p => p?.how && TRIP_ROUTES[placeRoute(p)]); // a sight off the city map, either way (Sljeme: bus + gondola)
+  if (far) return { mode: "regional", text: far.how, short: far.how.replace(/.*· /, ""), a, b };
+  const ta = tripFor(a.place), tb = tripFor(b.place); // not between two stops on the same day trip
+  const t = d > 3 && ta !== tb && (tb || ta); // a day trip's own time, even a near one (Trogir is 16 km)
   if (t && t.time) return { mode: "regional", text: t.time, short: t.time.replace(/ by .*| to .*|,.*/, ""), a, b };
   const area = (b.place || a.place)?.city || a.city;
-  if (d < 25) { const m = Math.round(10 + d * 1.3 / 20 * 60); return { mode: "city", text: `~${m} min by ${CITY_MODE[area] || "bus"}`, short: `${m}′`, a, b }; }
+  if (d < 25) { const m = Math.round(10 + d * 1.3 / 20 * 60); return { mode: "city", text: `~${m < 60 ? `${m} min` : hm(m)} by ${CITY_MODE[area] || "bus"}`, short: m < 60 ? `${m}′` : hm(m), a, b }; }
   const m = Math.round(15 + d); return { mode: "regional", text: `~${hm(m)} by train or bus`, short: hm(m), a, b };
 }
 function itinerary(x) {
@@ -986,23 +1071,33 @@ function itinerary(x) {
 }
 
 // ---------- planner panel ----------
-let plSel = null, plMsg = "", plResetAsk = false, plImport = false, plAdd = false, plSetOpen = true, plRange = null;
-try { plSetOpen = localStorage.getItem("planSettings") !== "closed"; } catch (e) {}
-const pinBadge = (p, iso) => `<i class="pb" style="--c:var(--${homeOf(p)})" title="${esc(p.name)}${iso ? " · drag to another day" : ""}"${iso ? ` draggable="true" data-dpin="${keyOf(p)}" data-from="${iso}"` : ""}>${esc(p.label || p.code)}</i>`;
+let plShare = false; // the Share menu in the planner's title bar
+let plSel = null, plMsg = "", plResetAsk = false, plImport = false, plAdd = false, plRange = null;
+// calendar chips say what kind of place each pin is: eat (fork and knife), see (a pin), a day trip (a suitcase)
+// one marker for a place everywhere (map, slides, menus, calendar, planner): what kind it is as an icon, eat
+// (fork and knife, round), see (a pin), a day trip (a suitcase, outlined) or our Airbnb (a house), then its label
+const PIN_KIND = { food: "eat", cafe: "eat", daytrip: "trip", nature: "trip", stay: "stay" }; // everything else is a place to see
+const PIN_PATH = { // 24×24 line icons, as path data so the map canvas draws the same ones
+  eat: "M4 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V2M7 2v20M20 15V2a5 5 0 0 0-5 5v6a2 2 0 0 0 2 2h3Zm0 0v7",
+  see: "M20 10c0 5-5.5 10.2-7.4 11.8a1 1 0 0 1-1.2 0C9.5 20.2 4 15 4 10a8 8 0 0 1 16 0ZM15 10a3 3 0 1 1-6 0a3 3 0 1 1 6 0",
+  trip: "M5 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2ZM8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18",
+  stay: "M3 10a2 2 0 0 1 .7-1.5l7-6a2 2 0 0 1 2.6 0l7 6a2 2 0 0 1 .7 1.5v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2ZM15 21v-7a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v7",
+};
+const PIN_WORD = { eat: "Eat", see: "See", trip: "Day trip", stay: "Stay" };
+const pinKind = p => PIN_KIND[p.type] || "see";
+const pinBadge = (p, iso) => { const k = pinKind(p); return `<i class="pb ${k}" style="--c:var(--${homeOf(p)})" title="${PIN_WORD[k]}: ${esc(p.name)}${iso ? " · drag to another day" : ""}"${iso ? ` draggable="true" data-dpin="${keyOf(p)}" data-from="${iso}"` : ""}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${PIN_PATH[k]}"/></svg>${esc(p.label || p.code)}</i>`; };
 function settingsHTML() {
   const rail = byRail(), zn = PLAN.nights.zagreb;
   const trainNight = DAYS.some(x => x.sleeper);
-  const sum = `${planRange()} · ${totalNights()} nights · ${rail ? (zn ? `${zn} in Zagreb` : "rail via Zagreb") : "flying to Split"}`;
   return `<div class="pset">
-  <button class="psum" data-act="settings" aria-expanded="${plSetOpen}"><span>${sum}</span><em>${plSetOpen ? "Hide" : "Edit trip"}</em></button>
-  ${plSetOpen ? `<div class="prow"><span class="lab">Dates</span><div class="ctl"><button class="drange${plRange ? " on" : ""}" data-act="range" aria-expanded="${!!plRange}">${fmtDay(DAYS[0].date)} → ${fmtDay(DAYS.at(-1).date)}</button><span class="end">${totalNights()} nights${trainNight ? " · 1 on the train" : ""}</span></div></div>
+  ${`<div class="prow"><span class="lab">Dates</span><div class="ctl"><button class="drange${plRange ? " on" : ""}" data-act="range" aria-expanded="${!!plRange}">${fmtDay(DAYS[0].date)} → ${fmtDay(DAYS.at(-1).date)}</button><span class="end">${totalNights()} nights${trainNight ? " · 1 on the train" : ""}</span></div></div>
   ${plRange ? rangeHTML() : ""}
   <div class="prow"><span class="lab">Vienna → Split</span><div class="ctl"><div class="seg2" role="group" aria-label="Vienna to Split"><button data-vs="sleeper" class="${rail ? "on" : ""}" aria-pressed="${rail}">Train via Zagreb</button><button data-vs="flight" class="${rail ? "" : "on"}" aria-pressed="${!rail}">Flight</button></div></div></div>
-  ${rail && zn ? `<div class="prow"><span class="lab">Zagreb → Split</span><div class="ctl"><div class="seg2" role="group" aria-label="Zagreb to Split"><button data-zs="sleeper" class="${PLAN.legs.zs.opt === "sleeper" ? "on" : ""}">Sleeper</button><button data-zs="day" class="${PLAN.legs.zs.opt === "day" ? "on" : ""}">Day train</button></div></div></div>` : ""}` : ""}</div>`;
+  ${rail && zn ? `<div class="prow"><span class="lab">Zagreb → Split</span><div class="ctl"><div class="seg2" role="group" aria-label="Zagreb to Split"><button data-zs="sleeper" class="${PLAN.legs.zs.opt === "sleeper" ? "on" : ""}">Sleeper</button><button data-zs="day" class="${PLAN.legs.zs.opt === "day" ? "on" : ""}">Day train</button></div></div></div>` : ""}`}</div>`;
 }
 // the date-range picker: click the first day, then the last
 function rangeHTML() {
-  const { y, m, a } = plRange, first = new Date(y, m, 1), lead = (first.getDay() + 6) % 7, len = new Date(y, m + 1, 0).getDate();
+  const { y, m, a } = plRange, first = new Date(y, m, 1), lead = first.getDay(), len = new Date(y, m + 1, 0).getDate();
   const s0 = a || DAYS[0].iso, e0 = a ? null : DAYS.at(-1).iso, cells = [];
   for (let k = 0; k < lead; k++) cells.push(`<span></span>`);
   for (let d = 1; d <= len; d++) {
@@ -1011,7 +1106,7 @@ function rangeHTML() {
   }
   return `<div class="rp" role="group" aria-label="Pick the trip dates">
     <div class="rph"><button class="ib" data-rm="-1" aria-label="Previous month">‹</button><b>${["January","February","March","April","May","June","July","August","September","October","November","December"][m]} ${y}</b><button class="ib" data-rm="1" aria-label="Next month">›</button></div>
-    <div class="rpg">${WD.map(w => `<i>${w.slice(0, 2)}</i>`).join("")}${cells.join("")}</div>
+    <div class="rpg">${WD_CAL.map(w => `<i>${w.slice(0, 2)}</i>`).join("")}${cells.join("")}</div>
     <p class="muted small">${a ? `From ${fmtDay(parseISO(a))}. Now click the day you fly home.` : "Click the day you fly in, then the day you fly home. Prague takes the change at the start, Split at the end."}</p></div>`;
 }
 // new trip dates: days added or cut at the start go to Prague, at the end to Split (then the next city along)
@@ -1039,15 +1134,12 @@ function dayViewHTML(x) {
   let travel = "";
   if (x.kind === "travel") {
     const o = legPlan(x.leg);
-    const opts = Object.entries(LEG_INFO[x.leg]).map(([k, v]) => `<option value="${k}"${o.opt === k ? " selected" : ""}>${esc(v.label)}</option>`).join("");
-    travel = `<div class="two"><label class="fld"><span>How</span><select id="pl-opt" data-leg="${x.leg}">${opts}</select></label>
+    // how is picked once in the settings above; here it's just said, with the departure time to set
+    travel = `<div class="two"><div class="fld"><span>How</span><b class="how">${esc(LEG_INFO[x.leg][o.opt].label)}</b></div>
       <label class="fld"><span>Departs</span><input type="time" id="pl-dep" data-leg="${x.leg}" value="${o.dep}"></label></div>
       <p class="muted small">${esc(legSummary(x.leg).text)}</p>`;
   }
-  const list = pins.map((k, j) => { const p = placeBy[k]; return `<li style="--c:var(--${homeOf(p)})" draggable="true" data-dpin="${k}" data-from="${x.iso}" title="Drag to another day">${badge(p)}<span class="nm">${esc(p.name)}</span>
-    <button class="ib" data-mv="${j}" data-dir="-1" aria-label="Earlier in the day"${j ? "" : " disabled"}>↑</button><button class="ib" data-mv="${j}" data-dir="1" aria-label="Later in the day"${j < n - 1 ? "" : " disabled"}>↓</button>
-    <button class="ib" data-unpin="${k}" aria-label="Remove ${esc(p.name)}">×</button></li>`; }).join("");
-  const chip = p => { const on = pins.includes(keyOf(p)); return `<button class="pchip${on ? " on" : ""}" data-pin="${keyOf(p)}" aria-pressed="${on}"${!on && n >= PIN_MAX ? " disabled" : ""}>${badge(p)}<span>${esc(p.name)}</span></button>`; };
+  const chip = p => { const on = pins.includes(keyOf(p)); return `<button class="pchip${on ? " on" : ""}" data-pin="${keyOf(p)}" aria-pressed="${on}"${!on && n >= PIN_MAX ? " disabled" : ""}>${pinBadge(p)}<span>${esc(p.name)}</span></button>`; };
   const cs = dayCities(x);
   const groups = cs.map(c => {
     const own = PLACES.filter(p => p.city === c);
@@ -1060,17 +1152,19 @@ function dayViewHTML(x) {
   return `<div class="dayv" style="--a:var(--${dayCity(x)})">
     <div class="dh"><button class="ib" data-dstep="-1" aria-label="Previous day"${x.i ? "" : " disabled"}>‹</button>
       <div><b>${fmtDay(x.date)}</b><span>Day ${x.i + 1} of ${DAYS.length} · ${where}${x.note0 ? ` · ${esc(x.note0)}` : ""}</span></div>
+      <button class="mini play" data-act="play"${n ? "" : ` disabled title="Pin a place to play the day"`}>▶ Play</button>
       <button class="ib" data-dstep="1" aria-label="Next day"${x.i < DAYS.length - 1 ? "" : " disabled"}>›</button></div>
     ${travel}
-    <h4>Pinned <span>${n} / ${PIN_MAX}</span></h4>
-    ${n ? `<ol class="pinl">${list}</ol>` : `<p class="muted small">Nothing pinned yet. Add up to ${PIN_MAX} places below, or with 📌 in the menus and on the map.</p>`}
+    <h4>The day <span>${n} / ${PIN_MAX} pinned</span></h4>
+    ${itinHTML(x, itinerary(x))}
+    ${n ? "" : `<p class="muted small">Nothing pinned yet. Add up to ${PIN_MAX} places below, drag them from the slides, or use 📌 in the menus and on the map.</p>`}
     <details class="add" id="pl-add"${plAdd ? " open" : ""}><summary>Add a place</summary>${groups}</details>
     <label class="fld"><span>Note</span><textarea id="pl-note" rows="2" placeholder="e.g. dinner reservation 20:00">${esc(PLAN.notes[x.iso] || "")}</textarea></label>
-    <div class="dact"><button class="mini" data-act="play"${n ? "" : " disabled"}>▶ Play the day</button>${daySl ? `<button class="mini ghost" data-act="dayoff">Back to the slides</button>` : `<button class="mini ghost" data-act="dayon">Show on the map</button>`}</div>
+    <p class="muted small">Times are rough estimates.</p>
   </div>`;
 }
 function calCells(days = DAYS, live = null) {
-  const first = days[0].date, lead = (first.getDay() + 6) % 7;
+  const first = days[0].date, lead = first.getDay();
   const cells = [];
   for (let k = 0; k < lead; k++) cells.push(`<div class="cd off"><span class="n">${addDays(first, k - lead).getDate()}</span></div>`);
   const ncs = nightCities(), lastStay = {};
@@ -1089,7 +1183,8 @@ function calCells(days = DAYS, live = null) {
     const fly = x.kind === "arrive" || x.kind === "depart"; // flying in and home get their own look
     const label = x.kind === "travel" ? `${PC[x.from].local.slice(0, 3)}→${PC[x.to].local.slice(0, 3)}` : fly ? (x.kind === "arrive" ? "Fly in" : "Fly home") : PC[x.city].local;
     const icon = fly || (x.leg === "vs" && PLAN.legs.vs.opt === "flight") ? "✈︎" : x.sleeper ? "☾" : "";
-    cells.push(`<button class="cd${x.kind === "travel" ? " travel" : ""}${fly ? " fly" : ""}${sel}" data-day="${x.i}" style="${style}" aria-label="${esc(fmtDay(x.date))}${pins.length ? `, ${pins.length} pinned` : ""}" aria-pressed="${plSel === x.i}">
+    const via = x.kind === "travel" && x.leg === "vs" && byRail(); // the day train with an evening in Zagreb
+    cells.push(`<button class="cd${x.kind === "travel" ? " travel" : ""}${via ? " via" : ""}${fly ? " fly" : ""}${sel}" data-day="${x.i}" style="${style}" aria-label="${esc(fmtDay(x.date))}${pins.length ? `, ${pins.length} pinned` : ""}" aria-pressed="${plSel === x.i}">
       <span class="n">${n}${m}</span>${icon ? `<span class="i">${icon}</span>` : ""}${note ? `<span class="nd" title="${esc(note)}"></span>` : ""}
       <span class="t">${label}</span>${pins.length ? `<span class="pr">${pins.map(p => pinBadge(p, x.iso)).join("")}</span>` : ""}${grip}</button>`);
   });
@@ -1098,46 +1193,44 @@ function calCells(days = DAYS, live = null) {
 }
 function planHTML() {
   const cells = calCells();
-  const travel = DAYS.filter(x => x.kind === "travel").map(x => { const s = legSummary(x.leg); return `<li><b>${fmtDay(x.date)}</b><span>${esc(s.info.label)}<br><span class="muted">${esc(s.text)}</span></span></li>`; }).join("");
 
   const lost = lostPins();
-  const lostHTML = lost.length ? `<h3 class="sub">Needs a new day</h3><ul class="lostl">${lost.map(l => { const p = placeBy[l.key]; return `<li style="--c:var(--${homeOf(p)})">${badge(p)}<span>${esc(p.name)} <span class="muted">was on ${fmtDay(parseISO(l.iso))}</span></span><button class="ib" data-unpin="${l.key}" data-iso="${l.iso}" aria-label="Remove ${esc(p.name)}">×</button></li>`; }).join("")}</ul>` : "";
+  const lostHTML = lost.length ? `<h3 class="sub">Needs a new day</h3><ul class="lostl">${lost.map(l => { const p = placeBy[l.key]; return `<li style="--c:var(--${homeOf(p)})">${pinBadge(p)}<span>${esc(p.name)} <span class="muted">was on ${fmtDay(parseISO(l.iso))}</span></span><button class="ib" data-unpin="${l.key}" data-iso="${l.iso}" aria-label="Remove ${esc(p.name)}">×</button></li>`; }).join("")}</ul>` : "";
 
   const shareLink = /github\.io$|^localhost$|^127\.0\.0\.1$/.test(location.hostname);
   const outside = Object.keys(PLAN.notes).filter(d => !DAYS.some(x => x.iso === d));
   return `<button class="x" id="calClose" aria-label="Close planner">×</button>
-  <p class="eyebrow">Your plan · saved in this browser</p><h2>Day by day</h2>
+  <div class="phead"><h2>Plan</h2><button class="shareb${plShare ? " on" : ""}" data-act="share" aria-haspopup="true" aria-expanded="${plShare}">Share <span aria-hidden="true">▾</span></button>
+    ${plShare ? `<div class="smenu" role="menu">
+      ${shareLink ? `<button role="menuitem" data-act="link">Copy share link</button>` : ""}<button role="menuitem" data-act="code">Copy plan code</button>
+      <button role="menuitem" data-act="import" aria-expanded="${plImport}">Paste a plan code</button>
+      ${plImport ? `<div class="imp"><textarea id="pl-code" rows="2" placeholder="Paste a plan code or share link"></textarea><button class="mini" data-act="load">Load plan</button></div>` : ""}
+      <hr>
+      ${plResetAsk ? `<span class="confirm">Reset everything? <button class="mini" data-act="reset-yes">Reset</button><button class="mini ghost" data-act="reset-no">Cancel</button></span>` : `<button role="menuitem" data-act="reset">Reset to the default plan</button>`}
+      <textarea id="pl-copy" class="copybox" readonly hidden></textarea>
+    </div>` : ""}</div>
   ${sharedPending ? `<div class="banner"><span>You opened a shared plan.</span><button class="mini" data-act="keep">Keep it as mine</button><button class="mini ghost" data-act="discard">Use my own</button></div>` : ""}
   ${settingsHTML()}
-  <div class="cal planner">${WD.map(w => `<div class="wd">${w}</div>`).join("")}${cells.join("")}</div>
-  <p class="pl-status" role="status">${esc(plMsg || "Click a day to see it on the map and pin up to 3 places. Drag the handle on a city's last day to move nights between cities (drag Wien's left to stop over in Zagreb).")}</p>
+  <div class="cal planner">${WD_CAL.map(w => `<div class="wd">${w}</div>`).join("")}${cells.join("")}</div>
+  <p class="pl-status" role="status">${esc(plMsg || `Click a day to see it on the map and pin up to ${PIN_MAX} places. Drag the handle on a city's last day to move nights between cities (drag Wien's left to stop over in Zagreb).`)}</p>
   ${plSel != null && DAYS[plSel] ? dayViewHTML(DAYS[plSel]) : ""}
   ${lostHTML}
-  <h3 class="sub">Travel days</h3><ul class="trav">${travel}</ul>
   ${outside.length ? `<p class="note">Notes on ${outside.length} date${outside.length > 1 ? "s" : ""} outside the trip are kept in case the dates move back.</p>` : ""}
-  <h3 class="sub">Share</h3>
-  <div class="share">${shareLink ? `<button class="mini" data-act="link">Copy share link</button>` : ""}<button class="mini" data-act="code">Copy plan code</button>
-    <button class="mini ghost" data-act="import">Paste a plan code</button>
-    ${plResetAsk ? `<span class="confirm">Reset everything? <button class="mini" data-act="reset-yes">Reset</button><button class="mini ghost" data-act="reset-no">Cancel</button></span>` : `<button class="mini ghost" data-act="reset">Reset to the default plan</button>`}</div>
-  ${plImport ? `<div class="imp"><textarea id="pl-code" rows="2" placeholder="Paste a plan code or share link"></textarea><button class="mini" data-act="load">Load plan</button></div>` : ""}
-  <textarea id="pl-copy" class="copybox" readonly hidden></textarea>`;
+`;
 }
 
 // the day on the map: its route, from home base through the pins, with stations and airports
 const HUB_ICON = { home: "⌂", air: "✈︎", rail: "▤" };
 const HOP_ICON = { walk: "🚶", city: "🚇", transfer: "🚌", regional: "🚆", train: "🚆", sleeper: "🛏", flight: "✈︎" };
-function dayHTML(x, it) {
-  const where = x.kind === "travel" ? `${PC[x.from].local} <span class="arrow">→</span> ${PC[x.to].local}` : PC[x.city].local;
-  const n = pinsOn(x).length, note = PLAN.notes[x.iso];
-  const rows = it.map(e => e.stop
-    ? `<li class="st ${e.stop.kind}" style="--c:var(--${PC[e.stop.city] ? e.stop.city : homeOf(e.stop.place)})"${e.stop.place && e.stop.kind === "place" ? ` data-p="${keyOf(e.stop.place)}" tabindex="0"` : ""}><span class="mk">${e.stop.kind === "place" ? badge(e.stop.place) : `<span class="hub">${HUB_ICON[e.stop.kind]}</span>`}</span><span><b>${esc(e.stop.name)}</b>${e.stop.sub ? `<small>${esc(e.stop.sub)}</small>` : ""}</span></li>`
-    : `<li class="hp ${e.hop.mode}" style="--c:var(--${PC[e.hop.b?.city] ? e.hop.b.city : dayCity(x)})"><span class="ln"></span><span>${HOP_ICON[e.hop.mode]} ${esc(e.hop.text)}</span></li>`).join("");
-  return `<p class="eyebrow"><span class="dot"></span>Day ${x.i + 1} of ${DAYS.length} · ${fmtDay(x.date)}</p>
-  <h2>${where}</h2>
-  ${x.note0 ? `<p class="lede">${esc(x.note0)}.</p>` : ""}
-  <ol class="itin">${rows}</ol>
-  ${note ? `<p class="note">${esc(note)}</p>` : ""}
-  <p class="hint">${n ? "" : "Nothing pinned for this day yet. "}<a href="#" data-plan-day="${x.i}">${n ? "Edit this day" : `Pin up to ${PIN_MAX} places`}</a>${n ? ` · <a href="#" data-play="1">▶ Play the day</a>` : ""}. Times are rough estimates.</p>`;
+// the day stop by stop, with the ride or walk between stops; pinned places get their reorder and remove buttons
+function itinHTML(x, it) {
+  const ks = pinsOn(x), n = ks.length;
+  return `<ol class="itin">${it.map(e => {
+    if (!e.stop) return `<li class="hp ${e.hop.mode}" style="--c:var(--${PC[e.hop.b?.city] ? e.hop.b.city : dayCity(x)})"><span class="ln"></span><span>${HOP_ICON[e.hop.mode]} ${esc(e.hop.text)}</span></li>`;
+    const p = e.stop.kind === "place" ? e.stop.place : null, j = p ? ks.indexOf(keyOf(p)) : -1;
+    const ctl = j < 0 ? "" : `<span class="ctl"><button class="ib" data-mv="${j}" data-dir="-1" aria-label="Earlier in the day"${j ? "" : " disabled"}>↑</button><button class="ib" data-mv="${j}" data-dir="1" aria-label="Later in the day"${j < n - 1 ? "" : " disabled"}>↓</button><button class="ib" data-unpin="${keyOf(p)}" aria-label="Remove ${esc(p.name)}">×</button></span>`;
+    return `<li class="st ${e.stop.kind}" style="--c:var(--${PC[e.stop.city] ? e.stop.city : homeOf(p)})"${p ? ` data-p="${keyOf(p)}" tabindex="0"${j >= 0 ? ` draggable="true" data-dpin="${keyOf(p)}" data-from="${x.iso}" title="Drag to another day"` : ""}` : ""}><span class="mk">${p ? pinBadge(p) : `<span class="hub">${HUB_ICON[e.stop.kind]}</span>`}</span><span><b>${esc(e.stop.name)}</b>${e.stop.sub ? `<small>${esc(e.stop.sub)}</small>` : ""}</span>${ctl}</li>`;
+  }).join("")}</ol>`;
 }
 
 function wrapHTML() {
@@ -1224,6 +1317,91 @@ function buildRegion(r) {
   S.riversMajor = new Path2D(); S.riversMinor = new Path2D();
   for (const rv of r.rivers) addAbs(rv.rank <= 5 ? S.riversMajor : S.riversMinor, rv.line, false);
 }
+// ---------- country detail: main roads, railways, rivers, lakes and towns (data/land*.json) ----------
+// land.json is a light copy of all three countries for the zoomed-out map; land_<iso>.json is finer and loads
+// once a country is in view up close. Both arrive after the page has started, so they never hold it up.
+const LAND_BOX = { cz: [12.09, 48.55, 18.86, 51.06], at: [9.53, 46.37, 17.16, 49.02], hr: [13.49, 42.39, 19.45, 46.55] }; // lon/lat
+const LAND_TILE = 40; // km
+S.land = { lo: null, hi: {}, req: {} };
+function buildLand(d) {
+  const tiles = new Map();
+  for (const layer of ["wa", "wl", "rl", "r2", "r1"]) for (const a of d[layer] || []) {
+    const pts = new Float64Array(a.length); let x = 0, y = 0, x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (let i = 0; i < a.length; i += 2) {
+      x += a[i]; y += a[i + 1]; const X = x / 1000, Y = y / 1000; pts[i] = X; pts[i + 1] = Y;
+      if (X < x0) x0 = X; if (X > x1) x1 = X; if (Y < y0) y0 = Y; if (Y > y1) y1 = Y;
+    }
+    const key = `${Math.floor(x0 / LAND_TILE)},${Math.floor(y0 / LAND_TILE)}`;
+    let t = tiles.get(key);
+    if (!t) tiles.set(key, t = { bb: [x0, y0, x1, y1], paths: {} });
+    else { t.bb[0] = Math.min(t.bb[0], x0); t.bb[1] = Math.min(t.bb[1], y0); t.bb[2] = Math.max(t.bb[2], x1); t.bb[3] = Math.max(t.bb[3], y1); }
+    addAbs(t.paths[layer] || (t.paths[layer] = new Path2D()), pts, layer === "wa");
+  }
+  const near = (x, y) => Object.values(PC).some(c => Math.hypot(c.xy[0] - x, c.xy[1] - y) < 4);
+  const named = new Set(TOWNS.map(t => t[0]));
+  return { tiles: [...tiles.values()], towns: (d.towns || []).filter(([nm, x, y]) => !named.has(nm) && !near(x, y)) };
+}
+function loadLand(id) {
+  if (S.land.req[id]) return;
+  S.land.req[id] = fetch(`data/${id}.json?v=${DATA_V}`).then(r => r.json()).then(d => {
+    const L = buildLand(d);
+    if (id === "land") S.land.lo = L; else S.land.hi[id] = L;
+    invalidate();
+  }).catch(() => {}); // a missing file stays missing for this visit: no retrying every frame
+}
+function drawLand(k) {
+  const fadeOut = 1 - smooth(60, 150, k); // city and trip maps have their own roads by then
+  if (!S.land.lo || fadeOut <= 0) return;
+  const vx0 = -T.x / k, vy0 = -T.y / k, vx1 = (W - T.x) / k, vy1 = (H - T.y) / k;
+  // up close, each country's finer copy, loaded when it comes into view
+  const sets = [];
+  if (k >= 8) for (const [iso, [w, s, e, n]] of Object.entries(LAND_BOX)) {
+    const [bx0, by0] = P(w, n), [bx1, by1] = P(e, s);
+    if (bx0 > vx1 || bx1 < vx0 || by0 > vy1 || by1 < vy0) continue;
+    if (S.land.hi[`land_${iso}`]) sets.push(S.land.hi[`land_${iso}`]); else loadLand(`land_${iso}`);
+  }
+  const L = sets.length ? sets : [S.land.lo];
+  const vis = L.flatMap(l => l.tiles.filter(t => t.bb[0] < vx1 && t.bb[2] > vx0 && t.bb[1] < vy1 && t.bb[3] > vy0));
+  const each = (layer, f) => { for (const t of vis) if (t.paths[layer]) f(t.paths[layer]); };
+  ctx.lineCap = "round"; ctx.lineJoin = "round";
+  ctx.globalAlpha = fadeOut; ctx.fillStyle = C.water; each("wa", p => ctx.fill(p));
+  let a = smooth(1.5, 4, k) * fadeOut;
+  if (a > 0) { ctx.globalAlpha = a; ctx.strokeStyle = C.water; ctx.lineWidth = Math.min(3, 0.7 + k * 0.12) / k; each("wl", p => ctx.stroke(p)); }
+  a = smooth(2, 5, k) * fadeOut;
+  if (a > 0) { ctx.globalAlpha = a * 0.75; ctx.strokeStyle = C.rail; ctx.lineWidth = Math.min(1.8, 0.8 + k * 0.05) / k; each("rl", p => ctx.stroke(p)); }
+  for (const [layer, from, w] of [["r2", 3.5, 0.7], ["r1", 1.2, 1.2]]) {
+    a = smooth(from, from * 2.2, k) * fadeOut; if (a <= 0) continue;
+    const width = Math.min(w * 3, w + k * 0.06);
+    ctx.globalAlpha = a; ctx.strokeStyle = C.casing; ctx.lineWidth = (width + 1.4) / k; each(layer, p => ctx.stroke(p));
+    ctx.strokeStyle = C.road; ctx.lineWidth = width / k; each(layer, p => ctx.stroke(p));
+  }
+  ctx.globalAlpha = 1;
+}
+// town names, biggest first, kept clear of each other and of the card and buttons
+const townW = new Map();
+function drawTowns(k) {
+  const a = smooth(2.2, 3.5, k) * (1 - smooth(30, 55, k));
+  if (!S.land.lo || a <= 0) return;
+  const hi = k >= 8 ? Object.values(S.land.hi) : [];
+  const list = hi.length ? hi.flatMap(l => l.towns).sort((p, q) => q[3] - p[3]) : S.land.lo.towns;
+  const taken = uiBoxes().slice();
+  ctx.font = fontFor({ size: 10.5, weight: 500 });
+  let n = 0;
+  for (const [nm, wx, wy, pop, city] of list) {
+    if (!city && pop < (k < 5 ? 40000 : k < 12 ? 8000 : 0)) continue;
+    const [x, y] = toS([wx, wy]); if (!inView(x, y)) continue;
+    let w = townW.get(nm); if (w === undefined) townW.set(nm, w = ctx.measureText(nm).width);
+    const box = [x - 4, y - 8, x + 8 + w, y + 8];
+    if (taken.some(t => overlaps(t, box))) continue;
+    taken.push(box);
+    ctx.globalAlpha = a * 0.85;
+    ctx.beginPath(); ctx.arc(x, y, city ? 2.6 : 2, 0, Math.PI * 2); ctx.fillStyle = C.ink2; ctx.fill();
+    text(nm, x + 6, y, { size: 10.5, weight: 500, color: C.ink2 });
+    if (++n > 60) break; // plenty to find your way
+  }
+  ctx.globalAlpha = 1;
+}
+
 const POLY = new Set(["wa", "gr", "bd", "sea"]);
 const TILE = 2000, LOD_K = 100, LOD_M = 20; // tiles in metres; below zoom LOD_K draw copies thinned to LOD_M
 const LOD_LAYERS = new Set(["sea", "gr", "wa", "wl", "r1", "r2", "r3", "pa", "rl"]);
@@ -1369,7 +1547,7 @@ const routeCache = new Map();
 function roadRoute(a, b) {
   const key = `${a[0]},${a[1]}>${b[0]},${b[1]}`;
   if (routeCache.has(key)) return routeCache.get(key);
-  const inBox = (c, p) => p[0] > c.box[0] && p[0] < c.box[2] && p[1] > c.box[1] && p[1] < c.box[3];
+  const m = 0.5, inBox = (c, p) => p[0] > c.box[0] - m && p[0] < c.box[2] + m && p[1] > c.box[1] - m && p[1] < c.box[3] + m;
   const c = Object.values(S.cities).find(c => c.roads?.length && inBox(c, a) && inBox(c, b));
   if (!c) return null; // not loaded yet, or off the map: try again on a later frame
   if (!c.graph) { // a few hundred ms of work: do it once the camera has settled, straight lines until then
@@ -1612,10 +1790,13 @@ function drawFlights() {
   const sl = SL();
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   for (const f of FLIGHTS) {
-    if (!(sl.day ? sl.flight === f.leg : sl.leg === f.leg || sl.id === "route" || sl.id === "in")) continue; // a rail day shows no flight
+    // when we fly it, the arc stands in for the track everywhere; otherwise it shows only as the alternative
+    const flying = !railLeg(f.leg), active = sl.day ? sl.flight === f.leg : sl.leg === f.leg;
+    if (!(active || flying || (!sl.day && (sl.id === "intro" || sl.id === "in")))) continue;
     const [a, b, cx, cy] = flightArc(f);
     ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.quadraticCurveTo(cx, cy, b[0], b[1]);
-    ctx.setLineDash([2, 7]); ctx.lineCap = "round"; ctx.lineWidth = 3; ctx.strokeStyle = C.ink2; ctx.globalAlpha = 0.9; ctx.stroke(); ctx.setLineDash([]);
+    ctx.setLineDash([2, 7]); ctx.lineCap = "round"; ctx.lineWidth = 3; ctx.strokeStyle = C.ink2;
+    ctx.globalAlpha = active || !(sl.leg || sl.day) ? 0.9 : sl.day ? 0.28 : 0.45; ctx.stroke(); ctx.setLineDash([]);
     const lx = 0.25 * a[0] + 0.5 * cx + 0.25 * b[0], ly = 0.25 * a[1] + 0.5 * cy + 0.25 * b[1];
     text(f.label, lx, ly, { size: 12, weight: 600, fam: "--f-mono", color: C.ink2, align: "center", halo: 3.5 });
     for (const [end, [ax, ay], side] of [[f.from, a, 1], [f.to, b, -1]]) { // airport markers
@@ -1632,7 +1813,7 @@ function drawLegs() {
   const order = Object.keys(LEGS).sort((a, b) => (a === sl.leg) - (b === sl.leg));
   for (const id of order) {
     if (!railLeg(id)) continue;
-    const L = LEGS[id], active = sl.leg === id, dim = sl.leg && !active;
+    const L = LEGS[id], active = sl.leg === id, dim = (sl.leg || sl.day) && !active; // a day dims the legs it doesn't ride
     // the line is a world-space path, stroked under the map transform with widths in screen pixels
     ctx.setTransform(dpr * k, 0, 0, dpr * k, dpr * T.x, dpr * T.y);
     const a = L.pts[0], b = L.pts[L.pts.length - 1];
@@ -1643,7 +1824,7 @@ function drawLegs() {
       g.addColorStop(Math.max(0.15, Math.min(0.85, t)), C.zagreb);
     }
     g.addColorStop(0.9, C[L.to]);
-    ctx.globalAlpha = dim ? 0.5 : 1;
+    ctx.globalAlpha = dim ? (sl.day ? 0.28 : 0.5) : 1;
     const w = active ? 5 : 3;
     ctx.setLineDash([]);
     ctx.strokeStyle = C.halo; ctx.lineWidth = (w + 4) / k; ctx.stroke(L.path2d);
@@ -1666,14 +1847,25 @@ function drawLegs() {
   }
 }
 
-function pinShape(type, x, y, r) {
-  ctx.beginPath();
-  if (type === "food") ctx.arc(x, y, r, 0, Math.PI * 2);
-  else if (type === "cafe") { ctx.roundRect ? ctx.roundRect(x - r, y - r, 2 * r, 2 * r, r * 0.35) : ctx.rect(x - r, y - r, 2 * r, 2 * r); }
-  else if (type === "nature") { ctx.moveTo(x, y - r * 1.25); ctx.lineTo(x + r * 1.15, y + r * 0.85); ctx.lineTo(x - r * 1.15, y + r * 0.85); ctx.closePath(); }
-  else if (type === "daytrip") ctx.arc(x, y, r * 1.05, 0, Math.PI * 2);
-  else if (type === "stay") { ctx.moveTo(x, y - r * 1.25); ctx.lineTo(x + r, y - r * 0.2); ctx.lineTo(x + r, y + r); ctx.lineTo(x - r, y + r); ctx.lineTo(x - r, y - r * 0.2); ctx.closePath(); }
-  else { const d = r * 1.3; ctx.moveTo(x, y - d); ctx.lineTo(x + d, y); ctx.lineTo(x, y + d); ctx.lineTo(x - d, y); ctx.closePath(); }
+// a place's chip on the map, as in the HTML: rounded box (a pill for food), icon, label; returns its half size
+const PIN_P2D = {}; // Path2D per kind, made once
+function pinChip(p, x, y, big, alpha) {
+  const k = pinKind(p), h = big ? 22 : 17, ic = big ? 13 : 10, fs = big ? 13 : 10.5, label = p.label || p.code;
+  ctx.font = fontFor({ size: fs, weight: 700, fam: "--f-display" });
+  const tw = ctx.measureText(label).width, w = Math.round(ic + tw + (big ? 13 : 10)), x0 = x - w / 2, y0 = y - h / 2;
+  const rad = k === "eat" ? h / 2 : big ? 5 : 4, col = C[homeOf(p)], trip = k === "trip";
+  const box = pad => { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x0 - pad, y0 - pad, w + 2 * pad, h + 2 * pad, Math.max(0, rad + pad)) : ctx.rect(x0 - pad, y0 - pad, w + 2 * pad, h + 2 * pad); };
+  ctx.globalAlpha = alpha;
+  box(2.5); ctx.fillStyle = C.halo; ctx.fill();
+  box(0); ctx.fillStyle = trip ? C.halo : col; ctx.fill(); // a day trip: outlined, on the map's own ground
+  if (trip) { ctx.lineWidth = 1.6; ctx.strokeStyle = col; box(-0.8); ctx.stroke(); }
+  if (openPlace === p) { box(4.5); ctx.lineWidth = 2; ctx.strokeStyle = C.ink; ctx.stroke(); }
+  const ink = trip ? C.ink : "#fff";
+  ctx.save(); ctx.translate(x0 + (big ? 6 : 4), y - ic / 2); ctx.scale(ic / 24, ic / 24);
+  ctx.lineWidth = 2.6; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.strokeStyle = trip ? col : ink;
+  ctx.stroke(PIN_P2D[k] || (PIN_P2D[k] = new Path2D(PIN_PATH[k]))); ctx.restore();
+  text(label, x0 + (big ? 6 : 4) + ic + (big ? 3 : 2), y + 0.5, { size: fs, weight: 700, fam: "--f-display", color: ink, align: "left", halo: 0 });
+  return [w / 2, h / 2];
 }
 
 function fontFor(o) {
@@ -1730,16 +1922,11 @@ function drawPins() {
   for (const p of [...PLACES.filter(q => !isF(q)), ...PLACES.filter(isF)]) { // focused pins on top
     const [x, y] = toS(p.xy);
     if (!inView(x, y)) continue;
-    const vis = isTrip(p) ? tripShow : show;
+    const vis = isTrip(p) || isF(p) ? tripShow : show; // a slide's own places show zoomed out too (Split's spread-out villas)
     if (vis <= 0) continue;
-    const f = isF(p), r = f ? 12 : 9;
-    ctx.globalAlpha = vis * (f || !sl.city ? 1 : 0.6);
-    pinShape(p.type, x, y, r + 2.5); ctx.fillStyle = C.halo; ctx.fill();
-    pinShape(p.type, x, y, r); ctx.fillStyle = C[p.city]; ctx.fill();
-    if (openPlace === p) { pinShape(p.type, x, y, r + 5); ctx.lineWidth = 2; ctx.strokeStyle = C.ink; ctx.stroke(); }
-    if (p.type === "daytrip") { ctx.beginPath(); ctx.arc(x, y, r * 0.62, 0, Math.PI * 2); ctx.lineWidth = 1.6; ctx.strokeStyle = "rgba(255,255,255,.6)"; ctx.stroke(); }
-    text(p.label || p.code, x, y + (p.type === "stay" ? 2 : p.type === "nature" ? 3 : 0.5), { size: f ? 14 : 11, weight: 700, fam: "--f-display", color: "#fff", align: "center", halo: 0 });
-    taken.push([x - r - 2, y - r - 2, x + r + 2, y + r + 2]);
+    const f = isF(p);
+    const [hw, hh] = pinChip(p, x, y, f, vis * (f || !sl.city ? 1 : 0.6)), r = hw;
+    taken.push([x - hw - 2, y - hh - 2, x + hw + 2, y + hh + 2]);
     if (f || k > 170 || (isTrip(p) && k < 25)) labels.push({ p, x, y, r, f, vis });
     hits.push({ x, y, r: r + 6, grab: r + 1, place: p });
   }
@@ -1769,6 +1956,7 @@ function drawPins() {
 function drawMarkers() {
   const k = T.k, a = 1 - smooth(30, 55, k);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  drawTowns(k);
   if (a > 0) {
     for (const [nm, lon, lat] of TOWNS) {
       const [x, y] = toS(P(lon, lat)); if (!inView(x, y)) continue;
@@ -1820,6 +2008,7 @@ function draw(now) {
     ctx.lineWidth = Math.min(2.5, 0.9 + k * 0.05) / k; ctx.stroke(S.riversMinor);
     ctx.globalAlpha = 1;
   }
+  drawLand(k);
   ctx.strokeStyle = C.border; ctx.lineWidth = 1.1 / k; ctx.setLineDash([4 / k, 3 / k]);
   const vx0 = -T.x / k, vy0 = -T.y / k, vx1 = (W - T.x) / k, vy1 = (H - T.y) / k;
   for (const b of S.borders) if (b.bb[0] < vx1 && b.bb[2] > vx0 && b.bb[1] < vy1 && b.bb[3] > vy0) ctx.stroke(b.p);
@@ -1990,7 +2179,7 @@ function stepFrom(i, dir) {
 function go(i, { instant = false, fly = true } = {}) {
   i = Math.max(0, Math.min(slides.length - 1, i));
   playTok++; daySl = null; closeMenu();
-  cur = i;
+  cur = i; lastSeen[groupOf(i)] = i;
   for (const j of [i, stepFrom(i, 1), stepFrom(i, -1)]) needCity(slides[j].city);
   showSlide(slides[i], instant, fly);
   try { history.replaceState(null, "", "#" + slides[i].id); } catch (e) {}
@@ -2004,7 +2193,7 @@ function showSlide(sl, instant, fly = true) {
   card.classList.add("swap");
   setTimeout(() => {
     renderCard();
-    card.style.setProperty("--c", `var(${sl.color})`);
+    card.style.setProperty("--c", `var(${cardSl()?.color || sl.color})`);
     card.scrollTop = 0;
     card.classList.remove("swap");
     if (!fly) return;
@@ -2022,15 +2211,25 @@ function syncProgress() {
   document.getElementById("count")?.remove();
   progress.insertAdjacentHTML("beforeend", `<span id="count">${daySl ? `Day ${daySl.i + 1} / ${DAYS.length}` : `${String(m + 1).padStart(2, "0")} / ${MAIN.length}`}</span>`);
 }
-// docked layouts lose the bottom bar, so the card gets its own previous / next
+// the left card always holds a slide: on a day, the one last seen for that day's city. Its own back / forward
+// step through that city's slides (Trip's for the trip slides); on a day they change the card, not the map.
+const lastSeen = {}; // menu group -> slide index
+let dayCard = -1;
+const groupOf = i => menuOf(slides[i]);
+const cardSl = () => slides[daySl ? dayCard : cur];
+function groupSlides(g) { return slides.map((s, i) => i).filter(i => !slides[i].side && groupOf(i) === g); }
 function cardFoot() {
-  if (!docked()) return "";
-  const btn = (d, t) => `<button class="mini ghost" data-step="${d}">${d < 0 ? "← " : ""}${esc(t)}${d > 0 ? " →" : ""}</button>`;
-  if (daySl) { const a = DAYS[daySl.i - 1], b = DAYS[daySl.i + 1]; return `<div class="cfoot">${a ? btn(-1, fmtDay(a.date)) : "<span></span>"}${b ? btn(1, fmtDay(b.date)) : ""}</div>`; }
-  const ai = stepFrom(cur, -1), bi = stepFrom(cur, 1);
-  return `<div class="cfoot">${ai !== cur ? btn(-1, slides[ai].label) : "<span></span>"}${bi !== cur ? btn(1, slides[bi].label) : ""}</div>`;
+  const i = daySl ? dayCard : cur; if (i < 0) return "";
+  const list = groupSlides(groupOf(i)), k = list.indexOf(mainOf(i)), a = list[k - 1], b = list[k + 1];
+  const btn = (j, d) => `<button class="mini ${d < 0 ? "prev" : "next"}" data-cstep="${j}" title="${esc(slides[j].label)}">${d < 0 ? "← " : ""}${esc(slides[j].label)}${d > 0 ? " →" : ""}</button>`;
+  return `${a != null ? btn(a, -1) : ""}${b != null ? btn(b, 1) : ""}`;
 }
-function renderCard() { const sl = SL(); if (sl.html) card.innerHTML = sl.html() + cardFoot(); }
+const cardNav = document.getElementById("cardNav");
+function renderCard() {
+  const sl = cardSl(); if (!sl || !sl.html) return;
+  card.innerHTML = sl.html();
+  cardNav.innerHTML = cardFoot(); cardNav.hidden = !cardNav.innerHTML;
+}
 function buildNav() {
   MAIN = slides.map((s, i) => s.side ? -1 : i).filter(i => i >= 0);
   progress.innerHTML = MAIN.map((si, k) => { const s = slides[si]; return `<button aria-label="Slide ${k + 1}: ${esc(s.label)}" style="--c:var(${s.color})"><i style="${s.color2 ? `background:linear-gradient(90deg,var(${s.color}),var(${s.color2}))` : ""}"></i></button>`; }).join("");
@@ -2054,15 +2253,8 @@ function buildNav() {
 }
 document.getElementById("next").onclick = () => stepAny(1);
 document.getElementById("prev").onclick = () => stepAny(-1);
-document.getElementById("overview").onclick = () => {
-  closePop();
-  if (daySl || plSel != null) { // the whole trip, so the calendar lets go of its day (and that day's route and home base)
-    plSel = null;
-    if (daySl && cur >= 0) go(cur, { fly: false }); else daySl = null;
-    renderPlanner(); invalidate();
-  }
-  flyTo(fitPts(Object.values(CITIES).map(c => c.xy), 70));
-};
+// Overview is the intro slide: the whole trip, so the calendar lets go of its day too
+document.getElementById("overview").onclick = () => { closePop(); plSel = null; go(slides.findIndex(s => s.id === "intro")); renderPlanner(); };
 function toggleRoam() {
   const on = document.body.classList.toggle("roam");
   remeasure();
@@ -2103,6 +2295,8 @@ function copyText(text, okMsg) {
   try { navigator.clipboard.writeText(text).then(() => flash(okMsg), box); } catch (e) { box(); }
 }
 calBtn.onclick = e => { e.stopPropagation(); setCal(calPanel.hidden); };
+document.addEventListener("click", e => { if (plShare && !e.target.closest?.(".smenu, .shareb")) { plShare = plImport = plResetAsk = false; renderPlanner(); } });
+document.addEventListener("keydown", e => { if (plShare && e.key === "Escape") { plShare = plImport = plResetAsk = false; renderPlanner(); calPanel.querySelector(".shareb")?.focus(); } });
 function setHome(key) {
   const p = placeBy[key]; if (!p) return;
   PLAN.stays[p.city] = PLAN.stays[p.city] === p.code ? null : p.code;
@@ -2114,7 +2308,7 @@ calPanel.addEventListener("click", e => {
   const jump = t.closest("[data-go]");
   if (jump) { e.preventDefault(); setCal(false); go(slides.findIndex(s => s.id === jump.dataset.go)); return; }
   const day = t.closest("[data-day]");
-  if (day && !t.closest("[data-grip]")) { const i = +day.dataset.day; plMsg = ""; if (daySl && daySl.i === i) exitDay(); else goDay(i); return; }
+  if (day && !t.closest("[data-grip]")) { const i = +day.dataset.day; plMsg = ""; goDay(i); return; } // the open day too: it flies back to the whole day
   const ds = t.closest("[data-dstep]");
   if (ds) { goDay(plSel + +ds.dataset.dstep); return; }
   const rd = t.closest("[data-rd]");
@@ -2145,21 +2339,21 @@ calPanel.addEventListener("click", e => {
     const a = arr.indexOf(ks[j]), b = arr.indexOf(ks[o]); [arr[a], arr[b]] = [arr[b], arr[a]];
     plMsg = ""; planChanged(); return;
   }
+  const sp = t.closest(".itin [data-p]");
+  if (sp && !t.closest("button")) { focusPlace(placeBy[sp.dataset.p]); return; }
   const act = t.closest("[data-act]")?.dataset.act;
   if (!act) return;
   const strip = () => { try { history.replaceState(null, "", location.pathname + location.hash); } catch (err) {} };
+  if (act === "share") { plShare = !plShare; if (!plShare) { plImport = plResetAsk = false; } renderPlanner(); return; }
   if (act === "range") { plRange = plRange ? null : { y: DAYS[0].date.getFullYear(), m: DAYS[0].date.getMonth(), a: null }; renderPlanner(); }
-  else if (act === "settings") { plSetOpen = !plSetOpen; try { localStorage.setItem("planSettings", plSetOpen ? "open" : "closed"); } catch (err) {} renderPlanner(); }
   else if (act === "play") playDay();
-  else if (act === "dayoff") exitDay();
-  else if (act === "dayon") goDay(plSel);
   else if (act === "keep") { sharedPending = null; strip(); migratePlan(); plMsg = "Saved the shared plan as yours."; planChanged(); }
   else if (act === "discard") {
     sharedPending = null; strip();
     try { const raw = localStorage.getItem(PLAN_KEY); PLAN = raw ? normalizePlan(JSON.parse(raw)) : clone(PLAN_DEFAULT); } catch (err) { PLAN = clone(PLAN_DEFAULT); }
     migratePlan(); plMsg = "Back to your own plan."; planChanged();
   }
-  else if (act === "link") copyText(`${location.origin}${location.pathname}?plan=${toCode(PLAN)}`, "Share link copied. Anyone who opens it gets a copy of this plan.");
+  else if (act === "link") copyText(`${location.origin}${location.pathname}?plan=${encodeURIComponent(toCode(PLAN))}`, "Share link copied. Anyone who opens it gets a copy of this plan.");
   else if (act === "code") copyText(toCode(PLAN), "Plan code copied. Others can paste it with 'Paste a plan code'.");
   else if (act === "import") { plImport = !plImport; renderPlanner(); calPanel.querySelector("#pl-code")?.focus(); }
   else if (act === "load") {
@@ -2179,8 +2373,7 @@ calPanel.addEventListener("toggle", e => { if (e.target.id === "pl-add") plAdd =
 
 calPanel.addEventListener("change", e => {
   const t = e.target;
-  if (t.id === "pl-opt") { const l = t.dataset.leg; if (l === "vs") setVsOpt(t.value); else if (l === "zs") setZsOpt(t.value); planChanged(); }
-  else if (t.id === "pl-dep" && t.value) { PLAN.legs[t.dataset.leg === "vz" ? "vs" : t.dataset.leg].dep = t.value; planChanged(); }
+  if (t.id === "pl-dep" && t.value) { PLAN.legs[t.dataset.leg === "vz" ? "vs" : t.dataset.leg].dep = t.value; planChanged(); }
 });
 calPanel.addEventListener("input", e => {
   if (e.target.id !== "pl-note") return;
@@ -2211,6 +2404,7 @@ document.addEventListener("dragstart", e => {
   dragPin = { key: s.dataset.dpin, from: s.dataset.from || null };
   e.dataTransfer.setData("text/plain", placeBy[dragPin.key]?.name || dragPin.key); e.dataTransfer.effectAllowed = dragPin.from ? "move" : "copy";
   document.body.classList.add("pindrag");
+  if (calPanel.hidden) setTimeout(() => setCal(true)); // somewhere to drop it (after the drag has started)
 });
 const pinDropOk = x => { const p = placeBy[dragPin.key], on = pinsOn(x); return canPin(x, p) && (on.includes(dragPin.key) || on.length < PIN_MAX); };
 calPanel.addEventListener("dragover", e => {
@@ -2309,37 +2503,36 @@ function daySlide(x) {
   const fz = zagrebAt(), span = x.leg === "vz" ? [0, fz] : x.leg === "zs" ? [fz, 1] : null;
   return { span, id: `day-${x.iso}`, day: x, i: x.i, it, city: dayCity(x), color: `--${dayCity(x)}`, label: `Day ${x.i + 1}: ${fmtDay(x.date)}`,
     leg: x.kind === "travel" && !fly ? (x.leg === "pv" ? "pv" : "vs") : null, flight: fly ? "vs" : null,
-    focusKeys: new Set(pinsOn(x).map(k => k)), view: () => fitPts(pts, 70, 1.2), html: () => dayHTML(x, it) };
+    focusKeys: new Set(pinsOn(x).map(k => k)), view: () => fitPts(pts, 70, 1.2) };
 }
 function goDay(i, { instant = false } = {}) {
   if (!DAYS.length) return;
   i = Math.max(0, Math.min(DAYS.length - 1, i));
   playTok++; closePop(); closeMenu();
   daySl = daySlide(DAYS[i]); plSel = i;
+  const g = dayCity(DAYS[i]), first = groupSlides(g)[0];
+  dayCard = lastSeen[g] ?? first ?? (cur >= 0 ? cur : 0);
   for (const e of daySl.it) if (e.stop) needCity(e.stop.place?.city || e.stop.city);
   showSlide(daySl, instant);
   try { history.replaceState(null, "", "#" + daySl.id); } catch (e) {}
   renderPlanner();
 }
-function exitDay() {
-  playTok++;
-  if (!daySl) return;
-  daySl = null;
-  if (cur >= 0) go(cur); else renderPlanner();
-}
 function stepAny(dir) { if (daySl) goDay(daySl.i + dir); else go(stepFrom(cur, dir)); }
 
-// how a day trip is reached (data/trips.json): its rail and road parts, oriented from `from` (world km)
+// how a day trip or an airport transfer is made (data/trips.json): its rail, road and sea parts, oriented
+// to set off from `from` (world km)
 let TRIP_ROUTES = {};
-function tripParts(place, from) {
-  const t = tripFor(place), r = t && TRIP_ROUTES[t.detail];
+function routeParts(r, from, back = null) {
   if (!r) return null;
   const segs = r.segs.map(g => ({ kind: g.kind, pts: g.pts }));
   const d = (p, q) => Math.hypot(p[0] - q[0], p[1] - q[1]);
-  if (d(from, segs.at(-1).pts.at(-1)) < d(from, segs[0].pts[0])) { segs.reverse(); for (const g of segs) g.pts = g.pts.slice().reverse(); }
+  // stored city end first; `back` says outright which way we ride, else the end nearer `from` starts
+  const flip = back ?? d(from, segs.at(-1).pts.at(-1)) < d(from, segs[0].pts[0]);
+  if (flip) { segs.reverse(); for (const g of segs) g.pts = g.pts.slice().reverse(); }
   return segs;
 }
-const PART_STYLE = { rail: [[], 3.5], road: [[8, 5], 3] };
+const PART_STYLE = { rail: [[], 3.5], road: [[8, 5], 3], sea: [[2, 6], 3], lift: [[1, 5], 4] };
+const placeRoute = p => `place:${p.city}-${p.code}`; // a sight's own way out of town (trips.json)
 // lines in screen space, all halos first so crossings stay clean
 function strokeParts(parts) {
   for (const halo of [true, false]) for (const { pts, dash, w, color } of parts) {
@@ -2350,17 +2543,51 @@ function strokeParts(parts) {
   }
   ctx.setLineDash([]);
 }
-// a day trip's parts as screen lines: the streets to the station, the train or bus, the last stretch to the place
-function tripHopParts(a, b, place, col) {
-  const segs = tripParts(place, a); if (!segs) return null;
-  const first = segs[0].pts[0], last = segs.at(-1).pts.at(-1);
-  const lead = roadRoute(a, first) || [a, first], tail = roadRoute(last, b) || [last, b];
-  return [{ pts: lead.map(toS), dash: [], w: 3.5, color: col }, ...segs.map(g => ({ pts: g.pts.map(toS), dash: PART_STYLE[g.kind][0], w: PART_STYLE[g.kind][1], color: col })),
-    { pts: tail.map(toS), dash: [1, 7], w: 3.5, color: C.ink2 }];
+// a gentle curve between two points (world km), for the rare step no road or route covers
+function bow(p, q, n = 16) {
+  const dx = q[0] - p[0], dy = q[1] - p[1], cx = (p[0] + q[0]) / 2 - dy * 0.18, cy = (p[1] + q[1]) / 2 + dx * 0.18, out = [];
+  for (let i = 0; i <= n; i++) { const t = i / n, u = 1 - t; out.push([u * u * p[0] + 2 * u * t * cx + t * t * q[0], u * u * p[1] + 2 * u * t * cy + t * t * q[1]]); }
+  return out;
+}
+// the routes a hop rides, in travel order: back from where it starts (a day trip, or the airport into town),
+// then out to where it ends. Krka → Hvar rides the Krka bus back to Split, then the boat out to Hvar.
+function hopRoutes(h) {
+  // airports and out-of-town Airbnbs have a drive into town; a day trip has its train, bus or boat
+  const sight = s => s.kind === "place" && s.place?.how && TRIP_ROUTES[placeRoute(s.place)] ? placeRoute(s.place) : null;
+  const stay = s => s.kind === "home" && s.place && TRIP_ROUTES[`stay:${s.place.city}-${s.place.code}`] ? `stay:${s.place.city}-${s.place.code}` : null;
+  const id = s => s.kind === "air" ? `air:${s.city}` : stay(s) || sight(s) || (tripFor(s.place) && tripId(tripFor(s.place)));
+  const ia = id(h.a), ib = id(h.b);
+  if (!ia && !ib) return null;
+  if (ia === ib) return []; // two stops on the same day trip: just the way between them
+  const auto = id => id.startsWith("air:") || id.startsWith("stay:"); // oriented by whichever end is nearer
+  const rs = [];
+  if (ia) rs.push({ r: TRIP_ROUTES[ia], back: auto(ia) ? null : true }); // ridden from the trip end coming back
+  if (ib) rs.push({ r: TRIP_ROUTES[ib], back: auto(ib) ? null : false });
+  if (rs.some(x => !x.r)) return null;
+  let at = h.a.xy;
+  return rs.map(({ r, back }) => { const segs = routeParts(r, at, back); at = segs.at(-1).pts.at(-1); return segs; });
+}
+// a hop along its routes, as screen lines: streets fill the gaps between them (to the station, across town
+// between two routes, on to the place), and only a short step no map covers is drawn direct
+function hopParts(groups, a, b, col) {
+  if (!groups) return null;
+  const parts = [];
+  let at = a;
+  const join = (p, q, last) => {
+    const r = roadRoute(p, q) || bow(p, q), walk = last && trueKm(p, q) < 1; // a short last stretch is a walk; longer, a ride
+    parts.push({ pts: r.map(toS), dash: walk ? [1, 7] : [], w: 3.5, color: walk ? C.ink2 : col });
+  };
+  for (const segs of groups) {
+    join(at, segs[0].pts[0], false);
+    for (const g of segs) parts.push({ pts: g.pts.map(toS), dash: PART_STYLE[g.kind][0], w: PART_STYLE[g.kind][1], color: col });
+    at = segs.at(-1).pts.at(-1);
+  }
+  join(at, b, true);
+  return parts;
 }
 // every trip's route out of a city on its day-trips slide, or the one trip on its own slide
 function drawTripRoutes(sl) {
-  const ids = sl.id.endsWith("-out") ? Object.keys(TRIP_ROUTES).filter(id => TRIP_ROUTES[id].from === sl.city) : TRIP_ROUTES[sl.id] ? [sl.id] : [];
+  const ids = sl.id.endsWith("-out") ? Object.keys(TRIP_ROUTES).filter(id => TRIP_ROUTES[id].from === sl.city && !/^(air|stay):/.test(id)) : TRIP_ROUTES[sl.id] ? [sl.id] : [];
   if (!ids.length) return;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.lineCap = "round"; ctx.lineJoin = "round";
   for (const id of ids) {
@@ -2378,9 +2605,10 @@ function drawDay(sl) {
   for (const e of sl.it) {
     const h = e.hop; if (!h || h.ride) continue;
     const [dash, w] = STYLE[h.mode], col = C[h.b.city] || C[h.a.city] || C.ink2;
-    // walks and city rides follow the streets, day trips their train or bus; airport transfers stay straight
-    const trip = h.mode === "regional" && tripHopParts(h.a.xy, h.b.xy, tripFor(h.b.place) ? h.b.place : h.a.place, col); // either end can be the trip
+    // walks and city rides follow the streets; when the streets can't connect the two ends (another map, an
+    // airport, a day trip) the hop rides its transfer or trip route instead
     const route = (h.mode === "walk" || h.mode === "city") && roadRoute(h.a.xy, h.b.xy);
+    const trip = !route && hopParts(hopRoutes(h), h.a.xy, h.b.xy, col);
     const parts = trip || [{ pts: (route || [h.a.xy, h.b.xy]).map(toS), dash, w, color: h.mode === "walk" ? C.ink2 : col }];
     ctx.globalAlpha = 1; strokeParts(parts);
     const pts = parts.flatMap(p => p.pts);
@@ -2436,12 +2664,12 @@ function slideFor(p) {
 function menuOf(sl) {
   if (!sl || !sl.id) return null;
   if (sl.day) return dayCity(sl.day);
-  if (["intro", "route", "in", "pv", "vs"].includes(sl.id)) return "trip";
+  if (["intro", "in", "pv", "vs"].includes(sl.id)) return "trip";
   return PC[sl.city] ? sl.city : DETAIL[sl.city]?.parent || null;
 }
 function menuList(id) {
   const has = s => slides.some(x => x.id === s);
-  if (id === "trip") return [["go", "intro", "Intro: the trip at a glance"], ["go", "route", "The route"], ["go", "pv", "Train: Prague → Vienna"], ["go", "vs", "Vienna → Split"], ["go", "in", "Times & costs"]]
+  if (id === "trip") return [["go", "intro", "Intro: the trip at a glance"], ["go", "pv", "Train: Prague → Vienna"], ["go", "vs", "Vienna → Split"], ["go", "in", "Times & costs"]]
     .filter(r => has(r[1])).map(([, g, t]) => ({ go: g, t }));
   const out = [], own = PLACES.filter(p => p.city === id);
   const sec = (t, go, list) => { if (!list.length) return; out.push({ sec: t, go }); for (const p of list) out.push({ p }); };
@@ -2481,13 +2709,15 @@ function menuItemsHTML(id) {
 }
 const MENU_IDS = ["trip", ...NIGHT_ORDER];
 const menuTitle = id => id === "trip" ? "Trip" : PC[id].local;
+const menuOff = id => id === "zagreb" && !byRail(); // flying straight to Split skips Zagreb
 function buildMenu() {
   const on = menuOf(SL());
-  mbItems.innerHTML = MENU_IDS.map(id => `<button role="menuitem" class="mbt${on === id ? " cur" : ""}${mbOpen === id ? " open" : ""}" data-menu="${id}" aria-haspopup="true" aria-expanded="${mbOpen === id}" style="--c:var(--${id === "trip" ? "ink-2" : id})">${menuTitle(id)}</button>`).join("");
+  if (mbOpen && menuOff(mbOpen)) mbOpen = null;
+  mbItems.innerHTML = MENU_IDS.map(id => `<button role="menuitem" class="mbt${on === id ? " cur" : ""}${mbOpen === id ? " open" : ""}" data-menu="${id}"${menuOff(id) ? ` disabled title="Only on the train route: the flight skips Zagreb"` : ""} aria-haspopup="true" aria-expanded="${mbOpen === id}" style="--c:var(--${id === "trip" ? "ink-2" : id})">${menuTitle(id)}</button>`).join("");
   if (!mbOpen) { mbMenu.hidden = true; return; }
   const compact = menubar.classList.contains("compact");
   mbMenu.innerHTML = compact && !mbPick
-    ? MENU_IDS.map(id => `<details${id === (menuOf(SL()) || "trip") ? " open" : ""}><summary style="--c:var(--${id === "trip" ? "ink-2" : id})">${menuTitle(id)}</summary>${menuItemsHTML(id)}</details>`).join("")
+    ? MENU_IDS.filter(id => !menuOff(id)).map(id => `<details${id === (menuOf(SL()) || "trip") ? " open" : ""}><summary style="--c:var(--${id === "trip" ? "ink-2" : id})">${menuTitle(id)}</summary>${menuItemsHTML(id)}</details>`).join("")
     : menuItemsHTML(mbOpen);
   mbMenu.hidden = false;
   if (compact) { mbMenu.style.left = ""; return; }
@@ -2496,8 +2726,8 @@ function buildMenu() {
 }
 function openMenu(id, focus) { mbOpen = id; mbPick = null; buildMenu(); if (focus) mbMenu.querySelector("[role=menuitem]")?.focus(); }
 function closeMenu() { if (!mbOpen) return; mbOpen = null; mbPick = null; buildMenu(); }
-mbItems.addEventListener("click", e => { const b = e.target.closest("[data-menu]"); if (!b) return; e.stopPropagation(); mbOpen === b.dataset.menu ? closeMenu() : openMenu(b.dataset.menu); });
-mbItems.addEventListener("pointerover", e => { const b = e.target.closest("[data-menu]"); if (b && mbOpen && mbOpen !== b.dataset.menu && !menubar.classList.contains("compact")) openMenu(b.dataset.menu); });
+mbItems.addEventListener("click", e => { const b = e.target.closest("[data-menu]"); if (!b || b.disabled) return; e.stopPropagation(); mbOpen === b.dataset.menu ? closeMenu() : openMenu(b.dataset.menu); });
+mbItems.addEventListener("pointerover", e => { const b = e.target.closest("[data-menu]"); if (b && !b.disabled && mbOpen && mbOpen !== b.dataset.menu && !menubar.classList.contains("compact")) openMenu(b.dataset.menu); });
 document.getElementById("mbBurger").addEventListener("click", e => { e.stopPropagation(); mbOpen ? closeMenu() : openMenu(menuOf(SL()) || "trip"); });
 mbMenu.addEventListener("click", e => {
   e.stopPropagation();
@@ -2523,7 +2753,7 @@ mbMenu.addEventListener("click", e => {
 });
 menubar.addEventListener("keydown", e => {
   const items = [...mbMenu.querySelectorAll("[role=menuitem]:not([disabled])")].filter(b => b.offsetParent);
-  const titles = [...mbItems.querySelectorAll("[data-menu]")], ti = titles.indexOf(document.activeElement), mi = items.indexOf(document.activeElement);
+  const titles = [...mbItems.querySelectorAll("[data-menu]:not([disabled])")], ti = titles.indexOf(document.activeElement), mi = items.indexOf(document.activeElement);
   const k = e.key;
   if (k === "Escape") { const id = mbOpen; closeMenu(); mbItems.querySelector(`[data-menu="${id}"]`)?.focus(); }
   else if (ti >= 0 && (k === "ArrowRight" || k === "ArrowLeft")) { const n = titles[(ti + (k === "ArrowRight" ? 1 : -1) + titles.length) % titles.length]; n.focus(); if (mbOpen) openMenu(n.dataset.menu); }
@@ -2591,14 +2821,15 @@ card.addEventListener("click", e => {
   const jump = e.target.closest("[data-go]");
   if (jump) { e.preventDefault(); e.stopPropagation(); go(slides.findIndex(s => s.id === jump.dataset.go)); return; }
   if (e.target.closest("[data-plan]")) { e.preventDefault(); e.stopPropagation(); setCal(true); return; }
-  const st = e.target.closest("[data-step]");
-  if (st) { e.stopPropagation(); stepAny(+st.dataset.step); return; }
-  const pd = e.target.closest("[data-plan-day]");
-  if (pd) { e.preventDefault(); e.stopPropagation(); plSel = +pd.dataset.planDay; plAdd = true; setCal(true); calPanel.querySelector(".dayv")?.scrollIntoView({ block: "nearest", behavior: reduce ? "auto" : "smooth" }); return; }
-  if (e.target.closest("[data-play]")) { e.preventDefault(); e.stopPropagation(); playDay(); return; }
   const li = e.target.closest("[data-p]"); if (!li) return;
   if (e.target.matches("img.thumb")) { openViewer(placeBy[li.dataset.p], 0); return; } // the photo opens big; the rest of the row flies there
   focusPlace(placeBy[li.dataset.p]);
+});
+cardNav.addEventListener("click", e => {
+  const cs = e.target.closest("[data-cstep]"); if (!cs) return;
+  e.stopPropagation(); const j = +cs.dataset.cstep;
+  if (!daySl) { go(j); return; }
+  dayCard = lastSeen[groupOf(j)] = j; renderCard(); card.style.setProperty("--c", `var(${slides[j].color})`); card.scrollTop = 0;
 });
 card.addEventListener("keydown", e => {
   const li = e.target.closest("[data-p]");
@@ -2652,7 +2883,7 @@ cv.addEventListener("pointermove", ev => {
     if (Math.hypot(ev.clientX - mapDrag.x0, ev.clientY - mapDrag.y0) < 6) return; // still a click
     mapDrag.on = true; dragPin = { key: keyOf(mapDrag.p), from: null };
     if (calPanel.hidden) setCal(true); // somewhere to drop it
-    ghost.innerHTML = `${badge(mapDrag.p)}<span>${esc(mapDrag.p.name)}</span>`; ghost.style.setProperty("--c", `var(--${homeOf(mapDrag.p)})`);
+    ghost.innerHTML = `${pinBadge(mapDrag.p)}<span>${esc(mapDrag.p.name)}</span>`; ghost.style.setProperty("--c", `var(--${homeOf(mapDrag.p)})`);
     ghost.hidden = false; document.body.classList.add("pindrag"); closePop();
   }
   ghost.style.transform = `translate(${ev.clientX + 12}px, ${ev.clientY + 10}px)`;
@@ -2673,17 +2904,23 @@ cv.addEventListener("pointerup", ev => endMapDrag(ev, true));
 cv.addEventListener("pointercancel", ev => endMapDrag(ev, false));
 
 // ---------- boot ----------
-const DATA_V = "22"; // bump when data files change so browsers don't reuse stale copies
+const DATA_V = "31"; // bump when data files change so browsers don't reuse stale copies
 async function boot() {
   readTheme(); resize();
   invalidate();
   const [region, places, stays, images, legs, hoods, trips] = await Promise.all(["region", "places", "stays", "images", "legs", "hoods", "trips"].map(n => fetch(`data/${n}.json?v=${DATA_V}`).then(r => r.json())));
   buildRegion(region); buildLegs(legs); buildPlaces(places, stays, images); HOODS = hoods; TRIP_ROUTES = trips;
+  for (const [c, h] of Object.entries(HUB)) { // each airport at its transfer route's airport end
+    const r = h.air && TRIP_ROUTES[`air:${c}`]; if (!r) continue;
+    const ends = [r.segs[0].pts[0], r.segs.at(-1).pts.at(-1)], d = p => Math.hypot(p[0] - h.air.xy[0], p[1] - h.air.xy[1]);
+    h.air.xy = d(ends[0]) < d(ends[1]) ? ends[0] : ends[1];
+  }
   for (const hs of Object.values(HOODS)) for (const h of hs) { h.path = new Path2D(); for (const ring of h.rings) addAbs(h.path, ring.flat(), true); }
   TRIPS = PLACES.filter(p => p.type === "nature" || p.type === "daytrip");
   migratePlan();
   DAYS = buildDays();
   slides = slideDeck(); buildNav();
+  (window.requestIdleCallback || setTimeout)(() => loadLand("land"), { timeout: 3000 }); // country detail, once the page is up
   document.getElementById("loading").remove();
   document.body.classList.toggle("dock", DOCK.matches);
   const h = location.hash.slice(1), start = Math.max(0, slides.findIndex(s => s.id === h)), d = DAYS.findIndex(x => `day-${x.iso}` === h);

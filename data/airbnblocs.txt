@@ -22,3 +22,11 @@ https://www.airbnb.com/rooms/1579636998901268603?adults=11&check_in=2027-08-22&c
 
 https://www.airbnb.com/rooms/1579618341912167734?adults=11&check_in=2027-08-22&check_out=2027-08-25&search_mode=regular_search&source_impression_id=p3_1793150004_P3GciYy4hJo1LTOj&previous_page_section_name=1001&federated_search_id=7f3a8c4f-4c3a-49ce-831b-f3c2726961c2
 
+
+split
+
+https://www.airbnb.com/rooms/914891070797797327?adults=12&check_in=2027-08-31&check_out=2027-09-04&search_mode=regular_search&source_impression_id=p3_40692976-60eb-4b64-b4c9-4fc4c0d028d3_9c24c5fb-b831-4bca-9823-1a0c09dbd0c0_0_914891070797797327_1&previous_page_section_name=1000&federated_search_id=40692976-60eb-4b64-b4c9-4fc4c0d028d3
+
+https://www.airbnb.com/rooms/873190681059415934?adults=12&check_in=2027-08-31&check_out=2027-09-04&guests=12&search_mode=regular_search&source_impression_id=p3_1793819396_P3FreAbcw4SAIW-b&previous_page_section_name=1001&federated_search_id=748c412e-9e3f-4fa7-a151-506c2438b321
+
+https://www.airbnb.com/rooms/877181797527454382?adults=12&check_in=2027-08-31&check_out=2027-09-04&guests=12&search_mode=regular_search&source_impression_id=p3_1793818665_P3UNSNNqhHCDTy0z&previous_page_section_name=1001&federated_search_id=f92de4e7-181b-4482-9bac-e7b3465380d7&modal=PHOTO_TOUR_SCROLLABLE

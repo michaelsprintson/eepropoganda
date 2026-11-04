@@ -36,45 +36,45 @@
  },
  "airbnb:1745161347578867362": {
   "img": "img/vienna-h0.webp",
-  "credit": "Photo: Airbnb listing",
-  "link": "https://www.airbnb.com/rooms/1745161347578867362?adults=11&check_in=2027-08-22&check_out=2027-08-25",
   "thumb": "img/vienna-h0-t.webp",
-  "full": "img/full/vienna-h0.webp"
+  "full": "img/full/vienna-h0.webp",
+  "credit": "Photo: Airbnb listing",
+  "link": "https://www.airbnb.com/rooms/1745161347578867362?adults=11&check_in=2027-08-22&check_out=2027-08-25"
  },
  "airbnb:13197084": {
   "img": "img/vienna-h1.webp",
-  "credit": "Photo: Airbnb listing",
-  "link": "https://www.airbnb.com/rooms/13197084?adults=11&check_in=2027-08-22&check_out=2027-08-25",
   "thumb": "img/vienna-h1-t.webp",
-  "full": "img/full/vienna-h1.webp"
+  "full": "img/full/vienna-h1.webp",
+  "credit": "Photo: Airbnb listing",
+  "link": "https://www.airbnb.com/rooms/13197084?adults=11&check_in=2027-08-22&check_out=2027-08-25"
  },
  "airbnb:1719411451369133624": {
   "img": "img/vienna-h2.webp",
-  "credit": "Photo: Airbnb listing",
-  "link": "https://www.airbnb.com/rooms/1719411451369133624?adults=11&check_in=2027-08-22&check_out=2027-08-25",
   "thumb": "img/vienna-h2-t.webp",
-  "full": "img/full/vienna-h2.webp"
+  "full": "img/full/vienna-h2.webp",
+  "credit": "Photo: Airbnb listing",
+  "link": "https://www.airbnb.com/rooms/1719411451369133624?adults=11&check_in=2027-08-22&check_out=2027-08-25"
  },
  "airbnb:1386835277812331092": {
   "img": "img/prague-h0.webp",
-  "credit": "Photo: Airbnb listing",
-  "link": "https://www.airbnb.com/rooms/1386835277812331092?adults=11&check_in=2027-08-22&check_out=2027-08-25",
   "thumb": "img/prague-h0-t.webp",
-  "full": "img/full/prague-h0.webp"
+  "full": "img/full/prague-h0.webp",
+  "credit": "Photo: Airbnb listing",
+  "link": "https://www.airbnb.com/rooms/1386835277812331092?adults=11&check_in=2027-08-22&check_out=2027-08-25"
  },
  "airbnb:1579636998901268603": {
   "img": "img/prague-h1.webp",
-  "credit": "Photo: Airbnb listing",
-  "link": "https://www.airbnb.com/rooms/1579636998901268603?adults=11&check_in=2027-08-22&check_out=2027-08-25",
   "thumb": "img/prague-h1-t.webp",
-  "full": "img/full/prague-h1.webp"
+  "full": "img/full/prague-h1.webp",
+  "credit": "Photo: Airbnb listing",
+  "link": "https://www.airbnb.com/rooms/1579636998901268603?adults=11&check_in=2027-08-22&check_out=2027-08-25"
  },
  "airbnb:1579618341912167734": {
   "img": "img/prague-h2.webp",
-  "credit": "Photo: Airbnb listing",
-  "link": "https://www.airbnb.com/rooms/1579618341912167734?adults=11&check_in=2027-08-22&check_out=2027-08-25",
   "thumb": "img/prague-h2-t.webp",
-  "full": "img/full/prague-h2.webp"
+  "full": "img/full/prague-h2.webp",
+  "credit": "Photo: Airbnb listing",
+  "link": "https://www.airbnb.com/rooms/1579618341912167734?adults=11&check_in=2027-08-22&check_out=2027-08-25"
  },
  "Schönbrunn Palace": {
   "img": "img/vienna-s0.webp",
@@ -418,38 +418,19 @@
  },
  "Konoba Matejuška": {
   "img": "img/split-f1.webp",
-  "credit": "Fred Romero from Paris, France · CC BY 2.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Split_-_Mateju%C5%A1ka_(49024625417).jpg",
   "thumb": "img/split-f1-t.webp",
-  "full": "img/full/split-f1.webp"
- },
- "Café Luxor": {
-  "img": "img/split-c0.webp",
-  "credit": "Berthold Werner · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Split_BW_2024-10-02_11-16-50.jpg",
-  "thumb": "img/split-c0-t.webp",
-  "full": "img/full/split-c0.webp"
- },
- "Diocletian's Palace & Peristyle": {
-  "img": "img/split-s0.webp",
-  "credit": "Dennis G. Jarvis · CC BY-SA 2.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Croatia-01239_-_The_Peristil_(9551533404).jpg",
-  "thumb": "img/split-s0-t.webp",
-  "full": "img/full/split-s0.webp"
+  "full": "img/full/split-f1.webp",
+  "credit": "Photo: dynamic-media-cdn.tripadvisor.com",
+  "link": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/09/7d/0f/grilled-octopus.jpg?w=1600&h=-1&s=1",
+  "user": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/09/7d/0f/grilled-octopus.jpg?w=1600&h=-1&s=1"
  },
  "Riva promenade": {
   "img": "img/split-s1.webp",
-  "credit": "Jules Verne Times Two · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Ivy_(genus_Parthenocissus)_on_a_wall,_Riva_promenade,_Split,_Croatia_(PPL1-Corrected)_julesvernex2.jpg",
   "thumb": "img/split-s1-t.webp",
-  "full": "img/full/split-s1.webp"
- },
- "Bačvice beach": {
-  "img": "img/split-s3.webp",
-  "credit": "dronepicr · CC BY 2.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Strand_Bacvice_in_Split,_Kroatien_(48608740097).jpg",
-  "thumb": "img/split-s3-t.webp",
-  "full": "img/full/split-s3.webp"
+  "full": "img/full/split-s1.webp",
+  "credit": "Photo: roadaffair.com",
+  "link": "https://www.roadaffair.com/wp-content/uploads/2019/02/riva-promenade-split-croatia-shutterstock_1223005273.jpg",
+  "user": "https://www.roadaffair.com/wp-content/uploads/2019/02/riva-promenade-split-croatia-shutterstock_1223005273.jpg"
  },
  "Trogir": {
   "img": "img/split-t0.webp",
@@ -535,13 +516,6 @@
   "thumb": "img/zagreb-s0-t.webp",
   "full": "img/full/zagreb-s0.webp"
  },
- "Lotrščak Tower & funicular": {
-  "img": "img/zagreb-s1.webp",
-  "credit": "Diego Delso · CC BY-SA 3.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Torre_de_Lotrscak,_Zagreb,_Croacia,_2014-04-20,_DD_02.JPG",
-  "thumb": "img/zagreb-s1-t.webp",
-  "full": "img/full/zagreb-s1.webp"
- },
  "Tkalčićeva street": {
   "img": "img/zagreb-s3.webp",
   "credit": "Jorge Franganillo · CC BY 2.0 · Wikimedia Commons",
@@ -551,10 +525,11 @@
  },
  "Konoba Fetivi": {
   "img": "img/split-f0.webp",
-  "credit": "Kaiser87 · CC BY-SA 3.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Varo%C5%A1ke_skaline.jpg",
   "thumb": "img/split-f0-t.webp",
-  "full": "img/full/split-f0.webp"
+  "full": "img/full/split-f0.webp",
+  "credit": "Photo: dynamic-media-cdn.tripadvisor.com",
+  "link": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/14/d0/c8/fb/seafood-for-two.jpg?w=1000&h=-1&s=1",
+  "user": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/14/d0/c8/fb/seafood-for-two.jpg?w=1000&h=-1&s=1"
  },
  "Bokeria Kitchen & Wine": {
   "img": "img/split-f2.webp",
@@ -565,10 +540,11 @@
  },
  "Marjan Hill": {
   "img": "img/split-s2.webp",
-  "credit": "Bernard Gagnon · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Flag_of_Croatia_on_Marjan_hill,_Split.jpg",
   "thumb": "img/split-s2-t.webp",
-  "full": "img/full/split-s2.webp"
+  "full": "img/full/split-s2.webp",
+  "credit": "Photo: roadaffair.com",
+  "link": "https://www.roadaffair.com/wp-content/uploads/2017/09/marjan-hill-split-croatia-shutterstock_495329557.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.roadaffair.com%2Fwp-content%2Fuploads%2F2017%2F09%2Fmarjan-hill-split-croatia-shutterstock_495329557.jpg&f=1&nofb=1&ipt=d70cc30d6ce4be7409456d81d8eda7e5a8f355b3c99af0aa499071654e368192&ipo=images"
  },
  "Visovac monastery": {
   "img": "img/krka-s2.webp",
@@ -576,5 +552,122 @@
   "link": "https://commons.wikimedia.org/wiki/File:Visovac_2.jpg",
   "thumb": "img/krka-s2-t.webp",
   "full": "img/full/krka-s2.webp"
+ },
+ "Dvor": {
+  "img": "img/split-f3.webp",
+  "thumb": "img/split-f3-t.webp",
+  "full": "img/full/split-f3.webp",
+  "credit": "Photo: frankaboutcroatia.com",
+  "link": "https://www.frankaboutcroatia.com/wp-content/uploads/2021/11/restaurant-dvor-split-terrace-900x495.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.frankaboutcroatia.com%2Fwp-content%2Fuploads%2F2021%2F11%2Frestaurant-dvor-split-terrace-900x495.jpg&f=1&nofb=1&ipt=4c0f7b17116146e1c0d7ac5df66cd2689dfb65bcf90eb2effe2094b1dcc89bc3&ipo=images"
+ },
+ "Zinfandel": {
+  "img": "img/split-f4.webp",
+  "thumb": "img/split-f4-t.webp",
+  "full": "img/full/split-f4.webp",
+  "credit": "Photo: s.inyourpocket.com",
+  "link": "https://s.inyourpocket.com/gallery/246915.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fs.inyourpocket.com%2Fgallery%2F246915.jpg&f=1&nofb=1&ipt=58d453059b7712ba4c73f140a8714180a5c2de24bd851c5638bed794e55a72a8&ipo=images"
+ },
+ "Artičok": {
+  "img": "img/split-f5.webp",
+  "thumb": "img/split-f5-t.webp",
+  "full": "img/full/split-f5.webp",
+  "credit": "Photo: cdn.website.dish.co",
+  "link": "https://cdn.website.dish.co/media/1d/9a/8524671/ARTiCOK-441520000-1180562729582764-6602224282065818664-n-jpg.jpg",
+  "user": "https://cdn.website.dish.co/media/1d/9a/8524671/ARTiCOK-441520000-1180562729582764-6602224282065818664-n-jpg.jpg"
+ },
+ "Peristyle": {
+  "img": "img/split-s0.webp",
+  "thumb": "img/split-s0-t.webp",
+  "full": "img/full/split-s0.webp",
+  "credit": "Photo: earthtrekkers.com",
+  "link": "https://www.earthtrekkers.com/wp-content/uploads/2017/06/Peristyle-Split.jpg.optimal.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.earthtrekkers.com%2Fwp-content%2Fuploads%2F2017%2F06%2FPeristyle-Split.jpg.optimal.jpg&f=1&nofb=1&ipt=014eab9b02d214b5a55689bcf96429be258f64f9d195a16be978b36cdba0d29e&ipo=images"
+ },
+ "Podrum": {
+  "img": "img/split-s3.webp",
+  "thumb": "img/split-s3-t.webp",
+  "full": "img/full/split-s3.webp",
+  "credit": "Photo: thepurposelylost.com",
+  "link": "https://thepurposelylost.com/wp-content/uploads/2021/08/20210725-dsc_0821_optimized-1024x683.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthepurposelylost.com%2Fwp-content%2Fuploads%2F2021%2F08%2F20210725-dsc_0821_optimized-1024x683.jpg&f=1&nofb=1&ipt=12f355aebb25e64920a70ae462cc5992f69c748df9bd0e9bc677a723fa0927f3&ipo=images"
+ },
+ "Blue Cave, Biševo": {
+  "img": "img/split-t3.webp",
+  "thumb": "img/split-t3-t.webp",
+  "full": "img/full/split-t3.webp",
+  "credit": "Photo: travelersuniverse.com",
+  "link": "https://www.travelersuniverse.com/wp-content/uploads/2025/08/split-trogir-blue-cave-mamma-mia-hvar-and-5-island-tour.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.travelersuniverse.com%2Fwp-content%2Fuploads%2F2025%2F08%2Fsplit-trogir-blue-cave-mamma-mia-hvar-and-5-island-tour.jpg&f=1&nofb=1&ipt=ffa441acd02ccd4870712e0da3cfa2fc20c7d89279f2a858a3f2dc8c8fdb7b95&ipo=images"
+ },
+ "Plitvice Lakes": {
+  "img": "img/split-t4.webp",
+  "thumb": "img/split-t4-t.webp",
+  "full": "img/full/split-t4.webp",
+  "credit": "Photo: roadaffair.com",
+  "link": "https://www.roadaffair.com/wp-content/uploads/2017/09/plitvice-lakes-national-park-croatia-shutterstock_528172540.jpg",
+  "user": "https://www.roadaffair.com/wp-content/uploads/2017/09/plitvice-lakes-national-park-croatia-shutterstock_528172540.jpg"
+ },
+ "Mostar": {
+  "img": "img/split-t5.webp",
+  "thumb": "img/split-t5-t.webp",
+  "full": "img/full/split-t5.webp",
+  "credit": "Photo: roadaffair.com",
+  "link": "https://www.roadaffair.com/wp-content/uploads/2017/09/mostar-bosnia-shutterstock_291941039.jpg",
+  "user": "https://www.roadaffair.com/wp-content/uploads/2017/09/mostar-bosnia-shutterstock_291941039.jpg"
+ },
+ "airbnb:914891070797797327": {
+  "img": "img/split-h0.webp",
+  "thumb": "img/split-h0-t.webp",
+  "full": "img/full/split-h0.webp",
+  "credit": "Photo: Airbnb listing",
+  "link": "https://www.airbnb.com/rooms/914891070797797327?adults=12&check_in=2027-08-31&check_out=2027-09-04"
+ },
+ "Lanterna na Dolcu": {
+  "img": "img/zagreb-f1.webp",
+  "thumb": "img/zagreb-f1-t.webp",
+  "full": "img/full/zagreb-f1.webp",
+  "credit": "Photo: tse1.mm.bing.net",
+  "link": "https://tse1.mm.bing.net/th/id/OIP.1LcmduGRngrF9ZpCTHQbSQHaE8?pid=Api",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.1LcmduGRngrF9ZpCTHQbSQHaE8%3Fpid%3DApi&f=1&ipt=5b52170b5245e914a674ea3ec3be9255e88a1a41a05df568d5ec1a7b8a5cbd97&ipo=images",
+  "imgs": [
+   "img/zagreb-f1.webp",
+   "img/zagreb-f1-2.webp"
+  ],
+  "fulls": [
+   "img/full/zagreb-f1.webp",
+   "img/full/zagreb-f1-2.webp"
+  ]
+ },
+ "Sljeme by gondola": {
+  "img": "img/zagreb-s1.webp",
+  "thumb": "img/zagreb-s1-t.webp",
+  "full": "img/full/zagreb-s1.webp",
+  "credit": "Photo: sljeme360.hr",
+  "link": "https://sljeme360.hr/wp-content/uploads/2023/04/Sljeme360_Naslovna.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fsljeme360.hr%2Fwp-content%2Fuploads%2F2023%2F04%2FSljeme360_Naslovna.jpg&f=1&nofb=1&ipt=ae862866e7cb04a2ac8a56c6d062c4ef1fb70d3b6d287324d1e9449eacc2a201&ipo=images"
+ },
+ "Museum of Broken Relationships": {
+  "img": "img/zagreb-s2.webp",
+  "thumb": "img/zagreb-s2-t.webp",
+  "full": "img/full/zagreb-s2.webp",
+  "credit": "Photo: benediktwyss.com",
+  "link": "https://www.benediktwyss.com/site/assets/files/1150/mobr_banner_header_2000x0.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.benediktwyss.com%2Fsite%2Fassets%2Ffiles%2F1150%2Fmobr_banner_header_2000x0.jpg&f=1&nofb=1&ipt=8224473db64b81df81ece0128665bb641665b2ec95b8fa30dccdfd40ee9144e7&ipo=images"
+ },
+ "airbnb:877181797527454382": {
+  "img": "img/split-h2.webp",
+  "thumb": "img/split-h2-t.webp",
+  "full": "img/full/split-h2.webp",
+  "credit": "Photo: Airbnb listing",
+  "link": "https://www.airbnb.com/rooms/877181797527454382?adults=12&check_in=2027-08-31&check_out=2027-09-04"
+ },
+ "airbnb:873190681059415934": {
+  "img": "img/split-h1.webp",
+  "thumb": "img/split-h1-t.webp",
+  "full": "img/full/split-h1.webp",
+  "credit": "Photo: Airbnb listing",
+  "link": "https://www.airbnb.com/rooms/873190681059415934?adults=12&check_in=2027-08-31&check_out=2027-09-04"
  }
 }

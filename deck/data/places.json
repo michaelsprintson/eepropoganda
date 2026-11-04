@@ -580,22 +580,42 @@
      271.4386,
      885.0108
     ]
+   },
+   {
+    "name": "Dvor",
+    "kind": "regional",
+    "tag": "Dalmatian · sea terrace",
+    "blurb": "A garden terrace above Firule bay, a short walk past Bačvice. Seasonal Dalmatian cooking with the sea right below.",
+    "xy": [
+     273.1682,
+     886.2973
+    ]
+   },
+   {
+    "name": "Zinfandel",
+    "kind": "world",
+    "tag": "Wine bar",
+    "blurb": "A wine bar just off the old town's main square, with Croatian wines by the glass and plates to share.",
+    "xy": [
+     271.5097,
+     885.1696
+    ]
+   },
+   {
+    "name": "Artičok",
+    "kind": "world",
+    "tag": "Modern Mediterranean",
+    "blurb": "Modern Mediterranean plates built on local produce, a few minutes' walk from the palace.",
+    "xy": [
+     271.1431,
+     885.1542
+    ]
    }
   ],
-  "cafe": {
-   "name": "Café Luxor",
-   "kind": "cafe",
-   "tag": "Inside the palace",
-   "blurb": "Coffee on cushions on the steps of Diocletian's Peristyle, surrounded by 1,700-year-old columns.",
-   "xy": [
-    271.6384,
-    885.2076
-   ]
-  },
   "sights": [
    {
-    "name": "Diocletian's Palace & Peristyle",
-    "blurb": "A Roman emperor's retirement palace that the whole old town now lives inside. Climb the cathedral bell tower.",
+    "name": "Peristyle",
+    "blurb": "The Roman courtyard at the heart of Diocletian's Palace, the emperor's retirement home that the whole old town now lives inside.",
     "xy": [
      271.6384,
      885.2076
@@ -618,11 +638,11 @@
     ]
    },
    {
-    "name": "Bačvice beach",
-    "blurb": "Shallow sandy town beach, home of picigin, the local splash-ball game.",
+    "name": "Podrum",
+    "blurb": "The palace's vaulted cellars under the Peristyle: a market hall now, and Daenerys's dragon lair in Game of Thrones.",
     "xy": [
-     272.4239,
-     885.8823
+     271.5956,
+     885.309
     ]
    }
   ],
@@ -658,6 +678,36 @@
     "xy": [
      218.6311,
      839.5234
+    ]
+   },
+   {
+    "name": "Blue Cave, Biševo",
+    "kind": "nature",
+    "time": "~2 h by speedboat",
+    "blurb": "A sea cave that glows electric blue when the late-morning sun shines in under the water. Speedboat tours pair it with Vis and Hvar.",
+    "xy": [
+     225.1,
+     965.901
+    ]
+   },
+   {
+    "name": "Plitvice Lakes",
+    "kind": "nature",
+    "time": "~3 h by bus",
+    "blurb": "Sixteen terraced turquoise lakes linked by waterfalls, walked on wooden boardwalks. Croatia's best-known national park.",
+    "xy": [
+     178.9906,
+     668.6695
+    ]
+   },
+   {
+    "name": "Mostar",
+    "kind": "daytrip",
+    "time": "~3 h 30 by bus",
+    "blurb": "An Ottoman old town in Bosnia and Herzegovina around the arched Old Bridge, where divers leap into the river. Bring passports.",
+    "xy": [
+     424.6879,
+     911.4129
     ]
    }
   ]
@@ -776,11 +826,12 @@
     ]
    },
    {
-    "name": "Lotrščak Tower & funicular",
-    "blurb": "Ride one of the world's shortest funiculars up to the tower and its view over the city.",
+    "name": "Sljeme by gondola",
+    "how": "Bus + gondola · ~45 min",
+    "blurb": "The gondola climbs 5 km up Medvednica to the summit of Sljeme for forest walks and a view over the whole city. Check the last ride down.",
     "xy": [
-     219.6625,
-     524.1689
+     216.7962,
+     510.7223
     ]
    },
    {
@@ -809,6 +860,16 @@
     "xy": [
      220.0605,
      524.1213
+    ]
+   },
+   {
+    "name": "Lanterna na Dolcu",
+    "kind": "regional",
+    "tag": "Croatian",
+    "blurb": "Traditional Croatian cooking under the brick vaults of an old cellar, just behind the Dolac market.",
+    "xy": [
+     220.1061,
+     523.9543
     ]
    }
   ]

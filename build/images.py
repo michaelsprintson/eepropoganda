@@ -241,6 +241,32 @@ USER = {
     "Meraki": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/20/b1/e3/7d/meraki-restaurant.jpg?w=1100&h=-1&s=1",
     "Indian Village": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2c/c3/7f/c1/food.jpg?w=1100&h=-1&s=1",
     "Belvedere Palace": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2F2gbzzxp7mkrqpgpz.public.blob.vercel-storage.com%2Fvienna-belvedere%2Flong_view_00.webp&f=1&nofb=1&ipt=a0a01c7b9f078754e608d91af4ac37fe58e0c2fce55b696948a7a8635af56e28&ipo=images",
+    # Split, from data/split
+    "Dvor": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.frankaboutcroatia.com%2Fwp-content%2Fuploads%2F2021%2F11%2Frestaurant-dvor-split-terrace-900x495.jpg&f=1&nofb=1&ipt=4c0f7b17116146e1c0d7ac5df66cd2689dfb65bcf90eb2effe2094b1dcc89bc3&ipo=images",
+    "Zinfandel": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fs.inyourpocket.com%2Fgallery%2F246915.jpg&f=1&nofb=1&ipt=58d453059b7712ba4c73f140a8714180a5c2de24bd851c5638bed794e55a72a8&ipo=images",
+    "Konoba Matejuška": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/09/7d/0f/grilled-octopus.jpg?w=1600&h=-1&s=1",
+    "Konoba Fetivi": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/14/d0/c8/fb/seafood-for-two.jpg?w=1000&h=-1&s=1",
+    "Artičok": "https://cdn.website.dish.co/media/1d/9a/8524671/ARTiCOK-441520000-1180562729582764-6602224282065818664-n-jpg.jpg",
+    "Marjan Hill": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.roadaffair.com%2Fwp-content%2Fuploads%2F2017%2F09%2Fmarjan-hill-split-croatia-shutterstock_495329557.jpg&f=1&nofb=1&ipt=d70cc30d6ce4be7409456d81d8eda7e5a8f355b3c99af0aa499071654e368192&ipo=images",
+    "Peristyle": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.earthtrekkers.com%2Fwp-content%2Fuploads%2F2017%2F06%2FPeristyle-Split.jpg.optimal.jpg&f=1&nofb=1&ipt=014eab9b02d214b5a55689bcf96429be258f64f9d195a16be978b36cdba0d29e&ipo=images",
+    "Podrum": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthepurposelylost.com%2Fwp-content%2Fuploads%2F2021%2F08%2F20210725-dsc_0821_optimized-1024x683.jpg&f=1&nofb=1&ipt=12f355aebb25e64920a70ae462cc5992f69c748df9bd0e9bc677a723fa0927f3&ipo=images",
+    "Riva promenade": "https://www.roadaffair.com/wp-content/uploads/2019/02/riva-promenade-split-croatia-shutterstock_1223005273.jpg",
+    "Blue Cave, Biševo": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.travelersuniverse.com%2Fwp-content%2Fuploads%2F2025%2F08%2Fsplit-trogir-blue-cave-mamma-mia-hvar-and-5-island-tour.jpg&f=1&nofb=1&ipt=ffa441acd02ccd4870712e0da3cfa2fc20c7d89279f2a858a3f2dc8c8fdb7b95&ipo=images",
+    "Plitvice Lakes": "https://www.roadaffair.com/wp-content/uploads/2017/09/plitvice-lakes-national-park-croatia-shutterstock_528172540.jpg",
+    "Mostar": "https://www.roadaffair.com/wp-content/uploads/2017/09/mostar-bosnia-shutterstock_291941039.jpg",
+    # Zagreb
+    "Sljeme by gondola": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fsljeme360.hr%2Fwp-content%2Fuploads%2F2023%2F04%2FSljeme360_Naslovna.jpg&f=1&nofb=1&ipt=ae862866e7cb04a2ac8a56c6d062c4ef1fb70d3b6d287324d1e9449eacc2a201&ipo=images",
+    "Museum of Broken Relationships": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.benediktwyss.com%2Fsite%2Fassets%2Ffiles%2F1150%2Fmobr_banner_header_2000x0.jpg&f=1&nofb=1&ipt=8224473db64b81df81ece0128665bb641665b2ec95b8fa30dccdfd40ee9144e7&ipo=images",
+    "Lanterna na Dolcu": [
+        "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.1LcmduGRngrF9ZpCTHQbSQHaE8%3Fpid%3DApi&f=1&ipt=5b52170b5245e914a674ea3ec3be9255e88a1a41a05df568d5ec1a7b8a5cbd97&ipo=images",
+        "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/ed/d2/0e/img-20200902-wa0000-largejpg.jpg?w=1400&h=-1&s=1",
+    ],
+}
+# Airbnb listings with a chosen photo instead of the listing's cover (by room id)
+AIRBNB_USER = {
+    "914891070797797327": "https://a0.muscache.com/im/pictures/prohost-api/Hosting-914891070797797327/original/1e1b2e72-68fc-4289-b04c-64b200bac512.jpeg?im_w=2560",
+    "873190681059415934": "https://a0.muscache.com/im/pictures/miso/Hosting-592348080858430344/original/da95389d-8d2d-40cd-b816-e447bd34789c.jpeg?im_w=2560",
+    "877181797527454382": "https://a0.muscache.com/im/pictures/hosting/Hosting-877181797527454382/original/0db73e6d-0ac7-43ea-bf43-45e910171cdb.jpeg?im_w=2560",
 }
 
 
@@ -371,10 +397,11 @@ def main():
             room = s["url"].split("/rooms/")[1].split("?")[0]
             page = (ROOT / "data" / "raw" / "airbnb" / f"{room}.html").read_text()
             m = re.search(r'<meta property="og:image" content="([^"]+)"', page)
-            if not m:
+            src = AIRBNB_USER.get(room) or (html.unescape(m.group(1)) if m else None)
+            if not src:
                 print("NO AIRBNB IMAGE", room)
                 continue
-            files, size = save(html.unescape(m.group(1)), f"{city}-h{i}")
+            files, size = save(src, f"{city}-h{i}")
             result[f"airbnb:{room}"] = {**files, "credit": "Photo: Airbnb listing", "link": s["url"]}
             print(f"airbnb {city} {room} {size}")
     images_path.write_text(json.dumps(result, ensure_ascii=False, indent=1))

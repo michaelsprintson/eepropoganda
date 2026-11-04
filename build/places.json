@@ -412,20 +412,34 @@
     "kind": "world",
     "tag": "Mediterranean",
     "blurb": "A lively market-style restaurant just outside the palace walls, with a long Croatian wine list."
+   },
+   {
+    "name": "Dvor",
+    "q": "Put Firula 14, Split",
+    "kind": "regional",
+    "tag": "Dalmatian · sea terrace",
+    "blurb": "A garden terrace above Firule bay, a short walk past Bačvice. Seasonal Dalmatian cooking with the sea right below."
+   },
+   {
+    "name": "Zinfandel",
+    "q": "Zinfandel Food & Wine Bar, Marulićeva 2, Split",
+    "kind": "world",
+    "tag": "Wine bar",
+    "blurb": "A wine bar just off the old town's main square, with Croatian wines by the glass and plates to share."
+   },
+   {
+    "name": "Artičok",
+    "q": "Bana Josipa Jelačića 19, Split",
+    "kind": "world",
+    "tag": "Modern Mediterranean",
+    "blurb": "Modern Mediterranean plates built on local produce, a few minutes' walk from the palace."
    }
   ],
-  "cafe": {
-   "name": "Café Luxor",
-   "q": "Luxor, Peristil, Split",
-   "kind": "cafe",
-   "tag": "Inside the palace",
-   "blurb": "Coffee on cushions on the steps of Diocletian's Peristyle, surrounded by 1,700-year-old columns."
-  },
   "sights": [
    {
-    "name": "Diocletian's Palace & Peristyle",
+    "name": "Peristyle",
     "q": "Peristil, Split",
-    "blurb": "A Roman emperor's retirement palace that the whole old town now lives inside. Climb the cathedral bell tower."
+    "blurb": "The Roman courtyard at the heart of Diocletian's Palace, the emperor's retirement home that the whole old town now lives inside."
    },
    {
     "name": "Riva promenade",
@@ -438,9 +452,9 @@
     "blurb": "A forested peninsula park with viewpoints, chapels and quiet swimming coves."
    },
    {
-    "name": "Bačvice beach",
-    "q": "Bačvice, Split",
-    "blurb": "Shallow sandy town beach, home of picigin, the local splash-ball game."
+    "name": "Podrum",
+    "q": "Podrumi Dioklecijanove palače, Split",
+    "blurb": "The palace's vaulted cellars under the Peristyle: a market hall now, and Daenerys's dragon lair in Game of Thrones."
    }
   ],
   "trips": [
@@ -467,6 +481,27 @@
     "time": "1 h 15 by bus",
     "detail": "krka",
     "blurb": "A river of turquoise waterfalls and travertine terraces, explored on boardwalks and by boat."
+   },
+   {
+    "name": "Blue Cave, Biševo",
+    "q": "Modra špilja, Biševo",
+    "kind": "nature",
+    "time": "~2 h by speedboat",
+    "blurb": "A sea cave that glows electric blue when the late-morning sun shines in under the water. Speedboat tours pair it with Vis and Hvar."
+   },
+   {
+    "name": "Plitvice Lakes",
+    "q": "Veliki slap, Plitvice",
+    "kind": "nature",
+    "time": "~3 h by bus",
+    "blurb": "Sixteen terraced turquoise lakes linked by waterfalls, walked on wooden boardwalks. Croatia's best-known national park."
+   },
+   {
+    "name": "Mostar",
+    "q": "Stari most, Mostar",
+    "kind": "daytrip",
+    "time": "~3 h 30 by bus",
+    "blurb": "An Ottoman old town in Bosnia and Herzegovina around the arched Old Bridge, where divers leap into the river. Bring passports."
    }
   ]
  },
@@ -554,9 +589,10 @@
     "blurb": "Cobbled Gornji Grad and the church with the tiled coat-of-arms roof."
    },
    {
-    "name": "Lotrščak Tower & funicular",
-    "q": "Kula Lotrščak, Zagreb",
-    "blurb": "Ride one of the world's shortest funiculars up to the tower and its view over the city."
+    "name": "Sljeme by gondola",
+    "q": "Sljeme summit gondola station",
+    "how": "Bus + gondola · ~45 min",
+    "blurb": "The gondola climbs 5 km up Medvednica to the summit of Sljeme for forest walks and a view over the whole city. Check the last ride down."
    },
    {
     "name": "Museum of Broken Relationships",
@@ -576,6 +612,13 @@
     "kind": "regional",
     "tag": "Zagorje štrukli",
     "blurb": "A whole menu of štrukli, the baked cheese pastry Zagreb is proud of, in a little courtyard off Tkalčićeva."
+   },
+   {
+    "name": "Lanterna na Dolcu",
+    "q": "Lanterna na Dolcu, Zagreb",
+    "kind": "regional",
+    "tag": "Croatian",
+    "blurb": "Traditional Croatian cooking under the brick vaults of an old cellar, just behind the Dolac market."
    }
   ]
  }

@@ -1,4 +1,33 @@
 {
+ "munich": [
+  {
+   "url": "https://www.airbnb.com/rooms/1310287467431170567?adults=11&check_in=2027-08-22&check_out=2027-08-25",
+   "title": "Rental unit in Munich · ★4.86 · 6 bedrooms · 12 beds · 3 baths",
+   "desc": "LTA Apartment South No.2 / 12P / Parking / S-Bahn",
+   "xy": [
+    -263.638,
+    152.654
+   ]
+  },
+  {
+   "url": "https://www.airbnb.com/rooms/1310243951941088025?adults=11&check_in=2027-08-22&check_out=2027-08-25",
+   "title": "Rental unit in Munich · ★4.87 · 5 bedrooms · 12 beds · 3 baths",
+   "desc": "LTA Apartment South No.1 / 12P / Parking / S-Bahn",
+   "xy": [
+    -263.638,
+    152.654
+   ]
+  },
+  {
+   "url": "https://www.airbnb.com/rooms/1725284730887614758?adults=11&check_in=2027-08-22&check_out=2027-08-25",
+   "title": "Rental unit in Munich · 4 bedrooms · 12 beds · 1 bath",
+   "desc": "Munich 160 sqm in a top location - 4 bedrooms",
+   "xy": [
+    -272.6994,
+    145.0342
+   ]
+  }
+ ],
  "vienna": [
   {
    "url": "https://www.airbnb.com/rooms/1745161347578867362?adults=11&check_in=2027-08-22&check_out=2027-08-25",
@@ -54,6 +83,35 @@
    "xy": [
     46.2599,
     -185.9225
+   ]
+  }
+ ],
+ "split": [
+  {
+   "url": "https://www.airbnb.com/rooms/914891070797797327?adults=12&check_in=2027-08-31&check_out=2027-09-04",
+   "title": "Villa in Kaštel Sućurac · ★4.79 · 6 bedrooms · 10 beds · 6.5 baths",
+   "desc": "Luxury villa Adris with heated pool, gym, sauna -",
+   "xy": [
+    268.8766,
+    878.1813
+   ]
+  },
+  {
+   "url": "https://www.airbnb.com/rooms/873190681059415934?adults=12&check_in=2027-08-31&check_out=2027-09-04",
+   "title": "Rental unit in Split · ★5.0 · 6 bedrooms · 8 beds · 4 baths",
+   "desc": "SUNNY apartments with SEA VIEW",
+   "xy": [
+    278.4546,
+    885.5973
+   ]
+  },
+  {
+   "url": "https://www.airbnb.com/rooms/877181797527454382?adults=12&check_in=2027-08-31&check_out=2027-09-04",
+   "title": "Villa in Podstrana · ★4.83 · 4 bedrooms · 7 beds · 4 baths",
+   "desc": "Villa Blue Sky, heated pool, jacuzzi, breakfast",
+   "xy": [
+    283.3192,
+    886.0777
    ]
   }
  ]
