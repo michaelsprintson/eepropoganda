@@ -3270,7 +3270,7 @@ cv.addEventListener("pointerup", ev => endMapDrag(ev, true));
 cv.addEventListener("pointercancel", ev => endMapDrag(ev, false));
 
 // ---------- boot ----------
-const DATA_V = "34"; // bump when data files change so browsers don't reuse stale copies
+const DATA_V = "35"; // bump when data files change so browsers don't reuse stale copies
 async function boot() {
   readTheme(); resize();
   invalidate();
