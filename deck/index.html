@@ -367,6 +367,9 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 
 /* calendar cells: the day's pins as little badges */
 .cd .pr { display: flex; gap: 2px; flex-wrap: wrap; margin-top: 2px; }
+.cd.drop-ok { box-shadow: 0 0 0 2px var(--ink), inset 0 0 0 999px color-mix(in srgb, var(--ink) 10%, transparent); }
+.cd.drop-no { opacity: .55; }
+.cd .pb[draggable], .pinl li[draggable], .mi[draggable] { cursor: grab; }
 .cd .pb { font: 700 9.5px var(--f-display); font-style: normal; min-width: 15px; height: 15px; padding: 0 2px; border-radius: 3px; background: var(--c); color: #fff; display: inline-grid; place-items: center; }
 
 /* the selected day, in the planner */
@@ -981,7 +984,7 @@ function itinerary(x) {
 // ---------- planner panel ----------
 let plSel = null, plMsg = "", plResetAsk = false, plImport = false, plAdd = false, plSetOpen = true, plRange = null;
 try { plSetOpen = localStorage.getItem("planSettings") !== "closed"; } catch (e) {}
-const pinBadge = p => `<i class="pb" style="--c:var(--${homeOf(p)})" title="${esc(p.name)}">${esc(p.label || p.code)}</i>`;
+const pinBadge = (p, iso) => `<i class="pb" style="--c:var(--${homeOf(p)})" title="${esc(p.name)}${iso ? " · drag to another day" : ""}"${iso ? ` draggable="true" data-dpin="${keyOf(p)}" data-from="${iso}"` : ""}>${esc(p.label || p.code)}</i>`;
 function settingsHTML() {
   const rail = byRail(), zn = PLAN.nights.zagreb;
   const trainNight = DAYS.some(x => x.sleeper);
@@ -1037,7 +1040,7 @@ function dayViewHTML(x) {
       <label class="fld"><span>Departs</span><input type="time" id="pl-dep" data-leg="${x.leg}" value="${o.dep}"></label></div>
       <p class="muted small">${esc(legSummary(x.leg).text)}</p>`;
   }
-  const list = pins.map((k, j) => { const p = placeBy[k]; return `<li style="--c:var(--${homeOf(p)})">${badge(p)}<span class="nm">${esc(p.name)}</span>
+  const list = pins.map((k, j) => { const p = placeBy[k]; return `<li style="--c:var(--${homeOf(p)})" draggable="true" data-dpin="${k}" data-from="${x.iso}" title="Drag to another day">${badge(p)}<span class="nm">${esc(p.name)}</span>
     <button class="ib" data-mv="${j}" data-dir="-1" aria-label="Earlier in the day"${j ? "" : " disabled"}>↑</button><button class="ib" data-mv="${j}" data-dir="1" aria-label="Later in the day"${j < n - 1 ? "" : " disabled"}>↓</button>
     <button class="ib" data-unpin="${k}" aria-label="Remove ${esc(p.name)}">×</button></li>`; }).join("");
   const chip = p => { const on = pins.includes(keyOf(p)); return `<button class="pchip${on ? " on" : ""}" data-pin="${keyOf(p)}" aria-pressed="${on}"${!on && n >= PIN_MAX ? " disabled" : ""}>${badge(p)}<span>${esc(p.name)}</span></button>`; };
@@ -1084,7 +1087,7 @@ function calCells(days = DAYS, live = null) {
     const icon = fly || (x.leg === "vs" && PLAN.legs.vs.opt === "flight") ? "✈︎" : x.sleeper ? "☾" : "";
     cells.push(`<button class="cd${x.kind === "travel" ? " travel" : ""}${fly ? " fly" : ""}${sel}" data-day="${x.i}" style="${style}" aria-label="${esc(fmtDay(x.date))}${pins.length ? `, ${pins.length} pinned` : ""}" aria-pressed="${plSel === x.i}">
       <span class="n">${n}${m}</span>${icon ? `<span class="i">${icon}</span>` : ""}${note ? `<span class="nd" title="${esc(note)}"></span>` : ""}
-      <span class="t">${label}</span>${pins.length ? `<span class="pr">${pins.map(pinBadge).join("")}</span>` : ""}${grip}</button>`);
+      <span class="t">${label}</span>${pins.length ? `<span class="pr">${pins.map(p => pinBadge(p, x.iso)).join("")}</span>` : ""}${grip}</button>`);
   });
   while (cells.length % 7) cells.push(`<div class="cd off"></div>`);
   return cells;
@@ -1498,11 +1501,13 @@ function drawFlights() {
     ctx.globalAlpha = 1;
   }
 }
+const railLeg = id => id !== "vs" || byRail(); // flying to Split leaves its track off the map
 function drawLegs() {
   const sl = SL(), k = T.k;
   ctx.lineCap = "round"; ctx.lineJoin = "round";
   const order = Object.keys(LEGS).sort((a, b) => (a === sl.leg) - (b === sl.leg));
   for (const id of order) {
+    if (!railLeg(id)) continue;
     const L = LEGS[id], active = sl.leg === id, dim = sl.leg && !active;
     // the line is a world-space path, stroked under the map transform with widths in screen pixels
     ctx.setTransform(dpr * k, 0, 0, dpr * k, dpr * T.x, dpr * T.y);
@@ -1778,8 +1783,10 @@ function placePop() {
   if (!inView(x, y, 0)) { pop.style.visibility = "hidden"; return; }
   pop.style.visibility = "visible";
   const w = pop.offsetWidth, h = pop.offsetHeight;
+  const cb = calPanel.hidden ? null : calPanel.getBoundingClientRect();
+  const right = cb && cb.left > W / 2 ? cb.left : W; // a planner on the right side
   let px = x + 22, py = y - h / 2;
-  if (px + w > W - 16) px = x - w - 22;
+  if (px + w > right - 16) px = x - w - 22;
   px = Math.max(16, px); py = Math.max(16, Math.min(H - h - 80, py));
   pop.style.transform = `translate(${Math.round(px)}px, ${Math.round(py)}px)`;
 }
@@ -1860,7 +1867,7 @@ function showSlide(sl, instant, fly = true) {
     card.classList.remove("swap");
     if (!fly) return;
     const t1 = sl.view();
-    const startTrain = () => { if (sl.leg && SL() === sl) { legT0 = performance.now(); invalidate(); } };
+    const startTrain = () => { if (sl.leg && railLeg(sl.leg) && SL() === sl) { legT0 = performance.now(); invalidate(); } };
     if (instant) { cvSel.call(zoom.transform, t1); startTrain(); }
     else flyTo(t1, startTrain);
   }, instant || reduce ? 0 : 180);
@@ -2056,6 +2063,45 @@ function gripNights(city, delta) {
   const n = c => `${PC[c].en} ${nights[c]} night${nights[c] === 1 ? "" : "s"}`;
   return { nights, msg: [city, ...after].filter(c => nights[c] !== PLAN.nights[c]).map(n).join(", ") + "." };
 }
+let dragPin = null;
+document.addEventListener("dragstart", e => {
+  const s = e.target.closest?.("[data-dpin]"); if (!s) return;
+  dragPin = { key: s.dataset.dpin, from: s.dataset.from || null };
+  e.dataTransfer.setData("text/plain", placeBy[dragPin.key]?.name || dragPin.key); e.dataTransfer.effectAllowed = dragPin.from ? "move" : "copy";
+  document.body.classList.add("pindrag");
+});
+const pinDropOk = x => { const p = placeBy[dragPin.key], on = pinsOn(x); return canPin(x, p) && (on.includes(dragPin.key) || on.length < PIN_MAX); };
+calPanel.addEventListener("dragover", e => {
+  if (!dragPin) return;
+  const cell = e.target.closest(".cal.planner [data-day]");
+  calPanel.querySelectorAll(".cd.drop-ok, .cd.drop-no").forEach(c => c !== cell && c.classList.remove("drop-ok", "drop-no"));
+  if (!cell) return;
+  const ok = pinDropOk(DAYS[+cell.dataset.day]);
+  cell.classList.toggle("drop-ok", ok); cell.classList.toggle("drop-no", !ok);
+  if (ok) { e.preventDefault(); e.dataTransfer.dropEffect = dragPin.from ? "move" : "copy"; }
+});
+calPanel.addEventListener("drop", e => {
+  const cell = e.target.closest(".cal.planner [data-day]"); if (!cell || !dragPin) return;
+  e.preventDefault();
+  const { key, from } = dragPin, x = DAYS[+cell.dataset.day], p = placeBy[key];
+  dragPin = null;
+  if (from === x.iso) { renderPlanner(); return; }
+  if (pinsOn(x).includes(key)) { // already there: dragging it over just clears the old day
+    if (from) movedOff(key, from);
+    plMsg = from ? `${p.name} moved to ${fmtDay(x.date)}.` : `${p.name} is already pinned to ${fmtDay(x.date)}.`;
+    planChanged(); return;
+  }
+  const r = togglePin(key, x.iso);
+  if (r === "on" && from) { movedOff(key, from); plMsg = `${p.name} moved to ${fmtDay(x.date)}.`; }
+  else plMsg = pinMsg(r, p, x);
+  planChanged();
+});
+function movedOff(key, iso) { const arr = PLAN.pins[iso] || [], k = arr.indexOf(key); if (k >= 0) arr.splice(k, 1); if (!arr.length) delete PLAN.pins[iso]; }
+document.addEventListener("dragend", () => {
+  dragPin = null; document.body.classList.remove("pindrag");
+  calPanel.querySelectorAll(".cd.drop-ok, .cd.drop-no").forEach(c => c.classList.remove("drop-ok", "drop-no"));
+});
+
 let grip = null;
 calPanel.addEventListener("pointerdown", e => {
   const g = e.target.closest("[data-grip]"); if (!g) return;
@@ -2236,7 +2282,7 @@ function menuItemsHTML(id) {
     const right = p.type === "stay"
       ? `<button role="menuitem" class="mi side${PLAN.stays[p.city] === p.code ? " on" : ""}" data-home="${k}" title="Use as home base" aria-label="Use ${esc(p.name)} as home base">⌂</button>`
       : `${p.detail ? `<button role="menuitem" class="mi side" data-go="${p.detail}" title="Zoom-in map" aria-label="Zoom into ${esc(p.name)}">↗</button>` : ""}<button role="menuitem" class="mi side${at ? " on" : ""}" data-mpin="${k}" title="${at ? `Pinned to ${fmtDay(at.date)}` : "Pin to a day"}" aria-label="Pin ${esc(p.name)} to a day">📌</button>`;
-    return `<div class="mrow" role="none" style="--c:var(--${homeOf(p)})"><button role="menuitem" class="mi" data-mp="${k}">${badge(p)}<span class="nm">${esc(p.name)}</span>${at ? `<span class="when">${fmtDay(at.date)}</span>` : ""}${p.type === "stay" && PLAN.stays[p.city] === p.code ? `<span class="when">home base</span>` : ""}</button>${right}</div>`;
+    return `<div class="mrow" role="none" style="--c:var(--${homeOf(p)})"><button role="menuitem" class="mi" data-mp="${k}"${p.type === "stay" ? "" : ` draggable="true" data-dpin="${k}" title="Drag onto a day to pin it"`}>${badge(p)}<span class="nm">${esc(p.name)}</span>${at ? `<span class="when">${fmtDay(at.date)}</span>` : ""}${p.type === "stay" && PLAN.stays[p.city] === p.code ? `<span class="when">home base</span>` : ""}</button>${right}</div>`;
   }).join("");
 }
 const MENU_IDS = ["trip", ...NIGHT_ORDER];
