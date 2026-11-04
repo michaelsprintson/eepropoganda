@@ -23,7 +23,7 @@ CITIES = {
     "lednice": {"bbox": (48.712, 16.725, 48.835, 16.900), "core": (48.797, 16.795, 48.808, 16.812)},
     "wachau": {"bbox": (48.37, 15.46, 48.425, 15.615), "core": (48.37, 15.46, 48.425, 15.615)},
     "kahlenberg": {"bbox": (48.248, 16.3, 48.3, 16.375), "core": (48.248, 16.3, 48.3, 16.375)},
-    "hallstatt": {"bbox": (47.548, 13.625, 47.575, 13.662), "core": (47.548, 13.625, 47.575, 13.662)},
+    "hallstatt": {"bbox": (47.535, 13.605, 47.592, 13.705), "core": (47.535, 13.605, 47.592, 13.705)},
     "karlstejn": {"bbox": (49.922, 14.165, 49.968, 14.205), "core": (49.922, 14.165, 49.968, 14.205)},
     "kutnahora": {"bbox": (49.937, 15.25, 49.968, 15.3), "core": (49.937, 15.25, 49.968, 15.3)},
     "bohemian": {"bbox": (50.85, 14.23, 50.9, 14.335), "core": (50.85, 14.23, 50.9, 14.335)},
@@ -55,6 +55,23 @@ def base_query(b):
   way["landuse"~"^(forest|grass|cemetery|vineyard)$"]({bb(b)});
   way["natural"="wood"]({bb(b)});
   way["railway"="rail"]({bb(b)});
+);
+out geom;"""
+
+
+# day trips are mostly countryside: forests mapped as multipolygons, and the trails, funiculars and
+# cable cars that reach the sights (city maps leave these out to stay small)
+TRAIL_MAPS = ["lednice", "wachau", "kahlenberg", "hallstatt", "karlstejn", "kutnahora", "bohemian"]
+
+
+def trail_query(b):
+    return f"""[out:json][timeout:240];
+(
+  relation["landuse"="forest"]({bb(b)});
+  relation["natural"="wood"]({bb(b)});
+  way["highway"~"^(path|footway|track|steps|bridleway)$"]({bb(b)});
+  way["railway"="funicular"]({bb(b)});
+  way["aerialway"~"^(cable_car|gondola|chair_lift)$"]({bb(b)});
 );
 out geom;"""
 
@@ -96,6 +113,9 @@ def main():
         time.sleep(5)
         get(OVERPASS, RAW / "osm" / f"{city}_buildings.json", method="POST", data={"data": building_query(c["core"])})
         time.sleep(5)
+        if city in TRAIL_MAPS:
+            get(OVERPASS, RAW / "osm" / f"{city}_trails.json", method="POST", data={"data": trail_query(c["bbox"])})
+            time.sleep(5)
 
     for city in COASTAL:  # the sea is mapped as coastline lines, not water areas
         q = f'[out:json][timeout:240];way["natural"="coastline"]({bb(CITIES[city]["bbox"])});out geom;'

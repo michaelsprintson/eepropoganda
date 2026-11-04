@@ -1222,7 +1222,7 @@ function buildRegion(r) {
 }
 const POLY = new Set(["wa", "gr", "bd", "sea"]);
 const TILE = 2000, LOD_K = 100, LOD_M = 20; // tiles in metres; below zoom LOD_K draw copies thinned to LOD_M
-const LOD_LAYERS = new Set(["sea", "gr", "wa", "wl", "r1", "r2", "r3", "rl"]);
+const LOD_LAYERS = new Set(["sea", "gr", "wa", "wl", "r1", "r2", "r3", "pa", "rl"]);
 // one delta-encoded line as absolute points, plus its bounding box
 function decode(a) {
   const pts = new Float64Array(a.length); let x = a[0], y = a[1], x0 = x, y0 = y, x1 = x, y1 = y;
@@ -1247,7 +1247,7 @@ function addThin(p, pts, close) {
 function buildCity(name, c) {
   // every layer is split into TILE-sized cells (by each feature's top-left corner), so a zoomed-in view
   // strokes only the cells it can see; each cell's box grows to cover its features
-  const tiles = new Map(), lo = {};
+  const tiles = new Map(), lo = {}, roads = [];
   const cell = (bb) => {
     const key = `${Math.floor(bb[0] / TILE)},${Math.floor(bb[1] / TILE)}`;
     let t = tiles.get(key);
@@ -1263,15 +1263,128 @@ function buildCity(name, c) {
       for (const l of lines) { bb[0] = Math.min(bb[0], l.bb[0]); bb[1] = Math.min(bb[1], l.bb[1]); bb[2] = Math.max(bb[2], l.bb[2]); bb[3] = Math.max(bb[3], l.bb[3]); }
       const t = cell(bb), p = t.paths[layer] || (t.paths[layer] = new Path2D());
       for (const l of lines) addAbs(p, l.pts, poly);
+      if (ROAD_LAYERS.has(layer)) roads.push(lines[0].pts);
       // the thinned copy skips features smaller than a couple of pixels at LOD_K
       if (thin && (bb[2] - bb[0]) + (bb[3] - bb[1]) >= 2 * LOD_M) for (const l of lines) addThin(thin, l.pts, poly);
     }
   }
   const [ox, oy] = c.origin, [w, n, e, s] = c.bounds;
-  S.cities[name] = { origin: c.origin, tiles: [...tiles.values()], lo, bounds: c.bounds, box: [ox + w / 1000, oy + n / 1000, ox + e / 1000, oy + s / 1000] };
+  S.cities[name] = { origin: c.origin, tiles: [...tiles.values()], lo, roads, bounds: c.bounds, box: [ox + w / 1000, oy + n / 1000, ox + e / 1000, oy + s / 1000] };
   ensureTransit();
   invalidate();
 }
+// ---------- routing along a map's roads (for a day's walks and rides) ----------
+const ROAD_LAYERS = new Set(["r1", "r2", "r3", "pa"]);
+// the road network as a graph, built the first time a route is asked of this map. Lines are cut every
+// STEP metres and points within LINK of each other are joined, which reconnects crossings that
+// simplifying the map data pulled apart
+function roadGraph(c) {
+  if (c.graph) return c.graph;
+  const SNAP = 3, STEP = 25, LINK = 14, ids = new Map(), xs = [], ys = [], adj = [];
+  const node = (x, y) => {
+    const key = (Math.round(x / SNAP) + 32768) * 65536 + Math.round(y / SNAP) + 32768; // numeric keys: much faster than strings
+    let i = ids.get(key);
+    if (i === undefined) { i = xs.length; ids.set(key, i); xs.push(x); ys.push(y); adj.push([]); }
+    return i;
+  };
+  const edge = (a, b, w) => { adj[a].push(b, w); adj[b].push(a, w); };
+  for (const pts of c.roads) {
+    let px = pts[0], py = pts[1], prev = node(px, py);
+    for (let i = 2; i < pts.length; i += 2) {
+      const x = pts[i], y = pts[i + 1], L = Math.hypot(x - px, y - py), n = Math.max(1, Math.ceil(L / STEP));
+      for (let j = 1; j <= n; j++) {
+        const cur = node(px + (x - px) * j / n, py + (y - py) * j / n);
+        if (cur !== prev) edge(prev, cur, L / n);
+        prev = cur;
+      }
+      px = x; py = y;
+    }
+  }
+  const grid = new Map(), gk = (gx, gy) => (gx + 32768) * 65536 + gy + 32768;
+  for (let i = 0; i < xs.length; i++) {
+    const k = gk(Math.floor(xs[i] / LINK), Math.floor(ys[i] / LINK));
+    (grid.get(k) || grid.set(k, []).get(k)).push(i);
+  }
+  for (let i = 0; i < xs.length; i++) {
+    const gx = Math.floor(xs[i] / LINK), gy = Math.floor(ys[i] / LINK);
+    for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) for (const j of grid.get(gk(gx + dx, gy + dy)) || []) {
+      if (j <= i) continue;
+      const d = Math.hypot(xs[j] - xs[i], ys[j] - ys[i]);
+      if (d < LINK) edge(i, j, d * 1.5);
+    }
+  }
+  // islands (a palace's drives, cut off where only footpaths reach them) don't route anywhere, so places
+  // snap only to the main network
+  const comp = new Int32Array(xs.length).fill(-1), size = [];
+  for (let i = 0; i < xs.length; i++) {
+    if (comp[i] >= 0) continue;
+    const id = size.length, q = [i]; comp[i] = id;
+    for (let k = 0; k < q.length; k++) { const a = adj[q[k]]; for (let j = 0; j < a.length; j += 2) if (comp[a[j]] < 0) { comp[a[j]] = id; q.push(a[j]); } }
+    size.push(q.length);
+  }
+  const main = size.indexOf(Math.max(...size));
+  return (c.graph = { xs, ys, adj, grid, gk, cell: LINK, onMain: i => comp[i] === main });
+}
+// road points within r metres of (x, y), with the cost of walking there off-road (a little dearer than on a
+// road); widening until at least one is found
+function nodesNear(g, x, y, r = 200, maxM = 800) {
+  for (; r <= maxM; r *= 2) {
+    const out = [], gx = Math.floor(x / g.cell), gy = Math.floor(y / g.cell), n = Math.ceil(r / g.cell);
+    for (let dx = -n; dx <= n; dx++) for (let dy = -n; dy <= n; dy++)
+      for (const i of g.grid.get(g.gk(gx + dx, gy + dy)) || []) { if (!g.onMain(i)) continue; const d = Math.hypot(g.xs[i] - x, g.ys[i] - y); if (d <= r) out.push([i, d * 1.25]); }
+    if (out.length) return out;
+  }
+  return [];
+}
+// A* from a point to a point: it may set off from any road point near the start and finish at any near
+// the end (walking there costs its distance), so a dead-end stub by a place can't force a detour
+function astar(g, from, to, [tx, ty]) {
+  const n = g.xs.length, dist = new Float64Array(n).fill(Infinity), prev = new Int32Array(n).fill(-1), done = new Uint8Array(n);
+  const h = i => Math.hypot(g.xs[i] - tx, g.ys[i] - ty), goal = new Map(to);
+  const heap = [];
+  const push = it => { heap.push(it); let i = heap.length - 1; while (i) { const p = (i - 1) >> 1; if (heap[p][0] <= it[0]) break; heap[i] = heap[p]; i = p; } heap[i] = it; };
+  const pop = () => { const top = heap[0], last = heap.pop(); if (heap.length) { let i = 0; for (;;) { let c = 2 * i + 1; if (c >= heap.length) break; if (c + 1 < heap.length && heap[c + 1][0] < heap[c][0]) c++; if (heap[c][0] >= last[0]) break; heap[i] = heap[c]; i = c; } heap[i] = last; } return top; };
+  for (const [i, d] of from) if (d < dist[i]) { dist[i] = d; push([d + h(i), i]); }
+  let best = Infinity, end = -1;
+  while (heap.length && heap[0][0] < best) {
+    const [, u] = pop();
+    if (done[u]) continue; done[u] = 1;
+    if (goal.has(u) && dist[u] + goal.get(u) < best) { best = dist[u] + goal.get(u); end = u; }
+    const a = g.adj[u];
+    for (let k = 0; k < a.length; k += 2) {
+      const v = a[k], d = dist[u] + a[k + 1];
+      if (d < dist[v]) { dist[v] = d; prev[v] = u; push([d + h(v), v]); }
+    }
+  }
+  if (end < 0) return null;
+  const out = []; for (let u = end; u !== -1; u = prev[u]) out.push(u);
+  return out.reverse();
+}
+// a route between two map points (world km) along the roads of a map holding both, or null for a straight line
+const routeCache = new Map();
+function roadRoute(a, b) {
+  const key = `${a[0]},${a[1]}>${b[0]},${b[1]}`;
+  if (routeCache.has(key)) return routeCache.get(key);
+  const inBox = (c, p) => p[0] > c.box[0] && p[0] < c.box[2] && p[1] > c.box[1] && p[1] < c.box[3];
+  const c = Object.values(S.cities).find(c => c.roads?.length && inBox(c, a) && inBox(c, b));
+  if (!c) return null; // not loaded yet, or off the map: try again on a later frame
+  if (!c.graph) { // a few hundred ms of work: do it once the camera has settled, straight lines until then
+    if (!c.graphQueued) { c.graphQueued = true; (window.requestIdleCallback || setTimeout)(() => { roadGraph(c); invalidate(); }, { timeout: 1500 }); }
+    return null;
+  }
+  const g = c.graph, [ox, oy] = c.origin, L = p => [(p[0] - ox) * 1000, (p[1] - oy) * 1000];
+  const A = L(a), B = L(b), from = nodesNear(g, ...A), to = nodesNear(g, ...B);
+  let pts = null;
+  const path = from.length && to.length ? astar(g, from, to, B) : null;
+  if (path) {
+    pts = [a, ...path.map(i => [ox + g.xs[i] / 1000, oy + g.ys[i] / 1000]), b];
+    let len = 0; for (let i = 1; i < pts.length; i++) len += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+    if (len > 3.5 * Math.hypot(b[0] - a[0], b[1] - a[1]) + 0.3) pts = null; // a detour that long means the network has a gap here
+  }
+  routeCache.set(key, pts);
+  return pts;
+}
+
 // ---------- transit lines ----------
 const TRANSIT = { subway: false, tram: false, bus: false };
 try { Object.assign(TRANSIT, JSON.parse(localStorage.getItem("transit") || "{}")); } catch (e) {}
@@ -1425,6 +1538,8 @@ function paintCity(g, c, k, view) {
   g.fillStyle = C.green; fill("gr");
   g.fillStyle = C.water; fill("wa", "evenodd");
   g.strokeStyle = C.water; g.lineWidth = Math.max(1.5 * px, 12); stroke("wl");
+  const pA = smooth(30, 90, k); // trails on the day-trip maps: thin dashes that firm up as you zoom in
+  if (pA > 0 && c.lo.pa) { g.globalAlpha = pA * 0.7; g.strokeStyle = C.ink2; g.lineWidth = Math.max(0.6 * px, 2.5); g.setLineDash([3 * px, 2.5 * px]); stroke("pa"); g.setLineDash([]); g.globalAlpha = 1; }
   const bA = smooth(140, 320, k);
   if (bA > 0) { g.globalAlpha = bA; g.fillStyle = C.building; fill("bd", "evenodd"); g.globalAlpha = 1; }
   const r3 = smooth(40, 120, k);
@@ -2191,12 +2306,20 @@ function drawDay(sl) {
   const chips = [];
   for (const e of sl.it) {
     const h = e.hop; if (!h || h.ride) continue;
-    const a = toS(h.a.xy), b = toS(h.b.xy), [dash, w] = STYLE[h.mode], col = C[h.b.city] || C[h.a.city] || C.ink2;
-    ctx.setLineDash([]); ctx.strokeStyle = C.halo; ctx.lineWidth = w + 3.5; ctx.globalAlpha = 0.9;
-    ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
-    ctx.setLineDash(dash); ctx.strokeStyle = h.mode === "walk" ? C.ink2 : col; ctx.lineWidth = w; ctx.globalAlpha = 1;
-    ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
-    if (Math.hypot(b[0] - a[0], b[1] - a[1]) > 70) chips.push([(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, `${HOP_ICON[h.mode]} ${h.short}`]);
+    const [dash, w] = STYLE[h.mode], col = C[h.b.city] || C[h.a.city] || C.ink2;
+    // walks and city rides follow the streets; transfers and regional trips stay straight
+    const route = (h.mode === "walk" || h.mode === "city") && roadRoute(h.a.xy, h.b.xy);
+    const pts = (route || [h.a.xy, h.b.xy]).map(toS);
+    const line = () => { ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]); ctx.stroke(); };
+    ctx.setLineDash([]); ctx.strokeStyle = C.halo; ctx.lineWidth = w + 3.5; ctx.globalAlpha = 0.9; line();
+    ctx.setLineDash(dash); ctx.strokeStyle = h.mode === "walk" ? C.ink2 : col; ctx.lineWidth = w; ctx.globalAlpha = 1; line();
+    // the time chip sits halfway along the line
+    let len = 0; const seg = []; for (let i = 1; i < pts.length; i++) { const d = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(d); len += d; }
+    if (len > 70) {
+      let half = len / 2, i = 0; while (i < seg.length - 1 && half > seg[i]) half -= seg[i++];
+      const f = seg[i] ? half / seg[i] : 0, p = pts[i], q = pts[i + 1];
+      chips.push([p[0] + (q[0] - p[0]) * f, p[1] + (q[1] - p[1]) * f, `${HOP_ICON[h.mode]} ${h.short}`]);
+    }
   }
   ctx.setLineDash([]);
   // home base, stations and airports
@@ -2438,7 +2561,7 @@ addEventListener("hashchange", () => {
 cv.addEventListener("mousemove", ev => cv.classList.toggle("pointing", !!hitAt(ev)));
 
 // ---------- boot ----------
-const DATA_V = "20"; // bump when data files change so browsers don't reuse stale copies
+const DATA_V = "21"; // bump when data files change so browsers don't reuse stale copies
 async function boot() {
   readTheme(); resize();
   invalidate();

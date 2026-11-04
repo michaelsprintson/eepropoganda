@@ -29,7 +29,7 @@ CITY_BOXES = {  # (west, south, east, north), matches fetch.py
     "lednice": ((16.725, 48.712, 16.900, 48.835), (16.795, 48.797, 16.812, 48.808)),
     "wachau": ((15.46, 48.37, 15.615, 48.425), (15.46, 48.37, 15.615, 48.425)),
     "kahlenberg": ((16.3, 48.248, 16.375, 48.3), (16.3, 48.248, 16.375, 48.3)),
-    "hallstatt": ((13.625, 47.548, 13.662, 47.575), (13.625, 47.548, 13.662, 47.575)),
+    "hallstatt": ((13.605, 47.535, 13.705, 47.592), (13.605, 47.535, 13.705, 47.592)),
     "karlstejn": ((14.165, 49.922, 14.205, 49.968), (14.165, 49.922, 14.205, 49.968)),
     "kutnahora": ((15.25, 49.937, 15.3, 49.968), (15.25, 49.937, 15.3, 49.968)),
     "bohemian": ((14.23, 50.85, 14.335, 50.9), (14.23, 50.85, 14.335, 50.9)),
@@ -138,6 +138,10 @@ GREEN = {"park", "garden", "forest", "grass", "cemetery", "vineyard", "wood"}
 
 def classify(tags):
     h = tags.get("highway")
+    if h in ("path", "footway", "track", "steps", "bridleway"):
+        return "pa", "line"
+    if tags.get("railway") == "funicular" or tags.get("aerialway"):
+        return "rl", "line"  # drawn like rail: the way up to a sight
     if h:
         if h in ("motorway", "trunk", "primary"):
             return "r1", "line"
@@ -186,7 +190,7 @@ def relation_geom(el, proj):
     return o
 
 
-TOL = {"r1": 2.0, "r2": 2.0, "r3": 2.5, "rl": 3.0, "wl": 3.0, "wa": 2.0, "gr": 3.0, "bd": 0.8}
+TOL = {"r1": 2.0, "r2": 2.0, "r3": 2.5, "pa": 2.5, "rl": 3.0, "wl": 3.0, "wa": 2.0, "gr": 3.0, "bd": 0.8}
 MIN_AREA = {"wa": 100, "gr": 400, "bd": 15}
 
 
@@ -239,7 +243,9 @@ def city(name):
     clip_core = transform(proj, box(*core))
     layers = {k: [] for k in TOL}
     seen = set()
-    for fname in (f"{name}_base.json", f"{name}_buildings.json"):
+    for fname in (f"{name}_base.json", f"{name}_buildings.json", f"{name}_trails.json"):
+        if not (RAW / "osm" / fname).exists():  # trails are fetched for day-trip maps only
+            continue
         for el in json.loads((RAW / "osm" / fname).read_text())["elements"]:
             key = (el["type"], el["id"])
             if key in seen:
