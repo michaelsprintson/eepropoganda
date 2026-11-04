@@ -79,11 +79,19 @@ canvas#map:active { cursor: grabbing; }
 }
 #card.swap { opacity: 0; transform: translateY(6px); }
 /* back / forward through the city's slides: its own bar under the card, so it never scrolls away */
-#cardNav { pointer-events: auto; flex: none; display: flex; justify-content: space-between; gap: 8px; margin-top: 8px; }
+#cardNav { pointer-events: auto; flex: none; order: -1; margin-bottom: 8px; } /* above the card: right under the city tabs */
 #cardNav[hidden] { display: none; }
-#cardNav .mini { flex: 0 1 auto; max-width: 49%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; background: var(--panel); color: var(--ink); border-color: var(--line); box-shadow: 0 6px 20px rgba(10, 20, 25, 0.14); padding: 8px 12px; }
-#cardNav .mini:hover { background: var(--chip); }
-#cardNav .next { margin-left: auto; }
+#cardNav .sw { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 2px; padding: 3px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+  box-shadow: 0 6px 20px rgba(10, 20, 25, 0.14); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+#cardNav .sw button { min-width: 0; min-height: 50px; padding: 6px 3px 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  font: 600 12.5px var(--f-body); color: var(--ink); background: none; border: 0; border-radius: 4px; cursor: pointer; }
+#cardNav .sw button span { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#cardNav .sw svg { width: 19px; height: 19px; fill: none; stroke: var(--c); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#cardNav .sw button:hover { background: var(--chip); }
+#cardNav .sw button:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+#cardNav .sw button.on { background: var(--c); color: var(--panel-solid); }
+#cardNav .sw button.on svg { stroke: var(--panel-solid); }
+#cardNav .sw button.last { box-shadow: inset 0 0 0 2px var(--c); } /* on a day: the slide the card shows, though the map shows the day */
 body.roam #panel { display: none; }
 
 .eyebrow { font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 8px; display: flex; gap: 8px; align-items: center; }
@@ -109,6 +117,11 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .places li:hover, .places li:focus-visible { background: var(--chip); outline: none; }
 .places li:focus-visible { box-shadow: inset 0 0 0 2px var(--c); }
 .places .name { font-weight: 600; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; line-height: 1.25; }
+.places .ract { position: relative; margin-left: auto; flex: none; width: 30px; height: 28px; display: grid; place-items: center; font-size: 14px; color: var(--ink); background: none; border: 1px solid transparent; border-radius: 5px; cursor: pointer; opacity: .4; }
+.places .ract:hover, .places .ract:focus-within, .places .ract.on { opacity: 1; }
+.places .ract:hover, .places .ract:focus-within { border-color: var(--line); background: var(--panel); }
+.places .ract.on { background: color-mix(in srgb, var(--c) 18%, transparent); }
+.places .ract select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 16px; }
 .places .txt { min-width: 0; }
 .thumb { width: 92px; height: 92px; object-fit: cover; border-radius: 4px; background: var(--chip); display: block; }
 .back { display: flex; justify-content: space-between; gap: 8px; margin: -4px 0 12px; font-size: 13px; color: var(--ink-2); }
@@ -297,7 +310,6 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
   #pop p { margin: 4px 0 6px; font-size: 12.5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   #pop .links { font-size: 12px; }
   #pop .credit { margin-top: 4px; font-size: 9.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  #pop .pplan { display: none; }
 }
 
 /* photo viewer: always a dark stage, whatever the theme */
@@ -328,10 +340,12 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .mbt:disabled::after { opacity: .12; }
 .mbt:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
 .mbburger { display: none; }
+#menubar:not(.compact) .mbitems { box-sizing: border-box; width: min(400px, calc(100vw - 32px)); } /* as wide as the switcher and card under it */
+#menubar:not(.compact) .mbt { flex: 1; }
 #menubar.compact .mbitems { display: none; }
 #menubar.compact .mbburger { display: inline-flex; }
 .mbmenu { position: fixed; top: calc(66px + env(safe-area-inset-top, 0px)); width: 320px; max-width: calc(100vw - 16px); max-height: calc(100vh - 100px); max-height: calc(100dvh - 100px); overflow-y: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 14px 40px rgba(10,20,25,.28); padding: 6px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-#menubar.compact .mbmenu { left: var(--gl); right: var(--gr); width: auto; max-width: 460px; }
+#menubar.compact .mbmenu { left: var(--gl); width: 220px; }
 .mi { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; font: 500 13.5px var(--f-body); color: var(--ink); background: none; border: 0; border-radius: 4px; padding: 5px 8px; cursor: pointer; min-height: 34px; }
 .mi:hover, .mi:focus-visible { background: var(--chip); outline: none; }
 .mi:disabled { opacity: .45; cursor: default; }
@@ -343,8 +357,8 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .mi.side { width: 34px; flex: none; justify-content: center; padding: 5px 0; opacity: .5; }
 .mi.side.on, .mi.side:hover, .mi.side:focus-visible { opacity: 1; }
 .mi .ck { width: 14px; font-weight: 700; }
-.mbmenu details summary { font: 700 16px var(--f-display); padding: 8px 8px 8px 10px; cursor: pointer; border-left: 3px solid var(--c); margin: 4px 0; }
-.mbmenu details[open] summary { background: var(--chip); border-radius: 0 4px 4px 0; }
+.mi.city { font: 700 17px var(--f-display); padding: 8px 10px; border-left: 3px solid var(--c); border-radius: 0 4px 4px 0; margin: 2px 0; min-height: 42px; }
+.mi.city.cur { background: var(--chip); }
 
 /* planner settings: one row per setting, labels in a column */
 .pset { border: 1px solid var(--line); border-radius: 6px; margin: 0 0 12px; overflow: hidden; }
@@ -524,7 +538,7 @@ body.dock #panel { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
 <nav id="menubar" aria-label="Sections">
   <button class="btn mbburger" id="mbBurger" aria-haspopup="true" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="lbl">Menu</span></button>
   <div id="mbItems" class="mbitems" role="menubar" aria-label="Sections"></div>
-  <div id="mbMenu" class="mbmenu" role="menu" hidden></div>
+  <div id="mbMenu" class="mbmenu" role="menu" aria-label="Cities" hidden></div>
 </nav>
 <div id="tools">
   <button class="btn wide" id="calBtn" aria-expanded="false" aria-controls="calPanel" title="Plan the trip day by day">
@@ -691,7 +705,14 @@ function li(p, extra = "") {
   const at = !/stay|daytrip|nature/.test(p.type) && pinDays(keyOf(p))[0]; // day trips show theirs in a fuller line
   if (at) extra = `<p class="planned"><span>Pinned</span> ${fmtDay(at.date)}</p>` + extra;
   const drag = p.type === "stay" ? "" : ` draggable="true" data-dpin="${p.city}:${p.code}" title="Drag onto a day in the plan"`;
-  return `<li tabindex="0" data-p="${p.city}:${p.code}"${drag}>${thumb(p)}<div class="txt"><div class="name">${badge(p)}<span>${esc(p.name)}</span> ${chip}</div><p>${esc(p.blurb)}</p>${extra}</div></li>`;
+  return `<li tabindex="0" data-p="${p.city}:${p.code}"${drag}>${thumb(p)}<div class="txt"><div class="name">${badge(p)}<span>${esc(p.name)}</span> ${chip}${rowAct(p)}</div><p>${esc(p.blurb)}</p>${extra}</div></li>`;
+}
+// a place row's own button: pin it to a day, or (an Airbnb) make it home base
+function rowAct(p) {
+  const k = keyOf(p);
+  if (p.type === "stay") { const on = PLAN.stays[p.city] === p.code; return PC[p.city] ? `<button class="ract${on ? " on" : ""}" data-home="${k}" aria-pressed="${on}" title="${on ? "Our home base" : "Use as home base"}" aria-label="Use ${esc(p.name)} as home base">⌂</button>` : ""; }
+  const sel = pinSelect(p); if (!sel) return "";
+  return `<label class="ract${pinDays(k).length ? " on" : ""}" title="${pinDays(k).length ? `Pinned: ${pinDays(k).map(x => fmtDay(x.date)).join(", ")}` : "Pin to a day"}"><span aria-hidden="true">📌</span>${sel}</label>`;
 }
 function hoodList(city) {
   const hs = HOODS[city] || [];
@@ -1822,7 +1843,8 @@ function viewRect() {
   const top = 70, bottom = docked() ? 24 : 80;
   if (W >= 760) return { x: pr.right, y: top, w: right - pr.right, h: H - top - bottom };
   const cb = calPanel.hidden ? null : calPanel.getBoundingClientRect(); // phones: the planner sheet replaces the card
-  return { x: 0, y: top, w: W, h: Math.max(140, (cb ? cb.top : pr.top) - top) };
+  const cardTop = cardNav.hidden ? pr.top : Math.min(pr.top, cardNav.getBoundingClientRect().top); // the switcher sits on top of the card
+  return { x: 0, y: top, w: W, h: Math.max(140, (cb ? cb.top : cardTop) - top) };
 }
 // where to put a place whose popup is about to open: on phones the popup docks under the top bar, so below it
 function popViewRect(photo) {
@@ -2265,17 +2287,24 @@ function openPop(p) {
 function popPlanHTML(p) {
   const k = keyOf(p);
   if (p.type === "stay") return PC[p.city] ? `<div class="pplan"><button class="mini${PLAN.stays[p.city] === p.code ? "" : " ghost"}" data-home="${k}">${PLAN.stays[p.city] === p.code ? "⌂ Our home base" : "⌂ Use as home base"}</button></div>` : "";
-  const days = DAYS.filter(x => canPin(x, p));
+  const sel = pinSelect(p);
+  return sel ? `<label class="pplan"><span>📌</span>${sel}</label>` : "";
+}
+// a day picker for one place: pick a day to pin it, or a ticked one to unpin it
+function pinSelect(p) {
+  const k = keyOf(p), days = DAYS.filter(x => canPin(x, p));
   if (!days.length) return "";
-  return `<label class="pplan"><span>📌</span><select data-pinsel="${k}" aria-label="Pin ${esc(p.name)} to a day"><option value="">${pinDays(k).length ? `Pinned: ${pinDays(k).map(x => fmtDay(x.date)).join(", ")}` : "Pin to a day…"}</option>${days.map(x => {
+  return `<select data-pinsel="${k}" aria-label="Pin ${esc(p.name)} to a day"><option value="">${pinDays(k).length ? `Pinned: ${pinDays(k).map(x => fmtDay(x.date)).join(", ")}` : "Pin to a day…"}</option>${days.map(x => {
     const on = pinsOn(x).includes(k), n = pinsOn(x).length;
     return `<option value="${x.iso}"${!on && n >= PIN_MAX ? " disabled" : ""}>${on ? "✓ unpin from " : ""}${fmtDay(x.date)} · ${n}/${PIN_MAX}</option>`;
-  }).join("")}</select></label>`;
+  }).join("")}</select>`;
 }
-pop.addEventListener("change", e => {
-  const sel = e.target.closest("[data-pinsel]"); if (!sel || !sel.value || !openPlace) return;
-  const p = openPlace, x = DAYS.find(d => d.iso === sel.value);
-  plMsg = pinMsg(togglePin(keyOf(p), x.iso), p, x); planChanged(); openPop(p);
+// the pickers in popups and on the slides' place rows
+document.addEventListener("change", e => {
+  const sel = e.target.closest?.("#pop [data-pinsel], #card [data-pinsel]"); if (!sel || !sel.value) return;
+  const p = placeBy[sel.dataset.pinsel], x = DAYS.find(d => d.iso === sel.value);
+  plMsg = pinMsg(togglePin(keyOf(p), x.iso), p, x); planChanged();
+  if (openPlace === p) openPop(p);
 });
 // stations, airports and a plain "city centre" start: a small text-only popup, with the leg that follows
 function openStopPop(s, next) {
@@ -2411,11 +2440,23 @@ let dayCard = -1;
 const groupOf = i => menuOf(slides[i]);
 const cardSl = () => slides[daySl ? dayCard : cur];
 function groupSlides(g) { return slides.map((s, i) => i).filter(i => !slides[i].side && groupOf(i) === g); }
+// the card's switcher: every slide of its city (or of the trip) one tap away, always in the same place
+const TAB_NAME = { intro: "Intro", pv: "To Wien", vs: "To Split", in: "Summary", "": "Sights", eat: "Eat & drink", stay: "Stay", out: "Day trips" };
+const tabName = sl => TAB_NAME[sl.id] ?? TAB_NAME[sl.id.split("-")[1] ?? ""] ?? sl.label;
+const TAB_PATH = { // the map chips' icons for a city's slides, and a few more for the trip's
+  "": PIN_PATH.see, eat: PIN_PATH.eat, stay: PIN_PATH.stay, out: PIN_PATH.trip,
+  intro: "M14.1 5.9 9 3 3 6v15l6-3 6 3 6-3V3l-6.9 2.9ZM9 3v15M15 6v15",
+  train: "M8 3h8a4 4 0 0 1 4 4v8a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V7a4 4 0 0 1 4-4ZM4 11h16M8 15h.01M16 15h.01M8 19l-2 3M16 19l2 3",
+  plane: "M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z",
+  in: "M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01",
+};
+const tabIcon = sl => TAB_PATH[sl.id === "pv" ? "train" : sl.id === "vs" ? (byRail() ? "train" : "plane") : sl.id] ?? TAB_PATH[sl.id.split("-")[1] ?? ""] ?? TAB_PATH[""];
 function cardFoot() {
   const i = daySl ? dayCard : cur; if (i < 0) return "";
-  const list = groupSlides(groupOf(i)), k = list.indexOf(mainOf(i)), a = list[k - 1], b = list[k + 1];
-  const btn = (j, d) => `<button class="mini ${d < 0 ? "prev" : "next"}" data-cstep="${j}" title="${esc(slides[j].label)}">${d < 0 ? "← " : ""}${esc(slides[j].label)}${d > 0 ? " →" : ""}</button>`;
-  return `${a != null ? btn(a, -1) : ""}${b != null ? btn(b, 1) : ""}`;
+  const g = groupOf(i), list = groupSlides(g), at = daySl ? -1 : mainOf(i); // on a day no slide is "the view"
+  if (list.length < 2) return "";
+  cardNav.style.setProperty("--c", `var(--${g === "trip" ? "ink-2" : g})`);
+  return `<div class="sw" role="tablist" aria-label="${esc(g === "trip" ? "Trip" : PC[g].en)} slides">${list.map(j => `<button role="tab" data-cstep="${j}" aria-selected="${j === at}"${j === mainOf(i) ? ` class="${j === at ? "on" : "last"}"` : ""} title="${esc(slides[j].label)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${tabIcon(slides[j])}"/></svg><span>${esc(tabName(slides[j]))}</span></button>`).join("")}</div>`;
 }
 const cardNav = document.getElementById("cardNav");
 function renderCard() {
@@ -2894,115 +2935,45 @@ async function playDay() {
   if (tok === playTok && daySl) { closePop(); flyTo(daySl.view()); }
 }
 
-// ---------- menu bar: a menu per city, with its sights, food, stays and day trips ----------
+// ---------- menu bar: a tab per city, straight to its slides ----------
 const menubar = document.getElementById("menubar"), mbItems = document.getElementById("mbItems"), mbMenu = document.getElementById("mbMenu");
-let mbOpen = null, mbPick = null; // the open menu, and the place being pinned (shows a day picker)
-function slideFor(p) {
-  if (p.type === "food" || p.type === "cafe") return PC[p.city] && CITIES[p.city] ? `${p.city}-eat` : p.city;
-  if (p.type === "stay") return `${p.city}-stay`;
-  if (p.type === "daytrip" || p.type === "nature") return `${p.city}-out`;
-  return p.city; // a city's sights, a day-trip area or the Zagreb stopover
-}
+let mbOpen = null; // the narrow-screen city list is open
 function menuOf(sl) {
   if (!sl || !sl.id) return null;
   if (sl.day) return dayCity(sl.day);
   if (["intro", "in", "pv", "vs"].includes(sl.id)) return "trip";
   return PC[sl.city] ? sl.city : DETAIL[sl.city]?.parent || null;
 }
-function menuList(id) {
-  const has = s => slides.some(x => x.id === s);
-  if (id === "trip") return [["go", "intro", "Intro: the trip at a glance"], ["go", "pv", "Train: Prague → Vienna"], ["go", "vs", "Vienna → Split"], ["go", "in", "Times & costs"]]
-    .filter(r => has(r[1])).map(([, g, t]) => ({ go: g, t }));
-  const out = [], own = PLACES.filter(p => p.city === id);
-  const sec = (t, go, list) => { if (!list.length) return; out.push({ sec: t, go }); for (const p of list) out.push({ p }); };
-  if (id === "zagreb") {
-    out.push({ go: "zagreb", t: "The stopover" });
-    sec("Sights", "zagreb", own.filter(p => p.type === "sight"));
-    sec("Eat & drink", "zagreb", own.filter(p => p.type === "food" || p.type === "cafe"));
-    out.push({ sec: "Getting here", go: "vs" }, { go: "vs", t: "Train from Vienna" });
-    return out;
-  }
-  out.push({ go: id, t: "Overview" });
-  sec("Sights", id, own.filter(p => p.type === "sight"));
-  sec("Eat & drink", `${id}-eat`, own.filter(p => p.type === "food" || p.type === "cafe"));
-  sec("Stay", `${id}-stay`, own.filter(p => p.type === "stay"));
-  sec("Day trips & nature", `${id}-out`, own.filter(p => p.type === "daytrip" || p.type === "nature"));
-  const leg = { vienna: ["pv", "Train from Prague"], split: ["vs", "From Vienna, by train or plane"] }[id];
-  if (leg) out.push({ sec: "Getting here", go: leg[0] }, { go: leg[0], t: leg[1] });
-  return out;
-}
-function menuItemsHTML(id) {
-  if (mbPick) { // pick a day for one place
-    const p = placeBy[mbPick], days = DAYS.filter(x => canPin(x, p));
-    return `<button role="menuitem" class="mi sec" data-mback="1">← Pin ${esc(p.name)} to…</button>${days.map(x => {
-      const on = pinsOn(x).includes(mbPick), n = pinsOn(x).length;
-      return `<button role="menuitem" class="mi" data-pinday="${x.iso}"${!on && n >= PIN_MAX ? " disabled" : ""}><span class="ck">${on ? "✓" : ""}</span>${fmtDay(x.date)} <span class="muted">· ${n}/${PIN_MAX}${plSel === x.i ? " · selected day" : ""}</span></button>`;
-    }).join("")}`;
-  }
-  return menuList(id).map(r => {
-    if (r.sec) return `<button role="menuitem" class="mi sec" data-go="${r.go}">${esc(r.sec)} <span>→</span></button>`;
-    if (r.go) return `<button role="menuitem" class="mi" data-go="${r.go}">${esc(r.t)}</button>`;
-    const p = r.p, k = keyOf(p), at = p.type !== "stay" && pinDays(k)[0];
-    const right = p.type === "stay"
-      ? `<button role="menuitem" class="mi side${PLAN.stays[p.city] === p.code ? " on" : ""}" data-home="${k}" title="Use as home base" aria-label="Use ${esc(p.name)} as home base">⌂</button>`
-      : `${p.detail ? `<button role="menuitem" class="mi side" data-go="${p.detail}" title="Zoom-in map" aria-label="Zoom into ${esc(p.name)}">↗</button>` : ""}<button role="menuitem" class="mi side${at ? " on" : ""}" data-mpin="${k}" title="${at ? `Pinned to ${fmtDay(at.date)}` : "Pin to a day"}" aria-label="Pin ${esc(p.name)} to a day">📌</button>`;
-    return `<div class="mrow" role="none" style="--c:var(--${homeOf(p)})"><button role="menuitem" class="mi" data-mp="${k}"${p.type === "stay" ? "" : ` draggable="true" data-dpin="${k}" title="Drag onto a day to pin it"`}>${badge(p)}<span class="nm">${esc(p.name)}</span>${at ? `<span class="when">${fmtDay(at.date)}</span>` : ""}${p.type === "stay" && PLAN.stays[p.city] === p.code ? `<span class="when">home base</span>` : ""}</button>${right}</div>`;
-  }).join("");
-}
 const MENU_IDS = ["trip", ...NIGHT_ORDER];
 const menuTitle = id => id === "trip" ? "Trip" : PC[id].local;
 const menuOff = id => id === "zagreb" && !byRail(); // flying straight to Split skips Zagreb
+// a city tab goes straight to that city's slides: the one last looked at, else its first
+function goGroup(id) {
+  const list = groupSlides(id); if (!list.length || menuOff(id)) return;
+  closeMenu();
+  if (!docked() && W < 760) setCal(false); // phones: the card, not the planner
+  const j = lastSeen[id];
+  go(j != null && groupOf(j) === id ? j : list[0]);
+}
+// the tabs; on narrow screens they fold into one Menu button that lists the same cities
 function buildMenu() {
   const on = menuOf(SL());
-  if (mbOpen && menuOff(mbOpen)) mbOpen = null;
-  mbItems.innerHTML = MENU_IDS.map(id => `<button role="menuitem" class="mbt${on === id ? " cur" : ""}${mbOpen === id ? " open" : ""}" data-menu="${id}"${menuOff(id) ? ` disabled title="Only on the train route: the flight skips Zagreb"` : ""} aria-haspopup="true" aria-expanded="${mbOpen === id}" style="--c:var(--${id === "trip" ? "ink-2" : id})">${menuTitle(id)}</button>`).join("");
+  const tab = (id, cls) => `<button role="menuitem" class="${cls}${on === id ? " cur" : ""}" data-menu="${id}"${on === id ? ` aria-current="true"` : ""}${menuOff(id) ? ` disabled title="Only on the train route: the flight skips Zagreb"` : ""} style="--c:var(--${id === "trip" ? "ink-2" : id})">${menuTitle(id)}</button>`;
+  mbItems.innerHTML = MENU_IDS.map(id => tab(id, "mbt")).join("");
   if (!mbOpen) { mbMenu.hidden = true; return; }
-  const compact = menubar.classList.contains("compact");
-  mbMenu.innerHTML = compact && !mbPick
-    ? MENU_IDS.filter(id => !menuOff(id)).map(id => `<details${id === (menuOf(SL()) || "trip") ? " open" : ""}><summary style="--c:var(--${id === "trip" ? "ink-2" : id})">${menuTitle(id)}</summary>${menuItemsHTML(id)}</details>`).join("")
-    : menuItemsHTML(mbOpen);
+  mbMenu.innerHTML = MENU_IDS.map(id => tab(id, "mi city")).join("");
   mbMenu.hidden = false;
-  if (compact) { mbMenu.style.left = ""; return; }
-  const b = mbItems.querySelector(`[data-menu="${mbOpen}"]`).getBoundingClientRect();
-  mbMenu.style.left = Math.max(8, Math.min(innerWidth - mbMenu.offsetWidth - 8, b.left)) + "px";
 }
-function openMenu(id, focus) { mbOpen = id; mbPick = null; buildMenu(); if (focus) mbMenu.querySelector("[role=menuitem]")?.focus(); }
-function closeMenu() { if (!mbOpen) return; mbOpen = null; mbPick = null; buildMenu(); }
-mbItems.addEventListener("click", e => { const b = e.target.closest("[data-menu]"); if (!b || b.disabled) return; e.stopPropagation(); mbOpen === b.dataset.menu ? closeMenu() : openMenu(b.dataset.menu); });
-mbItems.addEventListener("pointerover", e => { const b = e.target.closest("[data-menu]"); if (b && !b.disabled && mbOpen && mbOpen !== b.dataset.menu && !menubar.classList.contains("compact")) openMenu(b.dataset.menu); });
-document.getElementById("mbBurger").addEventListener("click", e => { e.stopPropagation(); mbOpen ? closeMenu() : openMenu(menuOf(SL()) || "trip"); });
-mbMenu.addEventListener("click", e => {
-  e.stopPropagation();
-  const t = e.target;
-  if (t.closest("summary")) return;
-  const g = t.closest("[data-go]");
-  if (g) { closeMenu(); go(slides.findIndex(s => s.id === g.dataset.go)); return; }
-  const mp = t.closest("[data-mp]");
-  if (mp) { // the place's slide on the card, then fly to the place itself
-    const p = placeBy[mp.dataset.mp], i = slides.findIndex(s => s.id === slideFor(p));
-    closeMenu(); if (i >= 0) go(i, { fly: false }); focusPlace(p); return;
-  }
-  const h = t.closest("[data-home]");
-  if (h) { setHome(h.dataset.home); return; }
-  const pin = t.closest("[data-mpin]");
-  if (pin) { mbPick = pin.dataset.mpin; buildMenu(); mbMenu.querySelector("[data-pinday]")?.focus(); return; }
-  if (t.closest("[data-mback]")) { mbPick = null; buildMenu(); return; }
-  const pd = t.closest("[data-pinday]");
-  if (pd) {
-    const p = placeBy[mbPick], x = DAYS.find(d => d.iso === pd.dataset.pinday);
-    plMsg = pinMsg(togglePin(mbPick, x.iso), p, x); planChanged(); buildMenu(); return;
-  }
-});
+function openMenu(focus) { mbOpen = true; buildMenu(); if (focus) mbMenu.querySelector("[data-menu]:not([disabled])")?.focus(); }
+function closeMenu() { if (!mbOpen) return; mbOpen = null; buildMenu(); }
+menubar.addEventListener("click", e => { const b = e.target.closest("[data-menu]"); if (!b || b.disabled) return; e.stopPropagation(); goGroup(b.dataset.menu); });
+document.getElementById("mbBurger").addEventListener("click", e => { e.stopPropagation(); mbOpen ? closeMenu() : openMenu(e.detail === 0); });
 menubar.addEventListener("keydown", e => {
-  const items = [...mbMenu.querySelectorAll("[role=menuitem]:not([disabled])")].filter(b => b.offsetParent);
-  const titles = [...mbItems.querySelectorAll("[data-menu]:not([disabled])")], ti = titles.indexOf(document.activeElement), mi = items.indexOf(document.activeElement);
-  const k = e.key;
-  if (k === "Escape") { const id = mbOpen; closeMenu(); mbItems.querySelector(`[data-menu="${id}"]`)?.focus(); }
-  else if (ti >= 0 && (k === "ArrowRight" || k === "ArrowLeft")) { const n = titles[(ti + (k === "ArrowRight" ? 1 : -1) + titles.length) % titles.length]; n.focus(); if (mbOpen) openMenu(n.dataset.menu); }
-  else if (ti >= 0 && (k === "ArrowDown" || k === "Enter" || k === " ")) openMenu(titles[ti].dataset.menu, true);
-  else if (mi >= 0 && (k === "ArrowDown" || k === "ArrowUp")) items[(mi + (k === "ArrowDown" ? 1 : -1) + items.length) % items.length].focus();
-  else if (mi >= 0 && (k === "ArrowRight" || k === "ArrowLeft") && !menubar.classList.contains("compact")) { const n = titles[(titles.findIndex(b => b.dataset.menu === mbOpen) + (k === "ArrowRight" ? 1 : -1) + titles.length) % titles.length]; openMenu(n.dataset.menu, true); }
-  else if (k === "Tab") { closeMenu(); return; }
+  const list = mbOpen ? mbMenu : mbItems, items = [...list.querySelectorAll("[data-menu]:not([disabled])")], at = items.indexOf(document.activeElement);
+  const k = e.key, fwd = mbOpen ? "ArrowDown" : "ArrowRight", back = mbOpen ? "ArrowUp" : "ArrowLeft";
+  if (k === "Escape" && mbOpen) { closeMenu(); document.getElementById("mbBurger").focus(); }
+  else if (at >= 0 && (k === fwd || k === back)) items[(at + (k === fwd ? 1 : -1) + items.length) % items.length].focus();
+  else if (k === "Tab" && mbOpen) { closeMenu(); return; }
   else return;
   e.preventDefault(); e.stopPropagation();
 });
@@ -3063,19 +3034,19 @@ card.addEventListener("click", e => {
   const jump = e.target.closest("[data-go]");
   if (jump) { e.preventDefault(); e.stopPropagation(); go(slides.findIndex(s => s.id === jump.dataset.go)); return; }
   if (e.target.closest("[data-plan]")) { e.preventDefault(); e.stopPropagation(); setCal(true); return; }
+  const hb = e.target.closest("[data-home]"); if (hb) { e.stopPropagation(); setHome(hb.dataset.home); return; }
+  if (e.target.closest(".ract")) return; // the pin picker opens; the row doesn't fly
   const li = e.target.closest("[data-p]"); if (!li) return;
   if (e.target.matches("img.thumb")) { openViewer(placeBy[li.dataset.p], 0); return; } // the photo opens big; the rest of the row flies there
   focusPlace(placeBy[li.dataset.p]);
 });
 cardNav.addEventListener("click", e => {
   const cs = e.target.closest("[data-cstep]"); if (!cs) return;
-  e.stopPropagation(); const j = +cs.dataset.cstep;
-  if (!daySl) { go(j); return; }
-  dayCard = lastSeen[groupOf(j)] = j; renderCard(); card.style.setProperty("--c", `var(${slides[j].color})`); card.scrollTop = 0;
+  e.stopPropagation(); go(+cs.dataset.cstep); // leaves an open day too: the map follows the slide
 });
 card.addEventListener("keydown", e => {
   const li = e.target.closest("[data-p]");
-  if (li && (e.key === "Enter")) { e.preventDefault(); focusPlace(placeBy[li.dataset.p]); }
+  if (li && e.key === "Enter" && !e.target.closest(".ract")) { e.preventDefault(); focusPlace(placeBy[li.dataset.p]); }
 });
 // a stop in the open day's list: fly there and open its popup (a place's, our Airbnb's, or a station's small one)
 function focusStop(i) {
