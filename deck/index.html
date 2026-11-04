@@ -178,9 +178,9 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .cd.fly { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--ink) 14%, var(--panel)) 0 6px, var(--panel) 6px 12px); border-top: 3px dashed var(--a); }
 .cd.fly .t { font-weight: 700; }
 /* Wien → an evening in Zagreb → sleeper to Split: a Zagreb day, Wien's stripe on top and Split's along the bottom */
-.cd.travel.via, .cal.planner.dragging .cd.travel.via:hover { background: color-mix(in srgb, var(--zagreb) 30%, var(--panel)); border-top: 3px solid var(--a); border-image: none; box-shadow: inset 0 -3px 0 var(--b); }
-.cd.travel.via:hover { background: color-mix(in srgb, var(--zagreb) 44%, var(--panel)); }
-.cd.travel.via.sel { box-shadow: inset 0 -3px 0 var(--b), 0 0 0 2px var(--ink); }
+.cd.travel.zstop, .cal.planner.dragging .cd.travel.zstop:hover { background: color-mix(in srgb, var(--zagreb) 30%, var(--panel)); border-top: 3px solid var(--a); border-image: none; box-shadow: inset 0 -3px 0 var(--b); }
+.cd.travel.zstop:hover { background: color-mix(in srgb, var(--zagreb) 44%, var(--panel)); }
+.cd.travel.zstop.sel { box-shadow: inset 0 -3px 0 var(--b), 0 0 0 2px var(--ink); }
 .cd.fly:hover, .cd.fly:focus-visible { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--ink) 22%, var(--panel)) 0 6px, var(--panel) 6px 12px); }
 .cd.travel { background: linear-gradient(135deg, color-mix(in srgb, var(--a) 30%, var(--panel)) 0 50%, color-mix(in srgb, var(--b) 30%, var(--panel)) 50%); border-top: 3px solid transparent; border-image: linear-gradient(90deg, var(--a), var(--b)) 1; }
 .cd.off { background: none; border-top: 3px solid var(--line); cursor: default; color: var(--ink-2); opacity: .45; }
@@ -1294,7 +1294,7 @@ function calCells(days = DAYS, live = null) {
     const label = x.kind === "travel" ? `${PC[x.from].local.slice(0, 3)}→${PC[x.to].local.slice(0, 3)}` : fly ? (x.kind === "arrive" ? "Fly in" : "Fly home") : PC[x.city].local;
     const icon = fly || (x.leg === "vs" && PLAN.legs.vs.opt === "flight") ? "✈︎" : x.sleeper ? "☾" : "";
     const via = x.kind === "travel" && x.leg === "vs" && byRail(); // the day train with an evening in Zagreb
-    cells.push(`<button class="cd${x.kind === "travel" ? " travel" : ""}${via ? " via" : ""}${fly ? " fly" : ""}${sel}" data-day="${x.i}" style="${style}" aria-label="${esc(fmtDay(x.date))}${pins.length ? `, ${pins.length} pinned` : ""}" aria-pressed="${plSel === x.i}">
+    cells.push(`<button class="cd${x.kind === "travel" ? " travel" : ""}${via ? " zstop" : ""}${fly ? " fly" : ""}${sel}" data-day="${x.i}" style="${style}" aria-label="${esc(fmtDay(x.date))}${pins.length ? `, ${pins.length} pinned` : ""}" aria-pressed="${plSel === x.i}">
       <span class="n">${n}${m}</span>${icon ? `<span class="i">${icon}</span>` : ""}${note ? `<span class="nd" title="${esc(note)}"></span>` : ""}
       <span class="t">${label}</span>${pins.length ? `<span class="pr">${pins.map(p => pinBadge(p, x.iso)).join("")}</span>` : ""}${grip}</button>`);
   });
