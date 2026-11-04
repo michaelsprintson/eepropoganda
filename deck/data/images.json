@@ -669,5 +669,13 @@
   "full": "img/full/split-h1.webp",
   "credit": "Photo: Airbnb listing",
   "link": "https://www.airbnb.com/rooms/873190681059415934?adults=12&check_in=2027-08-31&check_out=2027-09-04"
+ },
+ "Pakleni islands": {
+  "img": "img/hvar-s2.webp",
+  "thumb": "img/hvar-s2-t.webp",
+  "full": "img/full/hvar-s2.webp",
+  "credit": "Photo: trogir-excursions.com",
+  "link": "https://trogir-excursions.com/wp-content/uploads/2023/11/Pakleni-Islands-eplit-excursions-1.webp",
+  "user": "https://trogir-excursions.com/wp-content/uploads/2023/11/Pakleni-Islands-eplit-excursions-1.webp"
  }
 }

@@ -267,7 +267,11 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 #pop {
   position: fixed; left: 0; top: 0; z-index: 7; width: min(280px, calc(100vw - 32px)); background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
   box-shadow: 0 10px 30px rgba(10,20,25,.22); padding: 14px 16px 12px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  /* opening and closing: scale and translate are separate from the transform that positions it */
+  transition: opacity .16s ease, scale .24s cubic-bezier(.2, .9, .3, 1.12);
 }
+#pop.out { opacity: 0; scale: .35; transition-duration: .15s; transition-timing-function: ease-in; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { #pop { transition: none; } }
 #pop .ph { display: block; width: calc(100% + 32px); margin: -14px -16px 10px; height: 150px; object-fit: cover; border-radius: 6px 6px 0 0; }
 #pop .phs { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; width: calc(100% + 32px); margin: -14px -16px 10px; border-radius: 6px 6px 0 0; overflow: hidden; }
 #pop .phs img { width: 100%; height: 170px; object-fit: cover; display: block; }
@@ -415,7 +419,15 @@ body.pindrag, body.pindrag canvas#map { cursor: grabbing; }
 .itin .st[data-p] { cursor: pointer; }
 .itin .st[data-p]:hover, .itin .st[data-p]:focus-visible { background: var(--chip); outline: none; }
 .itin .st .mk { display: grid; place-items: center; }
-.itin .st .ctl { display: flex; gap: 4px; }
+.itin .st .ctl { display: flex; gap: 4px; align-items: center; }
+.itin .clk { display: block; font: 600 11px var(--f-mono); color: var(--ink-2); letter-spacing: .02em; }
+.itin .dur { font: 600 11.5px var(--f-mono); color: var(--ink); background: var(--chip); border: 1px solid var(--line); border-radius: 5px; padding: 3px 2px; height: 30px; cursor: pointer; }
+.dclock { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 12.5px; margin: 0 0 8px; }
+.dclock label { display: flex; align-items: center; gap: 6px; font: 600 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.dclock input { font: 600 13px var(--f-mono); color: var(--ink); background: var(--chip); border: 1px solid var(--line); border-radius: 5px; padding: 3px 6px; }
+.dclock .end { margin-left: auto; font: 600 12px var(--f-mono); }
+.dclock .lnk { background: none; border: 0; padding: 0; font: inherit; color: var(--ink); text-decoration: underline; cursor: pointer; }
+.dayv .warn { margin: 0 0 8px; padding: 6px 9px; border-radius: 5px; font-size: 12.5px; font-weight: 600; background: color-mix(in srgb, var(--prague) 16%, transparent); color: var(--ink); border-left: 3px solid var(--prague); }
 .itin .st[draggable] { cursor: grab; }
 .itin .st b { font-weight: 600; display: block; line-height: 1.25; }
 .itin .st small { color: var(--ink-2); font-size: 12px; }
@@ -755,10 +767,14 @@ const LEG_INFO = {
   vz: { train: { label: "Day train Vienna → Zagreb", min: 390 } },
   zs: { sleeper: { label: "Sleeper Zagreb → Split", min: 540 }, day: { label: "Day train Zagreb → Split", min: 375 } },
 };
+// a day's clock: minutes at each pinned place (editable per day), choices stored as an index in plan codes
+const DUR_OPTS = [15, 30, 45, 60, 90, 120, 150, 180, 240, 300, 360, 480]; // 12 options, 4 bits
+const DUR_DEFAULT = { food: 90, cafe: 45, sight: 90, nature: 300, daytrip: 300 }; // a day trip: time spent there
 const PIN_MAX = 4; // plan codes store 1–4 pins a day in 2 bits: raising this needs a new code version
 const PLAN_DEFAULT = { v: 2, start: "2027-08-22", nights: { prague: 4, vienna: 4, zagreb: 0, split: 4 },
   legs: { pv: { opt: "train", dep: "09:00" }, vs: { opt: "sleeper", dep: "09:00" }, zs: { opt: "sleeper", dep: "21:30" } },
-  pins: {}, notes: {}, stays: { prague: "H1", vienna: "H1", zagreb: null, split: null } };
+  pins: {}, notes: {}, stays: { prague: "H1", vienna: "H1", zagreb: null, split: null },
+  starts: {}, durs: {} }; // per day: when it starts ("HH:MM"), and minutes at a pinned place {key: min}
 const PLAN_KEY = "tripplan:split:v1";
 const WD = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const WD_CAL = ["Sun", ...WD.slice(0, 6)]; // calendars run Sunday to Saturday: the trip fits in fewer rows
@@ -785,6 +801,11 @@ function normalizePlan(p) {
   // plans from before pins kept one day trip per date; migratePlan() turns them into pins once places load
   if (p.trips) { d.trips = {}; for (const [date, v] of Object.entries(p.trips)) if (ISO.test(date) && typeof v === "string") d.trips[date] = v; }
   for (const c of Object.keys(d.stays)) if (p.stays && c in p.stays && (p.stays[c] === null || /^H\d$/.test(p.stays[c] || ""))) d.stays[c] = p.stays[c];
+  for (const [date, v] of Object.entries(p.starts || {})) if (ISO.test(date) && /^\d{2}:\d{2}$/.test(v || "")) d.starts[date] = v;
+  for (const [date, v] of Object.entries(p.durs || {})) if (ISO.test(date) && v && typeof v === "object") {
+    const ok = Object.entries(v).filter(([k, m]) => /^[a-z]+:[A-Z0-9]+$/.test(k) && DUR_OPTS.includes(m));
+    if (ok.length) d.durs[date] = Object.fromEntries(ok);
+  }
   return d;
 }
 // Plan codes: the plan packed as bits, only what differs from the default, then written 14 bits per character as
@@ -825,6 +846,15 @@ function toCode(p) {
     const off = dayNo(iso) - start + 32, bytes = [...new TextEncoder().encode(text)].slice(0, 2047);
     if (off < 0 || off > 127 || !bytes.length) continue;
     put(1, 1); put(off, 7); put(bytes.length, 11); bytes.forEach(b => put(b, 8));
+  }
+  put(0, 1);
+  for (const iso of new Set([...Object.keys(p.starts || {}), ...Object.keys(p.durs || {})])) { // a day's clock
+    const off = dayNo(iso) - start + 32, st = (p.starts || {})[iso], ks = p.pins[iso] || [];
+    const ds = Object.entries((p.durs || {})[iso] || {}).map(([k, m]) => [ks.indexOf(k), DUR_OPTS.indexOf(m)]).filter(([j, i]) => j >= 0 && j < 4 && i >= 0);
+    if (off < 0 || off > 127 || (!st && !ds.length)) continue;
+    put(1, 1); put(off, 7); put(st ? 1 : 0, 1);
+    if (st) { const [h, m] = st.split(":").map(Number); put(Math.round((h * 60 + m) / 15) % 96, 7); }
+    put(ds.length, 3); for (const [j, i] of ds) { put(j, 2); put(i, 4); }
   }
   while (bits.length && !bits[bits.length - 1]) bits.pop(); // trailing zeros come back as "nothing more"
   let s = "";
@@ -867,6 +897,12 @@ function fromCode(s) {
   while (get(1)) {
     const iso = dayIso(start + get(7) - 32), len = get(11);
     p.notes[iso] = new TextDecoder().decode(new Uint8Array(Array.from({ length: len }, () => get(8))));
+  }
+  while (get(1)) {
+    const iso = dayIso(start + get(7) - 32);
+    if (get(1)) { const q = get(7) * 15; p.starts[iso] = `${String(Math.floor(q / 60)).padStart(2, "0")}:${String(q % 60).padStart(2, "0")}`; }
+    const n = get(3), ks = p.pins[iso] || [];
+    for (let k = 0; k < n; k++) { const j = get(2), i = get(4); if (ks[j] && DUR_OPTS[i]) (p.durs[iso] ||= {})[ks[j]] = DUR_OPTS[i]; }
   }
   return normalizePlan(p);
 }
@@ -1015,9 +1051,15 @@ function trueKm(a, b) {
   return Math.hypot(a[0] - b[0], a[1] - b[1]) * Math.cos(lat);
 }
 const tripFor = p => p && (p.type === "daytrip" || p.type === "nature" ? p : TRIPS.find(t => t.detail === p.city));
+// "~3 h 30 by bus", "1 h by catamaran", "Bus + gondola · ~45 min" → minutes
+const textMin = t => { const h = /(\d+)\s*h(?:\s*(\d+))?/.exec(t), m = /(\d+)\s*min/.exec(t); return h ? +h[1] * 60 + +(h[2] || 0) : m ? +m[1] : 0; };
 function hop(a, b) {
+  const h = hopBase(a, b);
+  return { ...h, min: h.min ?? textMin(h.text) };
+}
+function hopBase(a, b) {
   const air = a.kind === "air" ? a : b.kind === "air" ? b : null;
-  if (air) return { mode: "transfer", text: `${air.hub.how} · ~${air.hub.min} min`, short: `${air.hub.min}′`, a, b };
+  if (air) return { mode: "transfer", text: `${air.hub.how} · ~${air.hub.min} min`, short: `${air.hub.min}′`, min: air.hub.min, a, b };
   const d = trueKm(a.xy, b.xy);
   if (d < 1.3) { const m = Math.max(2, Math.round(d * 1.3 / 4.5 * 60)); return { mode: "walk", text: `${m} min walk`, short: `${m}′`, a, b }; }
   const far = [b.place, a.place].find(p => p?.how && TRIP_ROUTES[placeRoute(p)]); // a sight off the city map, either way (Sljeme: bus + gondola)
@@ -1031,23 +1073,23 @@ function hop(a, b) {
 }
 function itinerary(x) {
   const pins = pinsOn(x).map(k => placeBy[k]), seq = [];
-  const stop = s => seq.push({ stop: s }), ride = (mode, text) => seq.push({ ride: { mode, text } });
+  const stop = s => seq.push({ stop: s }), ride = (mode, text, dep, min) => seq.push({ ride: { mode, text, dep, min } }); // dep "HH:MM", min null = overnight
   const visit = c => { for (const p of pins) if (homeOf(p) === c) stop({ kind: "place", name: p.name, xy: p.xy, city: p.city, place: p }); };
   const has = c => pins.some(p => homeOf(p) === c);
   if (x.kind === "travel") {
     stop(home(x.from)); visit(x.from);
     if (x.leg === "vs" && PLAN.legs.vs.opt === "flight") {
-      stop(hubStop("vienna", "air")); ride("flight", `Flight to Split · dep ${PLAN.legs.vs.dep} · ${hm(75)}`);
+      stop(hubStop("vienna", "air")); ride("flight", `Flight to Split · dep ${PLAN.legs.vs.dep} · ${hm(75)}`, PLAN.legs.vs.dep, 75);
       stop(hubStop("split", "air")); stop(home("split")); visit("split"); if (has("split")) stop(home("split"));
     } else {
       stop(hubStop(x.from, "rail"));
       if (x.leg === "vs") { // day train, an evening in Zagreb, then the sleeper on to Split
-        ride("train", `Day train to Zagreb · dep ${PLAN.legs.vs.dep} · ${hm(390)}`);
+        ride("train", `Day train to Zagreb · dep ${PLAN.legs.vs.dep} · ${hm(390)}`, PLAN.legs.vs.dep, 390);
         stop(hubStop("zagreb", "rail")); visit("zagreb"); if (has("zagreb")) stop(hubStop("zagreb", "rail"));
-        ride("sleeper", "Sleeper to Split · overnight");
-      } else if (x.sleeper) ride("sleeper", `Sleeper to Split · dep ${PLAN.legs.zs.dep} · overnight`);
+        ride("sleeper", `Sleeper to Split · dep ${PLAN.legs.zs.dep} · overnight`, PLAN.legs.zs.dep, null);
+      } else if (x.sleeper) ride("sleeper", `Sleeper to Split · dep ${PLAN.legs.zs.dep} · overnight`, PLAN.legs.zs.dep, null);
       else {
-        const s = legSummary(x.leg); ride("train", `${s.info.label} · ${s.text}`);
+        const s = legSummary(x.leg); ride("train", `${s.info.label} · ${s.text}`, legPlan(x.leg).dep, s.info.min);
         stop(hubStop(x.to, "rail")); stop(home(x.to)); visit(x.to); if (has(x.to)) stop(home(x.to));
       }
     }
@@ -1130,7 +1172,7 @@ function setRange(sIso, eIso) {
   return true;
 }
 function dayViewHTML(x) {
-  const pins = pinsOn(x), n = pins.length;
+  const pins = pinsOn(x), n = pins.length, it = itinerary(x), clk = dayClock(x, it), fixedRide = it.find(e => e.hop?.ride && e.hop.dep)?.hop;
   let travel = "";
   if (x.kind === "travel") {
     const o = legPlan(x.leg);
@@ -1156,11 +1198,15 @@ function dayViewHTML(x) {
       <button class="ib" data-dstep="1" aria-label="Next day"${x.i < DAYS.length - 1 ? "" : " disabled"}>›</button></div>
     ${travel}
     <h4>The day <span>${n} / ${PIN_MAX} pinned</span></h4>
-    ${itinHTML(x, itinerary(x))}
+    <div class="dclock"><label>Start <input type="time" id="pl-start" value="${clockStr(clk.start)}"></label>
+      ${clk.auto ? `<span class="muted">${fixedRide ? `in time for the ${fixedRide.dep} ${fixedRide.mode === "flight" ? "flight" : "train"}` : x.afterTrain ? "when the sleeper gets in" : "default"}</span>` : `<button class="lnk" data-act="start-auto">reset</button>`}
+      <span class="end">${clk.end == null ? "overnight on the sleeper" : `back ~${clockStr(clk.end)}`}</span></div>
+    ${clk.warn.map(w => `<p class="warn">${esc(w)}</p>`).join("")}
+    ${itinHTML(x, it, clk)}
     ${n ? "" : `<p class="muted small">Nothing pinned yet. Add up to ${PIN_MAX} places below, drag them from the slides, or use 📌 in the menus and on the map.</p>`}
     <details class="add" id="pl-add"${plAdd ? " open" : ""}><summary>Add a place</summary>${groups}</details>
     <label class="fld"><span>Note</span><textarea id="pl-note" rows="2" placeholder="e.g. dinner reservation 20:00">${esc(PLAN.notes[x.iso] || "")}</textarea></label>
-    <p class="muted small">Times are rough estimates.</p>
+    <p class="muted small">Times are rough estimates. Set how long to spend at each place with its time menu.</p>
   </div>`;
 }
 function calCells(days = DAYS, live = null) {
@@ -1222,14 +1268,55 @@ function planHTML() {
 // the day on the map: its route, from home base through the pins, with stations and airports
 const HUB_ICON = { home: "⌂", air: "✈︎", rail: "▤" };
 const HOP_ICON = { walk: "🚶", city: "🚇", transfer: "🚌", regional: "🚆", train: "🚆", sleeper: "🛏", flight: "✈︎" };
-// the day stop by stop, with the ride or walk between stops; pinned places get their reorder and remove buttons
-function itinHTML(x, it) {
+// ---------- a day's clock ----------
+const toMin = t => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
+const clockStr = m => `${String(Math.floor(m / 60) % 24).padStart(2, "0")}:${String(((m % 60) + 60) % 60).padStart(2, "0")}`;
+const fmtDur = m => m < 60 ? `${m} min` : `${Math.floor(m / 60)}h${m % 60 ? ` ${String(m % 60).padStart(2, "0")}` : ""}`;
+const durOf = (x, p) => PLAN.durs[x.iso]?.[keyOf(p)] ?? (DETAIL[p.city] && p.type === "sight" ? 60 : DUR_DEFAULT[p.type] ?? 60);
+// when you reach and leave each stop. The day starts at its set time; without one, at 09:00, or early enough to
+// make the day's train or flight. Trains and flights leave on time: the clock waits for them, or warns.
+function dayClock(x, it) {
+  const BUF = { air: 60, rail: 10 }; // at the airport an hour ahead, on the platform ten minutes ahead
+  const stay = i => { const s = it[i].stop; return s.kind === "place" ? durOf(x, s.place) : s.kind === "home" && i > 0 && i < it.length - 1 ? 20 : 0; };
+  const fixed = it.findIndex(e => e.hop?.ride && e.hop.dep);
+  const auto = !PLAN.starts[x.iso];
+  let start = auto ? 9 * 60 : toMin(PLAN.starts[x.iso]);
+  if (auto && x.afterTrain) start = (toMin(PLAN.legs.zs.dep) + LEG_INFO.zs.sleeper.min) % 1440; // off the sleeper (~06:30)
+  if (auto && fixed > 0) { // back from the departure: everything before it, plus the buffer
+    let need = BUF[it[fixed - 1].stop?.kind] || 10;
+    for (let i = 0; i < fixed - 1; i++) need += it[i].stop ? stay(i) : it[i].hop.min || 0;
+    start = Math.max(5 * 60, Math.floor((toMin(it[fixed].hop.dep) - need) / 15) * 15);
+  }
+  const at = [], warn = [];
+  let t = start;
+  for (let i = 0; i < it.length && t != null; i++) {
+    const e = it[i];
+    if (!e.stop) { t = e.hop.ride && e.hop.min == null ? null : t + (e.hop.min || 0); continue; } // overnight: the clock stops
+    let leave = t + stay(i);
+    const nx = it[i + 1]?.hop;
+    if (nx?.ride && nx.dep) {
+      const dep = toMin(nx.dep), late = t + (BUF[e.stop.kind] || 10) - dep;
+      if (late > 0) warn.push(`Misses the ${nx.dep} ${nx.mode === "flight" ? "flight" : "train"} by ${fmtDur(late)}: start earlier or drop a stop.`);
+      leave = Math.max(dep, t);
+    }
+    at[i] = { arr: t, leave };
+    t = leave;
+  }
+  if (t != null && t >= 24 * 60) warn.push("This day runs past midnight.");
+  return { start, auto, end: t, at, warn };
+}
+// the day stop by stop, with the ride or walk between stops and the clock; pinned places get their length,
+// reorder and remove controls
+function itinHTML(x, it, clk = dayClock(x, it)) {
   const ks = pinsOn(x), n = ks.length;
-  return `<ol class="itin">${it.map(e => {
+  return `<ol class="itin">${it.map((e, i) => {
     if (!e.stop) return `<li class="hp ${e.hop.mode}" style="--c:var(--${PC[e.hop.b?.city] ? e.hop.b.city : dayCity(x)})"><span class="ln"></span><span>${HOP_ICON[e.hop.mode]} ${esc(e.hop.text)}</span></li>`;
     const p = e.stop.kind === "place" ? e.stop.place : null, j = p ? ks.indexOf(keyOf(p)) : -1;
-    const ctl = j < 0 ? "" : `<span class="ctl"><button class="ib" data-mv="${j}" data-dir="-1" aria-label="Earlier in the day"${j ? "" : " disabled"}>↑</button><button class="ib" data-mv="${j}" data-dir="1" aria-label="Later in the day"${j < n - 1 ? "" : " disabled"}>↓</button><button class="ib" data-unpin="${keyOf(p)}" aria-label="Remove ${esc(p.name)}">×</button></span>`;
-    return `<li class="st ${e.stop.kind}" style="--c:var(--${PC[e.stop.city] ? e.stop.city : homeOf(p)})"${p ? ` data-p="${keyOf(p)}" tabindex="0"${j >= 0 ? ` draggable="true" data-dpin="${keyOf(p)}" data-from="${x.iso}" title="Drag to another day"` : ""}` : ""}><span class="mk">${p ? pinBadge(p) : `<span class="hub">${HUB_ICON[e.stop.kind]}</span>`}</span><span><b>${esc(e.stop.name)}</b>${e.stop.sub ? `<small>${esc(e.stop.sub)}</small>` : ""}</span>${ctl}</li>`;
+    const d = p && j >= 0 ? durOf(x, p) : 0;
+    const len = j < 0 ? "" : `<select class="dur" data-dur="${keyOf(p)}" aria-label="Time at ${esc(p.name)}" title="Time spent here">${DUR_OPTS.map(m => `<option value="${m}"${m === d ? " selected" : ""}>${fmtDur(m)}</option>`).join("")}</select>`;
+    const c = clk.at[i], when = c ? `<small class="clk">${clockStr(c.arr)}${c.leave > c.arr ? ` – ${clockStr(c.leave)}` : ""}</small>` : "";
+    const ctl = j < 0 ? "" : `<span class="ctl">${len}<button class="ib" data-mv="${j}" data-dir="-1" aria-label="Earlier in the day"${j ? "" : " disabled"}>↑</button><button class="ib" data-mv="${j}" data-dir="1" aria-label="Later in the day"${j < n - 1 ? "" : " disabled"}>↓</button><button class="ib" data-unpin="${keyOf(p)}" aria-label="Remove ${esc(p.name)}">×</button></span>`;
+    return `<li class="st ${e.stop.kind}" style="--c:var(--${PC[e.stop.city] ? e.stop.city : homeOf(p)})"${p ? ` data-p="${keyOf(p)}" tabindex="0"${j >= 0 ? ` draggable="true" data-dpin="${keyOf(p)}" data-from="${x.iso}" title="Drag to another day"` : ""}` : ""}><span class="mk">${p ? pinBadge(p) : `<span class="hub">${HUB_ICON[e.stop.kind]}</span>`}</span><span>${when}<b>${esc(e.stop.name)}</b>${e.stop.sub ? `<small>${esc(e.stop.sub)}</small>` : ""}</span>${ctl}</li>`;
   }).join("")}</ol>`;
 }
 
@@ -1427,33 +1514,53 @@ function addThin(p, pts, close) {
   return n;
 }
 function buildCity(name, c) {
-  // every layer is split into TILE-sized cells (by each feature's top-left corner), so a zoomed-in view
-  // strokes only the cells it can see; each cell's box grows to cover its features
-  const tiles = new Map(), lo = {}, roads = [];
+  const city = { origin: c.origin, tileMap: new Map(), lo: {}, roads: [] };
+  addLayers(city, c.layers, { roads: true });
+  setBounds(city, c.bounds);
+  S.cities[name] = city;
+  ensureTransit();
+  invalidate();
+  needMore(name);
+}
+const setBounds = (city, b) => { const [ox, oy] = city.origin; city.bounds = b; city.box = [ox + b[0] / 1000, oy + b[1] / 1000, ox + b[2] / 1000, oy + b[3] / 1000]; };
+// every layer is split into TILE-sized cells (by each feature's top-left corner), so a zoomed-in view
+// strokes only the cells it can see; each cell's box grows to cover its features
+function addLayers(city, layers, { roads = false, replace = [] } = {}) {
+  for (const layer of replace) { delete city.lo[layer]; for (const t of city.tileMap.values()) delete t.paths[layer]; }
   const cell = (bb) => {
     const key = `${Math.floor(bb[0] / TILE)},${Math.floor(bb[1] / TILE)}`;
-    let t = tiles.get(key);
-    if (!t) tiles.set(key, t = { bb: bb.slice(), paths: {} });
+    let t = city.tileMap.get(key);
+    if (!t) city.tileMap.set(key, t = { bb: bb.slice(), paths: {} });
     else { t.bb[0] = Math.min(t.bb[0], bb[0]); t.bb[1] = Math.min(t.bb[1], bb[1]); t.bb[2] = Math.max(t.bb[2], bb[2]); t.bb[3] = Math.max(t.bb[3], bb[3]); }
     return t;
   };
-  for (const [layer, items] of Object.entries(c.layers)) {
-    const poly = POLY.has(layer), thin = LOD_LAYERS.has(layer) ? (lo[layer] = new Path2D()) : null;
+  for (const [layer, items] of Object.entries(layers)) {
+    const poly = POLY.has(layer), thin = LOD_LAYERS.has(layer) ? (city.lo[layer] ||= new Path2D()) : null;
     for (const it of items) {
       const lines = (poly ? it : [it]).map(decode);
       const bb = lines[0].bb.slice();
       for (const l of lines) { bb[0] = Math.min(bb[0], l.bb[0]); bb[1] = Math.min(bb[1], l.bb[1]); bb[2] = Math.max(bb[2], l.bb[2]); bb[3] = Math.max(bb[3], l.bb[3]); }
       const t = cell(bb), p = t.paths[layer] || (t.paths[layer] = new Path2D());
       for (const l of lines) addAbs(p, l.pts, poly);
-      if (ROAD_LAYERS.has(layer)) roads.push(lines[0].pts);
+      if (roads && ROAD_LAYERS.has(layer)) city.roads.push(lines[0].pts);
       // the thinned copy skips features smaller than a couple of pixels at LOD_K
       if (thin && (bb[2] - bb[0]) + (bb[3] - bb[1]) >= 2 * LOD_M) for (const l of lines) addThin(thin, l.pts, poly);
     }
   }
-  const [ox, oy] = c.origin, [w, n, e, s] = c.bounds;
-  S.cities[name] = { origin: c.origin, tiles: [...tiles.values()], lo, roads, bounds: c.bounds, box: [ox + w / 1000, oy + n / 1000, ox + e / 1000, oy + s / 1000] };
-  ensureTransit();
-  invalidate();
+  city.tiles = [...city.tileMap.values()];
+}
+// the rest of a city (data/<city>_more.json: the streets around it, buildings everywhere) loads once its core
+// map is up and the page is idle. Its streets stay out of day routing, which keeps that graph quick to build.
+const MORE = new Set(["prague", "vienna", "zagreb", "split"]), moreReq = {};
+function needMore(name) {
+  if (!MORE.has(name) || moreReq[name]) return;
+  moreReq[name] = true;
+  (window.requestIdleCallback || setTimeout)(() => fetch(`data/${name}_more.json?v=${DATA_V}`).then(r => r.json()).then(m => {
+    const city = S.cities[name];
+    addLayers(city, m.layers, { replace: m.replace || [] });
+    setBounds(city, m.bounds);
+    invalidate();
+  }).catch(() => { moreReq[name] = false; }), { timeout: 4000 });
 }
 // ---------- routing along a map's roads (for a day's walks and rides) ----------
 const ROAD_LAYERS = new Set(["r1", "r2", "r3", "pa"]);
@@ -2090,7 +2197,7 @@ function openPop(p) {
   pop.insertAdjacentHTML("beforeend", popPlanHTML(p));
   pop.querySelector(".x").onclick = closePop;
   const im = pop.querySelector(".ph"); if (im) im.onload = () => { invalidate(); };
-  pop.hidden = false; invalidate();
+  showPop();
 }
 function popPlanHTML(p) {
   const k = keyOf(p);
@@ -2107,7 +2214,28 @@ pop.addEventListener("change", e => {
   const p = openPlace, x = DAYS.find(d => d.iso === sel.value);
   plMsg = pinMsg(togglePin(keyOf(p), x.iso), p, x); planChanged(); openPop(p);
 });
-function closePop() { openPlace = null; pop.hidden = true; invalidate(); }
+// stations, airports and a plain "city centre" start: a small text-only popup, with the leg that follows
+function openStopPop(s, next) {
+  openPlace = { xy: s.xy, name: s.name, stop: true };
+  const what = { rail: "Train station", air: "Airport", home: s.sub || "Start and end of the day" }[s.kind] || "";
+  pop.innerHTML = `<button class="x" aria-label="Close">×</button><h4>${esc(s.name)}</h4>${what ? `<span class="chip">${esc(what)}</span>` : ""}${next ? `<p>Next: ${esc(next.text)}</p>` : ""}`;
+  pop.querySelector(".x").onclick = closePop;
+  showPop();
+}
+// fade and scale in from the hidden state; fade out, then hide (unless something opened it again meanwhile)
+let popHide = 0;
+function showPop() {
+  clearTimeout(popHide);
+  if (pop.hidden) { pop.classList.add("out"); pop.hidden = false; void pop.offsetWidth; } // start from the closed look
+  pop.classList.remove("out"); invalidate();
+}
+function closePop() {
+  openPlace = null;
+  if (pop.hidden || pop.classList.contains("out")) { invalidate(); return; }
+  pop.classList.add("out"); clearTimeout(popHide);
+  popHide = setTimeout(() => { pop.hidden = true; }, reduce ? 0 : 150);
+  invalidate();
+}
 function placePop() {
   if (!openPlace) return;
   const [x, y] = toS(openPlace.xy);
@@ -2119,7 +2247,8 @@ function placePop() {
   let px = x + 22, py = y - h / 2;
   if (px + w > right - 16) px = x - w - 22;
   px = Math.max(16, px); py = Math.max(16, Math.min(H - h - 80, py));
-  pop.style.transform = `translate(${Math.round(px)}px, ${Math.round(py)}px)`;
+  pop.style.translate = `${Math.round(px)}px ${Math.round(py)}px`; // translate, not transform: it's applied after the opening scale, which then grows from the icon
+  pop.style.transformOrigin = `${Math.round(x - px)}px ${Math.round(y - py)}px`; // it grows out of, and shrinks back into, its icon
 }
 
 // ---------- photo viewer ----------
@@ -2340,13 +2469,14 @@ calPanel.addEventListener("click", e => {
     plMsg = ""; planChanged(); return;
   }
   const sp = t.closest(".itin [data-p]");
-  if (sp && !t.closest("button")) { focusPlace(placeBy[sp.dataset.p]); return; }
+  if (sp && !t.closest("button, select")) { focusPlace(placeBy[sp.dataset.p]); return; }
   const act = t.closest("[data-act]")?.dataset.act;
   if (!act) return;
   const strip = () => { try { history.replaceState(null, "", location.pathname + location.hash); } catch (err) {} };
   if (act === "share") { plShare = !plShare; if (!plShare) { plImport = plResetAsk = false; } renderPlanner(); return; }
   if (act === "range") { plRange = plRange ? null : { y: DAYS[0].date.getFullYear(), m: DAYS[0].date.getMonth(), a: null }; renderPlanner(); }
   else if (act === "play") playDay();
+  else if (act === "start-auto" && plSel != null) { delete PLAN.starts[DAYS[plSel].iso]; planChanged(); }
   else if (act === "keep") { sharedPending = null; strip(); migratePlan(); plMsg = "Saved the shared plan as yours."; planChanged(); }
   else if (act === "discard") {
     sharedPending = null; strip();
@@ -2373,6 +2503,13 @@ calPanel.addEventListener("toggle", e => { if (e.target.id === "pl-add") plAdd =
 
 calPanel.addEventListener("change", e => {
   const t = e.target;
+  if (t.id === "pl-start" && plSel != null) { const iso = DAYS[plSel].iso; if (t.value) PLAN.starts[iso] = t.value; else delete PLAN.starts[iso]; planChanged(); return; }
+  if (t.matches("select.dur") && plSel != null) {
+    const x = DAYS[plSel], p = placeBy[t.dataset.dur], m = +t.value, d = PLAN.durs[x.iso] || (PLAN.durs[x.iso] = {});
+    delete d[t.dataset.dur]; if (m !== durOf(x, p)) d[t.dataset.dur] = m; // keep only what differs from the default
+    if (!Object.keys(d).length) delete PLAN.durs[x.iso];
+    planChanged(); return;
+  }
   if (t.id === "pl-dep" && t.value) { PLAN.legs[t.dataset.leg === "vz" ? "vs" : t.dataset.leg].dep = t.value; planChanged(); }
 });
 calPanel.addEventListener("input", e => {
@@ -2639,15 +2776,17 @@ function drawDay(sl) {
 // "Play the day": the camera flies stop to stop and opens each place, like the slides do
 async function playDay() {
   if (!daySl) { if (plSel == null) return; goDay(plSel); await new Promise(r => setTimeout(r, 900)); }
-  const tok = ++playTok, stops = daySl.it.filter(e => e.stop).map(e => e.stop);
-  for (const s of stops) {
+  const tok = ++playTok, it = daySl.it;
+  for (let i = 0; i < it.length; i++) {
+    const s = it[i].stop; if (!s) continue;
     if (tok !== playTok || !daySl) return;
     closePop();
-    const r = viewRect(), k = s.kind === "place" ? 420 : 180;
+    const full = s.place && (s.kind === "place" || s.kind === "home"); // a place or our Airbnb: its usual popup
+    const r = viewRect(), k = full ? 420 : 180;
     await new Promise(res => flyTo(d3.zoomIdentity.translate(r.x + r.w / 2 - s.xy[0] * k, r.y + r.h / 2 - s.xy[1] * k).scale(k), res));
     if (tok !== playTok) return;
-    if (s.kind === "place") openPop(s.place);
-    await new Promise(res => setTimeout(res, s.kind === "place" ? 2200 : 1100));
+    if (full) openPop(s.place); else openStopPop(s, it.slice(i + 1).find(e => e.hop)?.hop);
+    await new Promise(res => setTimeout(res, full ? 2200 : 1600));
   }
   if (tok === playTok && daySl) { closePop(); flyTo(daySl.view()); }
 }

@@ -254,6 +254,7 @@ USER = {
     "Blue Cave, Biševo": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.travelersuniverse.com%2Fwp-content%2Fuploads%2F2025%2F08%2Fsplit-trogir-blue-cave-mamma-mia-hvar-and-5-island-tour.jpg&f=1&nofb=1&ipt=ffa441acd02ccd4870712e0da3cfa2fc20c7d89279f2a858a3f2dc8c8fdb7b95&ipo=images",
     "Plitvice Lakes": "https://www.roadaffair.com/wp-content/uploads/2017/09/plitvice-lakes-national-park-croatia-shutterstock_528172540.jpg",
     "Mostar": "https://www.roadaffair.com/wp-content/uploads/2017/09/mostar-bosnia-shutterstock_291941039.jpg",
+    "Pakleni islands": "https://trogir-excursions.com/wp-content/uploads/2023/11/Pakleni-Islands-eplit-excursions-1.webp",
     # Zagreb
     "Sljeme by gondola": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fsljeme360.hr%2Fwp-content%2Fuploads%2F2023%2F04%2FSljeme360_Naslovna.jpg&f=1&nofb=1&ipt=ae862866e7cb04a2ac8a56c6d062c4ef1fb70d3b6d287324d1e9449eacc2a201&ipo=images",
     "Museum of Broken Relationships": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.benediktwyss.com%2Fsite%2Fassets%2Ffiles%2F1150%2Fmobr_banner_header_2000x0.jpg&f=1&nofb=1&ipt=8224473db64b81df81ece0128665bb641665b2ec95b8fa30dccdfd40ee9144e7&ipo=images",
@@ -393,6 +394,8 @@ def main():
                     result[p["name"]]["fulls"] = [files["full"]] + [f["full"] for f in extra]
             print(f"{p['name']:<32} {how:<8} {size} {info['credit'][:70]}")
     for city, items in stays.items():
+        if city not in places:  # listings kept for another deck (Munich) need no photos here
+            continue
         for i, s in enumerate(items):
             room = s["url"].split("/rooms/")[1].split("?")[0]
             page = (ROOT / "data" / "raw" / "airbnb" / f"{room}.html").read_text()
