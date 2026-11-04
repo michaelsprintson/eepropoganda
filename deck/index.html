@@ -1590,9 +1590,9 @@ function buildTransit(name, t) {
 const transitReq = {};
 function ensureTransit() {
   if (!Object.values(TRANSIT).some(Boolean)) return;
-  for (const name of Object.keys(CITIES)) {
+  for (const name of NIGHT_ORDER) { // every city we can sleep in has its lines (Zagreb trams, Split buses)
     if (!S.cities[name] || transitReq[name]) continue;
-    transitReq[name] = fetch(`data/transit_${name}.json?v=${DATA_V}`).then(r => r.json()).then(t => buildTransit(name, t)).catch(() => {}); // Split has no transit file
+    transitReq[name] = fetch(`data/transit_${name}.json?v=${DATA_V}`).then(r => r.json()).then(t => buildTransit(name, t)).catch(() => {});
   }
 }
 function drawTransit(name, alpha) {
@@ -2904,7 +2904,7 @@ cv.addEventListener("pointerup", ev => endMapDrag(ev, true));
 cv.addEventListener("pointercancel", ev => endMapDrag(ev, false));
 
 // ---------- boot ----------
-const DATA_V = "31"; // bump when data files change so browsers don't reuse stale copies
+const DATA_V = "32"; // bump when data files change so browsers don't reuse stale copies
 async function boot() {
   readTheme(); resize();
   invalidate();

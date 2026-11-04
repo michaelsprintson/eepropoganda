@@ -1,4 +1,4 @@
-"""Subway, tram and bus lines for the three main cities, from OSM route relations.
+"""Subway, tram and bus lines for the cities we stay in, from OSM route relations.
 
 Writes deck/data/transit_<city>.json: per mode, the line geometries in integer metres relative to
 the city origin (same encoding as the city map layers), plus line refs and colours for subways.
@@ -17,7 +17,7 @@ from fetch import CITIES, OVERPASS, RAW, get  # noqa: E402
 from process import CITY_BOXES, flat_delta, iter_parts, merc  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-MAIN = ["vienna", "prague"]
+MAIN = ["vienna", "prague", "zagreb", "split"]  # Zagreb runs on trams, Split on buses
 MODES = {"subway": "subway", "light_rail": "subway", "tram": "tram", "bus": "bus", "trolleybus": "bus"}
 DEFAULT_COLOR = {"subway": "#3b6fd1", "tram": "#d0453b", "bus": "#8a63c8"}
 
