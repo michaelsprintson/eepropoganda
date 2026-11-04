@@ -370,6 +370,10 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .cd.drop-ok { box-shadow: 0 0 0 2px var(--ink), inset 0 0 0 999px color-mix(in srgb, var(--ink) 10%, transparent); }
 .cd.drop-no { opacity: .55; }
 .cd .pb[draggable], .pinl li[draggable], .mi[draggable] { cursor: grab; }
+canvas#map.grab { cursor: grab; }
+body.pindrag, body.pindrag canvas#map { cursor: grabbing; }
+#ghost { position: fixed; left: 0; top: 0; z-index: 30; pointer-events: none; display: flex; align-items: center; gap: 6px; padding: 5px 9px 5px 6px;
+  background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--c); border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,.25); font-size: 13px; font-weight: 600; white-space: nowrap; }
 .cd .pb { font: 700 9.5px var(--f-display); font-style: normal; min-width: 15px; height: 15px; padding: 0 2px; border-radius: 3px; background: var(--c); color: #fff; display: inline-grid; place-items: center; }
 
 /* the selected day, in the planner */
@@ -1737,7 +1741,7 @@ function drawPins() {
     text(p.label || p.code, x, y + (p.type === "stay" ? 2 : p.type === "nature" ? 3 : 0.5), { size: f ? 14 : 11, weight: 700, fam: "--f-display", color: "#fff", align: "center", halo: 0 });
     taken.push([x - r - 2, y - r - 2, x + r + 2, y + r + 2]);
     if (f || k > 170 || (isTrip(p) && k < 25)) labels.push({ p, x, y, r, f, vis });
-    hits.push({ x, y, r: r + 6, place: p });
+    hits.push({ x, y, r: r + 6, grab: r + 1, place: p });
   }
   // place labels greedily: focused first, then try right / left / above / below; skip if nothing fits
   labels.sort((a, b) => b.f - a.f);
@@ -2221,6 +2225,9 @@ calPanel.addEventListener("dragover", e => {
 calPanel.addEventListener("drop", e => {
   const cell = e.target.closest(".cal.planner [data-day]"); if (!cell || !dragPin) return;
   e.preventDefault();
+  dropPin(cell);
+});
+function dropPin(cell) {
   const { key, from } = dragPin, x = DAYS[+cell.dataset.day], p = placeBy[key];
   dragPin = null;
   if (from === x.iso) { renderPlanner(); return; }
@@ -2233,7 +2240,7 @@ calPanel.addEventListener("drop", e => {
   if (r === "on" && from) { movedOff(key, from); plMsg = `${p.name} moved to ${fmtDay(x.date)}.`; }
   else plMsg = pinMsg(r, p, x);
   planChanged();
-});
+}
 function movedOff(key, iso) { const arr = PLAN.pins[iso] || [], k = arr.indexOf(key); if (k >= 0) arr.splice(k, 1); if (!arr.length) delete PLAN.pins[iso]; }
 document.addEventListener("dragend", () => {
   dragPin = null; document.body.classList.remove("pindrag");
@@ -2611,6 +2618,7 @@ function hitAt(ev) {
   return best;
 }
 cv.addEventListener("click", ev => {
+  if (eatClick) { eatClick = false; return; } // the end of a drag, not a click
   const h = hitAt(ev);
   if (!h) { if (openPlace) closePop(); return; }
   if (h.place) openPop(h.place);
@@ -2622,7 +2630,47 @@ addEventListener("hashchange", () => {
   const i = slides.findIndex(s => s.id === h);
   if (i >= 0 && i !== cur) go(i);
 });
-cv.addEventListener("mousemove", ev => cv.classList.toggle("pointing", !!hitAt(ev)));
+cv.addEventListener("mousemove", ev => { if (mapDrag) return; cv.classList.toggle("pointing", !!hitAt(ev)); cv.classList.toggle("grab", !!grabAt(ev)); });
+
+// drag a pin off the map onto a calendar day; only a press on the icon itself starts it, anywhere else pans
+function grabAt(ev) {
+  const pt = ev.touches ? ev.touches[0] : ev, b = cv.getBoundingClientRect(), x = pt.clientX - b.left, y = pt.clientY - b.top;
+  const h = hits.find(h => h.place && h.place.type !== "stay" && Math.hypot(h.x - x, h.y - y) < h.grab);
+  return h ? h.place : null;
+}
+zoom.filter(ev => (!ev.ctrlKey || ev.type === "wheel") && !ev.button && (ev.type === "wheel" || !grabAt(ev)));
+let mapDrag = null, eatClick = false;
+const ghost = document.createElement("div"); ghost.id = "ghost"; ghost.hidden = true; document.body.append(ghost);
+cv.addEventListener("pointerdown", ev => {
+  const p = ev.button ? null : grabAt(ev); if (!p) return;
+  mapDrag = { p, x0: ev.clientX, y0: ev.clientY, on: false };
+  cv.setPointerCapture(ev.pointerId);
+});
+cv.addEventListener("pointermove", ev => {
+  if (!mapDrag) return;
+  if (!mapDrag.on) {
+    if (Math.hypot(ev.clientX - mapDrag.x0, ev.clientY - mapDrag.y0) < 6) return; // still a click
+    mapDrag.on = true; dragPin = { key: keyOf(mapDrag.p), from: null };
+    if (calPanel.hidden) setCal(true); // somewhere to drop it
+    ghost.innerHTML = `${badge(mapDrag.p)}<span>${esc(mapDrag.p.name)}</span>`; ghost.style.setProperty("--c", `var(--${homeOf(mapDrag.p)})`);
+    ghost.hidden = false; document.body.classList.add("pindrag"); closePop();
+  }
+  ghost.style.transform = `translate(${ev.clientX + 12}px, ${ev.clientY + 10}px)`;
+  const cell = document.elementFromPoint(ev.clientX, ev.clientY)?.closest?.(".cal.planner [data-day]");
+  calPanel.querySelectorAll(".cd.drop-ok, .cd.drop-no").forEach(c => c !== cell && c.classList.remove("drop-ok", "drop-no"));
+  if (cell) { const ok = pinDropOk(DAYS[+cell.dataset.day]); cell.classList.toggle("drop-ok", ok); cell.classList.toggle("drop-no", !ok); }
+});
+function endMapDrag(ev, drop) {
+  if (!mapDrag) return;
+  const { on } = mapDrag; mapDrag = null;
+  if (!on) return; // a plain click: the click handler opens the popup
+  eatClick = true; ghost.hidden = true; document.body.classList.remove("pindrag");
+  const cell = drop && document.elementFromPoint(ev.clientX, ev.clientY)?.closest?.(".cal.planner [data-day]");
+  if (cell && pinDropOk(DAYS[+cell.dataset.day])) dropPin(cell);
+  else { dragPin = null; calPanel.querySelectorAll(".cd.drop-ok, .cd.drop-no").forEach(c => c.classList.remove("drop-ok", "drop-no")); }
+}
+cv.addEventListener("pointerup", ev => endMapDrag(ev, true));
+cv.addEventListener("pointercancel", ev => endMapDrag(ev, false));
 
 // ---------- boot ----------
 const DATA_V = "22"; // bump when data files change so browsers don't reuse stale copies

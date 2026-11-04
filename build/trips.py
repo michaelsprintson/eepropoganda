@@ -45,7 +45,7 @@ TRIPS = {
 
 
 def geocoder():
-    path = RAW.parent / "geocode.json"
+    path = RAW / "geocode.json"
     geo = json.loads(path.read_text()) if path.exists() else {}
 
     def lonlat(q):
