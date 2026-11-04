@@ -1597,14 +1597,19 @@ function legAt(L, f) {
 // flights drawn as dashed arcs: on their leg's slide, the route slide and the summary
 // airport to airport: Vienna Schwechat (VIE) and Split at Kaštela (SPU)
 const FLIGHTS = [{ leg: "vs", from: { code: "VIE", xy: P(16.5697, 48.1103) }, to: { code: "SPU", xy: P(16.2980, 43.5389) }, label: "✈ 1h15" }];
+// a flight's arc on screen: its ends and the control point that bows it to one side of the rail line
+function flightArc(f) {
+  const a = toS(f.from.xy), b = toS(f.to.xy), dx = b[0] - a[0], dy = b[1] - a[1];
+  return [a, b, (a[0] + b[0]) / 2 + dy * 0.22, (a[1] + b[1]) / 2 - dx * 0.22];
+}
+// the flight this slide or day is about, when we're flying it
+const flightOf = sl => FLIGHTS.find(f => sl.day ? sl.flight === f.leg : sl.leg === f.leg && !railLeg(f.leg));
 function drawFlights() {
   const sl = SL();
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   for (const f of FLIGHTS) {
     if (!(sl.day ? sl.flight === f.leg : sl.leg === f.leg || sl.id === "route" || sl.id === "in")) continue; // a rail day shows no flight
-    const a = toS(f.from.xy), b = toS(f.to.xy);
-    const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = b[0] - a[0], dy = b[1] - a[1];
-    const cx = mx + dy * 0.22, cy = my - dx * 0.22; // bow the arc to one side of the rail line
+    const [a, b, cx, cy] = flightArc(f);
     ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.quadraticCurveTo(cx, cy, b[0], b[1]);
     ctx.setLineDash([2, 7]); ctx.lineCap = "round"; ctx.lineWidth = 3; ctx.strokeStyle = C.ink2; ctx.globalAlpha = 0.9; ctx.stroke(); ctx.setLineDash([]);
     const lx = 0.25 * a[0] + 0.5 * cx + 0.25 * b[0], ly = 0.25 * a[1] + 0.5 * cy + 0.25 * b[1];
@@ -1830,7 +1835,7 @@ function draw(now) {
   ctx.globalAlpha = 1;
   drawLegs(now);
   drawFlights();
-  if (SL().day) drawDay(SL());
+  if (SL().day) drawDay(SL()); else drawTripRoutes(SL());
   drawMarkers();
   drawPins();
   placePop();
@@ -1841,10 +1846,10 @@ let frame = 0;
 function invalidate() { dirty = true; if (!frame) frame = requestAnimationFrame(loop); }
 function loop(now) {
   frame = 0;
-  const animating = !reduce && SL().leg && legT0;
+  const animating = !reduce && legT0 && (SL().leg || flightOf(SL()));
   if (dirty) { dirty = false; draw(now); }
   vc.setTransform(1, 0, 0, 1, 0, 0); vc.drawImage(base, 0, 0);
-  if (animating) { drawTrain(now); frame = requestAnimationFrame(loop); }
+  if (animating) { flightOf(SL()) ? drawPlane(now) : drawTrain(now); frame = requestAnimationFrame(loop); }
 }
 function drawTrain(now) {
   const ph = ((now - legT0) / 6500) % 1.25;
@@ -1855,6 +1860,24 @@ function drawTrain(now) {
   vc.setTransform(dpr, 0, 0, dpr, 0, 0);
   vc.beginPath(); vc.arc(x, y, 9, 0, Math.PI * 2); vc.fillStyle = C.ink; vc.fill();
   vc.beginPath(); vc.arc(x, y, 4, 0, Math.PI * 2); vc.fillStyle = C.halo; vc.fill();
+}
+
+// a small plane along the flight arc, nose to its heading, a touch bigger at cruising height
+function drawPlane(now) {
+  const ph = ((now - legT0) / 5200) % 1.3;
+  if (ph >= 1) return; // a pause on the ground
+  const t = ph < 0.5 ? 2 * ph * ph : 1 - Math.pow(-2 * ph + 2, 2) / 2;
+  const [a, b, cx, cy] = flightArc(flightOf(SL())), u = 1 - t;
+  const x = u * u * a[0] + 2 * u * t * cx + t * t * b[0], y = u * u * a[1] + 2 * u * t * cy + t * t * b[1];
+  const ang = Math.atan2(2 * u * (cy - a[1]) + 2 * t * (b[1] - cy), 2 * u * (cx - a[0]) + 2 * t * (b[0] - cx));
+  const sc = 0.75 + 0.45 * Math.sin(Math.PI * t);
+  vc.setTransform(dpr * sc, 0, 0, dpr * sc, dpr * x, dpr * y); vc.rotate(ang);
+  vc.beginPath(); // pointing along +x: fuselage, wings, tailplane
+  vc.moveTo(11, 0); vc.quadraticCurveTo(11, -1.8, 8, -1.8); vc.lineTo(2, -1.8); vc.lineTo(-3, -10); vc.lineTo(-6, -10); vc.lineTo(-2, -1.8);
+  vc.lineTo(-7, -1.8); vc.lineTo(-9.5, -5); vc.lineTo(-11, -5); vc.lineTo(-9.5, 0);
+  vc.lineTo(-11, 5); vc.lineTo(-9.5, 5); vc.lineTo(-7, 1.8); vc.lineTo(-2, 1.8); vc.lineTo(-6, 10); vc.lineTo(-3, 10); vc.lineTo(2, 1.8);
+  vc.lineTo(8, 1.8); vc.quadraticCurveTo(11, 1.8, 11, 0); vc.closePath();
+  vc.lineJoin = "round"; vc.lineWidth = 3.5; vc.strokeStyle = C.halo; vc.stroke(); vc.fillStyle = C.ink; vc.fill();
 }
 
 // ---------- popup ----------
@@ -1982,7 +2005,7 @@ function showSlide(sl, instant, fly = true) {
     card.classList.remove("swap");
     if (!fly) return;
     const t1 = sl.view();
-    const startTrain = () => { if (sl.leg && railLeg(sl.leg) && SL() === sl) { legT0 = performance.now(); invalidate(); } };
+    const startTrain = () => { if (((sl.leg && railLeg(sl.leg)) || flightOf(sl)) && SL() === sl) { legT0 = performance.now(); invalidate(); } };
     if (instant) { cvSel.call(zoom.transform, t1); startTrain(); }
     else flyTo(t1, startTrain);
   }, instant || reduce ? 0 : 180);
@@ -2299,6 +2322,47 @@ function exitDay() {
 }
 function stepAny(dir) { if (daySl) goDay(daySl.i + dir); else go(stepFrom(cur, dir)); }
 
+// how a day trip is reached (data/trips.json): its rail and road parts, oriented from `from` (world km)
+let TRIP_ROUTES = {};
+function tripParts(place, from) {
+  const t = tripFor(place), r = t && TRIP_ROUTES[t.detail];
+  if (!r) return null;
+  const segs = r.segs.map(g => ({ kind: g.kind, pts: g.pts }));
+  const d = (p, q) => Math.hypot(p[0] - q[0], p[1] - q[1]);
+  if (d(from, segs.at(-1).pts.at(-1)) < d(from, segs[0].pts[0])) { segs.reverse(); for (const g of segs) g.pts = g.pts.slice().reverse(); }
+  return segs;
+}
+const PART_STYLE = { rail: [[], 3.5], road: [[8, 5], 3] };
+// lines in screen space, all halos first so crossings stay clean
+function strokeParts(parts) {
+  for (const halo of [true, false]) for (const { pts, dash, w, color } of parts) {
+    if (pts.length < 2) continue;
+    ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+    if (halo) { ctx.setLineDash([]); ctx.strokeStyle = C.halo; ctx.lineWidth = w + 3.5; ctx.globalAlpha *= 0.9; ctx.stroke(); ctx.globalAlpha /= 0.9; }
+    else { ctx.setLineDash(dash); ctx.strokeStyle = color; ctx.lineWidth = w; ctx.stroke(); }
+  }
+  ctx.setLineDash([]);
+}
+// a day trip's parts as screen lines: the streets to the station, the train or bus, the last stretch to the place
+function tripHopParts(a, b, place, col) {
+  const segs = tripParts(place, a); if (!segs) return null;
+  const first = segs[0].pts[0], last = segs.at(-1).pts.at(-1);
+  const lead = roadRoute(a, first) || [a, first], tail = roadRoute(last, b) || [last, b];
+  return [{ pts: lead.map(toS), dash: [], w: 3.5, color: col }, ...segs.map(g => ({ pts: g.pts.map(toS), dash: PART_STYLE[g.kind][0], w: PART_STYLE[g.kind][1], color: col })),
+    { pts: tail.map(toS), dash: [1, 7], w: 3.5, color: C.ink2 }];
+}
+// every trip's route out of a city on its day-trips slide, or the one trip on its own slide
+function drawTripRoutes(sl) {
+  const ids = sl.id.endsWith("-out") ? Object.keys(TRIP_ROUTES).filter(id => TRIP_ROUTES[id].from === sl.city) : TRIP_ROUTES[sl.id] ? [sl.id] : [];
+  if (!ids.length) return;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.lineCap = "round"; ctx.lineJoin = "round";
+  for (const id of ids) {
+    const col = C[TRIP_ROUTES[id].from];
+    ctx.globalAlpha = sl.id === id ? 0.9 : 0.7;
+    strokeParts(TRIP_ROUTES[id].segs.map(g => ({ pts: g.pts.map(toS), dash: PART_STYLE[g.kind][0], w: PART_STYLE[g.kind][1] - 0.5, color: col })));
+  }
+  ctx.globalAlpha = 1;
+}
 function drawDay(sl) {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.lineCap = "round"; ctx.lineJoin = "round";
@@ -2307,12 +2371,12 @@ function drawDay(sl) {
   for (const e of sl.it) {
     const h = e.hop; if (!h || h.ride) continue;
     const [dash, w] = STYLE[h.mode], col = C[h.b.city] || C[h.a.city] || C.ink2;
-    // walks and city rides follow the streets; transfers and regional trips stay straight
+    // walks and city rides follow the streets, day trips their train or bus; airport transfers stay straight
+    const trip = h.mode === "regional" && tripHopParts(h.a.xy, h.b.xy, tripFor(h.b.place) ? h.b.place : h.a.place, col); // either end can be the trip
     const route = (h.mode === "walk" || h.mode === "city") && roadRoute(h.a.xy, h.b.xy);
-    const pts = (route || [h.a.xy, h.b.xy]).map(toS);
-    const line = () => { ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]); ctx.stroke(); };
-    ctx.setLineDash([]); ctx.strokeStyle = C.halo; ctx.lineWidth = w + 3.5; ctx.globalAlpha = 0.9; line();
-    ctx.setLineDash(dash); ctx.strokeStyle = h.mode === "walk" ? C.ink2 : col; ctx.lineWidth = w; ctx.globalAlpha = 1; line();
+    const parts = trip || [{ pts: (route || [h.a.xy, h.b.xy]).map(toS), dash, w, color: h.mode === "walk" ? C.ink2 : col }];
+    ctx.globalAlpha = 1; strokeParts(parts);
+    const pts = parts.flatMap(p => p.pts);
     // the time chip sits halfway along the line
     let len = 0; const seg = []; for (let i = 1; i < pts.length; i++) { const d = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(d); len += d; }
     if (len > 70) {
@@ -2561,12 +2625,12 @@ addEventListener("hashchange", () => {
 cv.addEventListener("mousemove", ev => cv.classList.toggle("pointing", !!hitAt(ev)));
 
 // ---------- boot ----------
-const DATA_V = "21"; // bump when data files change so browsers don't reuse stale copies
+const DATA_V = "22"; // bump when data files change so browsers don't reuse stale copies
 async function boot() {
   readTheme(); resize();
   invalidate();
-  const [region, places, stays, images, legs, hoods] = await Promise.all(["region", "places", "stays", "images", "legs", "hoods"].map(n => fetch(`data/${n}.json?v=${DATA_V}`).then(r => r.json())));
-  buildRegion(region); buildLegs(legs); buildPlaces(places, stays, images); HOODS = hoods;
+  const [region, places, stays, images, legs, hoods, trips] = await Promise.all(["region", "places", "stays", "images", "legs", "hoods", "trips"].map(n => fetch(`data/${n}.json?v=${DATA_V}`).then(r => r.json())));
+  buildRegion(region); buildLegs(legs); buildPlaces(places, stays, images); HOODS = hoods; TRIP_ROUTES = trips;
   for (const hs of Object.values(HOODS)) for (const h of hs) { h.path = new Path2D(); for (const ring of h.rings) addAbs(h.path, ring.flat(), true); }
   TRIPS = PLACES.filter(p => p.type === "nature" || p.type === "daytrip");
   migratePlan();
