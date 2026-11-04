@@ -22,7 +22,7 @@
   --rail: #7b878c;
   --ink: #1d282d;
   --ink-2: #57646b;
-  --panel: rgba(255, 255, 255, 0.94);
+  --panel: rgba(255, 255, 255, 0.94); --panel-solid: #fff;
   --stage: rgba(8, 12, 14, 0.92); --stage-ink: #dfe6e8;
   --line: #dbe1e0;
   --chip: #eef1f0;
@@ -45,14 +45,14 @@
   :root:not([data-theme="light"]) {
     --bg: #0b1114; --land: #172026; --land-hi: #1e2930; --border: #3a4952; --water: #173343;
     --green: #1b2d24; --road: #3b4850; --casing: #10171b; --building: #283239; --rail: #6d7b82;
-    --ink: #e7ecec; --ink-2: #9ba8ae; --panel: rgba(20, 27, 32, 0.94); --line: #2b373e; --chip: #222d33;
+    --ink: #e7ecec; --ink-2: #9ba8ae; --panel: rgba(20, 27, 32, 0.94); --panel-solid: #141b20; --line: #2b373e; --chip: #222d33;
     --vienna: #f0b630; --prague: #e8584c; --split: #2fb8b0; --zagreb: #e07cb6; --tram: #f06a5c; --bus: #a98be6; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0b1114; --land: #172026; --land-hi: #1e2930; --border: #3a4952; --water: #173343;
   --green: #1b2d24; --road: #3b4850; --casing: #10171b; --building: #283239; --rail: #6d7b82;
-  --ink: #e7ecec; --ink-2: #9ba8ae; --panel: rgba(20, 27, 32, 0.94); --line: #2b373e; --chip: #222d33;
+  --ink: #e7ecec; --ink-2: #9ba8ae; --panel: rgba(20, 27, 32, 0.94); --panel-solid: #141b20; --line: #2b373e; --chip: #222d33;
   --vienna: #f0b630; --prague: #e8584c; --split: #2fb8b0; --zagreb: #e07cb6; --tram: #f06a5c; --bus: #a98be6; color-scheme: dark;
 }
 html, body { height: 100%; overflow: hidden; }
@@ -208,6 +208,7 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
   background: var(--panel); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 14px 40px rgba(10,20,25,.28); padding: 20px 22px 18px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .calpanel .x { position: absolute; z-index: 8; top: 8px; right: 8px; width: 34px; height: 34px; border: 0; background: none; color: var(--ink-2); font-size: 22px; cursor: pointer; border-radius: 4px; }
 .calpanel .x:hover { background: var(--chip); }
+.calpanel .phead .x { top: 50%; right: 6px; translate: 0 -50%; }
 .calpanel .cd { min-height: 58px; }
 /* planner */
 .fld { display: grid; gap: 4px; font-size: 13px; margin: 0 0 10px; }
@@ -271,6 +272,8 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
   transition: opacity .16s ease, scale .24s cubic-bezier(.2, .9, .3, 1.12);
 }
 #pop.out { opacity: 0; scale: .35; transition-duration: .15s; transition-timing-function: ease-in; pointer-events: none; }
+.hint .tch { display: none; }
+@media (hover: none) { .hint .kb { display: none; } .hint .tch { display: inline; } }
 @media (prefers-reduced-motion: reduce) { #pop { transition: none; } }
 #pop .ph { display: block; width: calc(100% + 32px); margin: -14px -16px 10px; height: 150px; object-fit: cover; border-radius: 6px 6px 0 0; }
 #pop .phs { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; width: calc(100% + 32px); margin: -14px -16px 10px; border-radius: 6px 6px 0 0; overflow: hidden; }
@@ -283,6 +286,19 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 #pop .links a { color: var(--ink); }
 #pop .x { position: absolute; top: 6px; right: 6px; width: 32px; height: 32px; border: 0; background: none; color: var(--ink-2); font-size: 20px; cursor: pointer; border-radius: 4px; }
 #pop .x:hover { background: var(--chip); }
+@media (max-width: 759px) { /* phones: a short card under the top bar, photo at the side, so it never hides the bar or runs under a sheet */
+  #pop { z-index: 8; width: calc(100vw - var(--gl) - var(--gr)); box-sizing: border-box; padding: 10px 12px 9px; display: grid; grid-template-columns: 76px minmax(0, 1fr); column-gap: 12px; align-items: start; }
+  #pop > :not(.ph, .phs, .x) { grid-column: 2; }
+  #pop:not(:has(.ph, .phs)) { grid-template-columns: minmax(0, 1fr); }
+  #pop:not(:has(.ph, .phs)) > * { grid-column: 1; }
+  #pop .ph, #pop .phs { grid-column: 1; grid-row: 1 / span 5; width: 76px; height: 76px; margin: 0; border-radius: 5px; }
+  #pop .phs { grid-template-columns: 1fr; } #pop .phs img { height: 76px; } #pop .phs img + img { display: none; }
+  #pop h4 { font-size: 18px; }
+  #pop p { margin: 4px 0 6px; font-size: 12.5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  #pop .links { font-size: 12px; }
+  #pop .credit { margin-top: 4px; font-size: 9.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #pop .pplan { display: none; }
+}
 
 /* photo viewer: always a dark stage, whatever the theme */
 #viewer { position: fixed; inset: 0; z-index: 20; background: var(--stage); display: grid; place-items: center; padding: 16px; }
@@ -334,7 +350,7 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .pset { border: 1px solid var(--line); border-radius: 6px; margin: 0 0 12px; overflow: hidden; }
 .pset > .prow:first-child { border-top: 0; }
 /* the panel's header: one thin centered line, pinned to the top as the panel scrolls, with the Share menu at its right */
-.calpanel .phead { position: sticky; top: -20px; z-index: 6; margin: -20px -22px 10px; padding: 14px 22px 8px; background: var(--panel); border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
+.calpanel .phead { position: sticky; top: -20px; z-index: 6; margin: -20px -22px 10px; padding: 14px 22px 8px; background: var(--panel-solid); border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
 .calpanel .phead h2 { grid-column: 2; margin: 0; font: 600 12px var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); }
 .shareb { grid-column: 3; justify-self: end; font: 600 12.5px var(--f-body); color: var(--ink); background: none; border: 1px solid var(--line); border-radius: 5px; padding: 4px 9px; cursor: pointer; }
 .shareb:hover, .shareb.on { background: var(--chip); }
@@ -386,8 +402,6 @@ body.pindrag, body.pindrag canvas#map { cursor: grabbing; }
 .itin .pb, .pchip .pb, .lostl .pb, #ghost .pb, .places .pb, .mi .pb { height: 21px; font-size: 12px; padding: 0 6px 0 5px; gap: 3px; flex: none; }
 .itin .pb svg, .pchip .pb svg, .lostl .pb svg, #ghost .pb svg, .places .pb svg, .mi .pb svg { width: 12px; height: 12px; }
 .itin .pb.eat, .pchip .pb.eat, .lostl .pb.eat, #ghost .pb.eat, .places .pb.eat, .mi .pb.eat { border-radius: 11px; }
-.dayv .itin .st { grid-template-columns: 40px 1fr auto; }
-.dayv .itin .hp { grid-template-columns: 40px 1fr; }
 
 /* the selected day, in the planner */
 .dayv { border: 1px solid var(--line); border-top: 3px solid var(--a); border-radius: 6px; padding: 10px 12px; margin: 0 0 8px; background: color-mix(in srgb, var(--chip) 60%, transparent); }
@@ -414,30 +428,51 @@ body.pindrag, body.pindrag canvas#map { cursor: grabbing; }
 .two { display: grid; grid-template-columns: minmax(0, 1fr) 120px; gap: 8px; }
 
 /* a day's route, on the card */
+/* the day as a timetable: time | marker | name | length and (on hover) reorder; rides are quiet lines between */
 .itin { list-style: none; margin: 4px 0 12px; padding: 0; }
-.itin .st { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: center; padding: 3px 4px; margin: 0 -4px; border-radius: 4px; }
-.itin .st[data-p] { cursor: pointer; }
-.itin .st[data-p]:hover, .itin .st[data-p]:focus-visible { background: var(--chip); outline: none; }
-.itin .st .mk { display: grid; place-items: center; }
-.itin .st .ctl { display: flex; gap: 4px; align-items: center; }
-.itin .clk { display: block; font: 600 11px var(--f-mono); color: var(--ink-2); letter-spacing: .02em; }
-.itin .dur { font: 600 11.5px var(--f-mono); color: var(--ink); background: var(--chip); border: 1px solid var(--line); border-radius: 5px; padding: 3px 2px; height: 30px; cursor: pointer; }
+.itin .st { position: relative; display: grid; grid-template-columns: 38px 40px minmax(0, 1fr) auto; gap: 0 8px; align-items: center; padding: 4px 4px; margin: 0 -4px; border-radius: 5px; min-height: 34px; }
+.itin .st[data-si] { cursor: pointer; }
+.itin .st[draggable] { cursor: grab; }
+.itin .st[data-si]:hover, .itin .st[data-si]:focus-visible { background: var(--chip); outline: none; }
+.itin .tm { font: 600 12px var(--f-mono); color: var(--ink-2); text-align: right; }
+.itin .mk { display: grid; place-items: center; }
+.itin .nm { min-width: 0; }
+.itin .nm b { display: block; font-weight: 600; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.itin .nm small { display: block; color: var(--ink-2); font-size: 11.5px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.itin .hub { width: 24px; height: 24px; border: 2px solid var(--ink); border-radius: 5px; display: grid; place-items: center; font-size: 13px; font-weight: 700; background: var(--panel); }
+.itin .ctl { position: relative; display: flex; gap: 4px; align-items: center; }
+.itin .durw { position: relative; }
+.itin .durw::after { content: "▾"; position: absolute; right: 6px; top: 50%; transform: translateY(-50%); font-size: 9px; color: var(--ink-2); pointer-events: none; }
+.itin .dur { appearance: none; -webkit-appearance: none; font: 600 11.5px var(--f-mono); color: var(--ink); background: transparent; border: 1px solid transparent; border-radius: 5px; padding: 3px 18px 3px 6px; cursor: pointer; }
+.itin .dur:hover, .itin .dur:focus-visible { border-color: var(--line); background: var(--chip); outline: none; }
+/* reorder and remove float over the end of the name while the row is hovered: no space kept for them */
+.itin .mv { position: absolute; right: 100%; top: 50%; translate: 0 -50%; display: flex; gap: 2px; padding-left: 18px;
+  background: linear-gradient(90deg, transparent, var(--chip) 16px); opacity: 0; pointer-events: none; transition: opacity .12s; }
+.itin .st:hover .mv, .itin .st:focus-within .mv { opacity: 1; pointer-events: auto; }
+@media (hover: none) { .itin .mv { position: static; translate: none; padding: 0; background: none; opacity: 1; pointer-events: auto; } }
+/* dragging a place to a new spot in the day: a line where it will land */
+.itin .st.drop-above { box-shadow: inset 0 3px 0 var(--ink); }
+.itin .st.drop-below { box-shadow: inset 0 -3px 0 var(--ink); }
+.itin .st.dragging { opacity: .4; }
+@media (max-width: 759px) { /* phones: a place's length and buttons go on a line under its name */
+  .itin .st { grid-template-columns: 38px 40px minmax(0, 1fr); }
+  .itin .st .ctl { grid-column: 3; margin: 2px 0 0 -6px; }
+  .itin .mv { position: static; translate: none; padding: 0; background: none; opacity: 1; pointer-events: auto; }
+}
+.itin .mv .ib { width: 24px; height: 24px; font-size: 12px; }
+.itin .hp { display: grid; grid-template-columns: 38px 40px minmax(0, 1fr); gap: 0 8px; align-items: center; min-height: 20px; font: 500 11px var(--f-mono); color: var(--ink-2); }
+.itin .hp .ln { justify-self: center; width: 0; height: 100%; min-height: 20px; border-left: 3px solid var(--c); }
+.itin .hp.walk .ln { border-left: 3px dotted var(--ink-2); }
+.itin .hp.regional .ln, .itin .hp.transfer .ln { border-left-style: dashed; }
+.itin .hp.train .ln, .itin .hp.sleeper .ln, .itin .hp.flight .ln { border-left-width: 5px; border-left-color: var(--ink); }
+.itin .hp.flight .ln { border-left-style: dotted; }
+.itin .hp .ht { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .dclock { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 12.5px; margin: 0 0 8px; }
 .dclock label { display: flex; align-items: center; gap: 6px; font: 600 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
 .dclock input { font: 600 13px var(--f-mono); color: var(--ink); background: var(--chip); border: 1px solid var(--line); border-radius: 5px; padding: 3px 6px; }
 .dclock .end { margin-left: auto; font: 600 12px var(--f-mono); }
 .dclock .lnk { background: none; border: 0; padding: 0; font: inherit; color: var(--ink); text-decoration: underline; cursor: pointer; }
 .dayv .warn { margin: 0 0 8px; padding: 6px 9px; border-radius: 5px; font-size: 12.5px; font-weight: 600; background: color-mix(in srgb, var(--prague) 16%, transparent); color: var(--ink); border-left: 3px solid var(--prague); }
-.itin .st[draggable] { cursor: grab; }
-.itin .st b { font-weight: 600; display: block; line-height: 1.25; }
-.itin .st small { color: var(--ink-2); font-size: 12px; }
-.itin .hub { width: 24px; height: 24px; border: 2px solid var(--ink); border-radius: 5px; display: grid; place-items: center; font-size: 13px; font-weight: 700; background: var(--panel); }
-.itin .hp { display: grid; grid-template-columns: 26px 1fr; gap: 10px; font: 500 12px var(--f-mono); color: var(--ink-2); min-height: 26px; align-items: center; }
-.itin .hp .ln { justify-self: center; width: 0; height: 100%; min-height: 24px; border-left: 3px solid var(--c); }
-.itin .hp.walk .ln { border-left: 3px dotted var(--ink-2); }
-.itin .hp.regional .ln, .itin .hp.transfer .ln { border-left-style: dashed; }
-.itin .hp.train .ln, .itin .hp.sleeper .ln, .itin .hp.flight .ln { border-left-width: 5px; border-left-color: var(--ink); }
-.itin .hp.flight .ln { border-left-style: dotted; }
 .pplan { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
 .pplan select { flex: 1; min-width: 0; font: inherit; font-size: 13px; color: var(--ink); background: var(--chip); border: 1px solid var(--line); border-radius: 5px; padding: 5px 6px; }
 
@@ -462,6 +497,14 @@ body.dock #panel { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
   .btn.wide { min-width: 0; flex: 1; }
   .calpanel { top: auto; bottom: calc(72px + env(safe-area-inset-bottom, 0px)); left: var(--gl); right: var(--gr); width: auto; max-height: 72%; padding: 16px 16px 14px; }
   .calpanel .phead { top: -16px; margin: -16px -16px 10px; padding: 10px 16px 8px; }
+  body.daypick .calpanel { max-height: 46vh; max-height: 46dvh; }
+  /* phones show one sheet at a time and the planner is for looking at the trip: editing stays on bigger screens */
+  body.planopen #panel { display: none; }
+  .calpanel .pset, .calpanel .banner ~ .pset, .cd .grip, .dayv .add, .itin .ctl, .dayv .edhint, .pl-status, .dclock .lnk,
+  .dayv .fld:has(#pl-note:placeholder-shown) { display: none; }
+  #pl-note, #pl-start, #pl-dep { pointer-events: none; border-color: transparent; background: none; padding-inline: 0; resize: none; }
+  #pl-start::-webkit-calendar-picker-indicator, #pl-dep::-webkit-calendar-picker-indicator { display: none; }
+  .itin .st { grid-template-columns: 38px 40px minmax(0, 1fr); }
   .cal.planner .cd { min-height: 54px; padding: 3px 3px 5px; }
   .cd .t, .cd .tr { font-size: 9.5px; }
   #tools { left: calc(var(--gl) + 52px); }
@@ -591,7 +634,7 @@ const placeBy = {};     // `${city}:${code}`
 
 function slideDeck() {
   const s = [];
-  s.push({ id: "intro", color: "--ink-2", view: () => fitLL([11.5, 42.8, 19.5, 51.2]), html: introHTML });
+  s.push({ id: "intro", color: "--ink-2", view: () => W < 760 ? fitLL([13.9, 43.3, 17.0, 50.3]) : fitLL([11.5, 42.8, 19.5, 51.2]), html: introHTML });
   const order = [["prague", "pv", 1], ["vienna", "vs", 2], ["split", null, 3]];
   for (const [city, leg, n] of order) {
     s.push({ id: city, city, color: `--${city}`, focus: ["A", "B", "C", "D"], view: () => fitPts(cityPts(city, ["A", "B", "C", "D"]), 60), html: () => cityHTML(city, n) });
@@ -635,7 +678,7 @@ function introHTML() {
   <h1>Praha <span class="arrow">→</span> Wien <span class="arrow">→</span> ${fly ? "" : `Zagreb <span class="arrow">→</span> `}Split</h1>
   <p class="lede">Two old imperial capitals, then a sleeper train down to the Adriatic. Castles, coffee houses and wine taverns first, then sea, islands and old stone.</p>
   <dl class="stats"><div><dt>Cities</dt><dd>${fly ? 3 : 4}</dd></div><div><dt>Nights</dt><dd>${totalNights()}</dd></div><div><dt>Of us</dt><dd>11</dd></div><div><dt>${fly ? "Travel" : "Awake on trains"}</dt><dd>${fly ? "~5.5 h" : `~${+railHours().toFixed(1)} h`}</dd></div></dl>
-  <p class="hint">Press <kbd>→</kbd> or Next to fly through it, use the city menus at the top, or pick a day in <b>Plan</b> to see its route and pin places to it. Your plan is saved in this browser.</p>`;
+  <p class="hint"><span class="kb">Press <kbd>→</kbd> or Next</span><span class="tch">Tap Next</span> to fly through it, use the city menus at the top, or pick a day in <b>Plan</b> to see its route and pin places to it. Your plan is saved in this browser.</p>`;
 }
 function badge(p) {
   return pinBadge(p);
@@ -769,7 +812,7 @@ const LEG_INFO = {
 };
 // a day's clock: minutes at each pinned place (editable per day), choices stored as an index in plan codes
 const DUR_OPTS = [15, 30, 45, 60, 90, 120, 150, 180, 240, 300, 360, 480]; // 12 options, 4 bits
-const DUR_DEFAULT = { food: 90, cafe: 45, sight: 90, nature: 300, daytrip: 300 }; // a day trip: time spent there
+const DUR_DEFAULT = { food: 90, cafe: 45, sight: 90, nature: 300, daytrip: 300, home: 60 }; // a day trip: time spent there
 const PIN_MAX = 4; // plan codes store 1–4 pins a day in 2 bits: raising this needs a new code version
 const PLAN_DEFAULT = { v: 2, start: "2027-08-22", nights: { prague: 4, vienna: 4, zagreb: 0, split: 4 },
   legs: { pv: { opt: "train", dep: "09:00" }, vs: { opt: "sleeper", dep: "09:00" }, zs: { opt: "sleeper", dep: "21:30" } },
@@ -816,9 +859,9 @@ const CODE_BASE = 0x4E00, CODE_BITS = 14, CODE_EPOCH = Date.UTC(2025, 0, 1);
 const CODE_CITIES = ["prague", "vienna", "split", "zagreb", "lednice", "wachau", "kahlenberg", "hallstatt", "karlstejn", "kutnahora", "bohemian", "trogir", "hvar", "krka"];
 const dayNo = iso => { const [y, m, d] = iso.split("-").map(Number); return Math.round((Date.UTC(y, m - 1, d) - CODE_EPOCH) / 864e5); };
 const dayIso = n => new Date(CODE_EPOCH + n * 864e5).toISOString().slice(0, 10);
-const pinBits = code => code === "CF" ? [1, 7] : /^[A-G]$/.test(code) ? [0, code.charCodeAt(0) - 65]
+const pinBits = code => code === "HOME" ? [3, 7] : code === "CF" ? [1, 7] : /^[A-G]$/.test(code) ? [0, code.charCodeAt(0) - 65]
   : /^[1-7]$/.test(code) ? [1, +code - 1] : /^T[1-8]$/.test(code) ? [2, +code[1] - 1] : /^H[1-8]$/.test(code) ? [3, +code[1] - 1] : null;
-const pinCode = (k, i) => k === 0 ? "ABCDEFGH"[i] : k === 1 ? (i === 7 ? "CF" : String(i + 1)) : `${"TH"[k - 2]}${i + 1}`;
+const pinCode = (k, i) => k === 0 ? "ABCDEFGH"[i] : k === 1 ? (i === 7 ? "CF" : String(i + 1)) : k === 3 && i === 7 ? "HOME" : `${"TH"[k - 2]}${i + 1}`;
 
 function toCode(p) {
   const bits = [], put = (v, n) => { for (let i = n - 1; i >= 0; i--) bits.push((v >> i) & 1); }, D = PLAN_DEFAULT;
@@ -985,7 +1028,7 @@ const dayCities = x => x.kind !== "travel" ? [x.city] : [x.from, ...(x.leg === "
 const canPin = (x, p) => !!p && p.type !== "stay" && dayCities(x).includes(homeOf(p));
 const pinsOn = x => (PLAN.pins[x.iso] || []).filter(k => canPin(x, placeBy[k]));
 const pinDays = key => DAYS.filter(x => pinsOn(x).includes(key));
-const SLOT = { cafe: 0, sight: 1, nature: 1, daytrip: 1, food: 2 }; // breakfast at the café, sights by day, dinner last
+const SLOT = { cafe: 0, sight: 1, nature: 1, daytrip: 1, home: 1.5, food: 2 }; // breakfast at the café, sights by day, dinner last
 function togglePin(key, iso) {
   const x = DAYS.find(d => d.iso === iso), p = placeBy[key];
   if (!x || !canPin(x, p)) return "no";
@@ -1074,7 +1117,7 @@ function hopBase(a, b) {
 function itinerary(x) {
   const pins = pinsOn(x).map(k => placeBy[k]), seq = [];
   const stop = s => seq.push({ stop: s }), ride = (mode, text, dep, min) => seq.push({ ride: { mode, text, dep, min } }); // dep "HH:MM", min null = overnight
-  const visit = c => { for (const p of pins) if (homeOf(p) === c) stop({ kind: "place", name: p.name, xy: p.xy, city: p.city, place: p }); };
+  const visit = c => { for (const p of pins) if (homeOf(p) === c) stop({ kind: "place", name: p.name, xy: p.xy, city: p.city, place: p, sub: p.type === "home" ? "A break back home" : "" }); };
   const has = c => pins.some(p => homeOf(p) === c);
   if (x.kind === "travel") {
     stop(home(x.from)); visit(x.from);
@@ -1118,7 +1161,7 @@ let plSel = null, plMsg = "", plResetAsk = false, plImport = false, plAdd = fals
 // calendar chips say what kind of place each pin is: eat (fork and knife), see (a pin), a day trip (a suitcase)
 // one marker for a place everywhere (map, slides, menus, calendar, planner): what kind it is as an icon, eat
 // (fork and knife, round), see (a pin), a day trip (a suitcase, outlined) or our Airbnb (a house), then its label
-const PIN_KIND = { food: "eat", cafe: "eat", daytrip: "trip", nature: "trip", stay: "stay" }; // everything else is a place to see
+const PIN_KIND = { food: "eat", cafe: "eat", daytrip: "trip", nature: "trip", stay: "stay", home: "stay" }; // everything else is a place to see
 const PIN_PATH = { // 24×24 line icons, as path data so the map canvas draws the same ones
   eat: "M4 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V2M7 2v20M20 15V2a5 5 0 0 0-5 5v6a2 2 0 0 0 2 2h3Zm0 0v7",
   see: "M20 10c0 5-5.5 10.2-7.4 11.8a1 1 0 0 1-1.2 0C9.5 20.2 4 15 4 10a8 8 0 0 1 16 0ZM15 10a3 3 0 1 1-6 0a3 3 0 1 1 6 0",
@@ -1127,7 +1170,7 @@ const PIN_PATH = { // 24×24 line icons, as path data so the map canvas draws th
 };
 const PIN_WORD = { eat: "Eat", see: "See", trip: "Day trip", stay: "Stay" };
 const pinKind = p => PIN_KIND[p.type] || "see";
-const pinBadge = (p, iso) => { const k = pinKind(p); return `<i class="pb ${k}" style="--c:var(--${homeOf(p)})" title="${PIN_WORD[k]}: ${esc(p.name)}${iso ? " · drag to another day" : ""}"${iso ? ` draggable="true" data-dpin="${keyOf(p)}" data-from="${iso}"` : ""}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${PIN_PATH[k]}"/></svg>${esc(p.label || p.code)}</i>`; };
+const pinBadge = (p, iso) => { const k = pinKind(p); return `<i class="pb ${k}" style="--c:var(--${homeOf(p)})" title="${PIN_WORD[k]}: ${esc(p.name)}${iso ? " · drag to another day" : ""}"${iso ? ` draggable="true" data-dpin="${keyOf(p)}" data-from="${iso}"` : ""}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${PIN_PATH[k]}"/></svg>${p.type === "home" ? "" : esc(p.label || p.code)}</i>`; };
 function settingsHTML() {
   const rail = byRail(), zn = PLAN.nights.zagreb;
   const trainNight = DAYS.some(x => x.sleeper);
@@ -1188,7 +1231,7 @@ function dayViewHTML(x) {
     const sec = (title, list) => list.length ? `<div class="pk"><span class="pkl">${title}</span><div class="pkc">${list.join("")}</div></div>` : "";
     const trips = own.filter(p => p.type === "daytrip" || p.type === "nature").map(t => chip(t) + (t.detail ? PLACES.filter(p => p.city === t.detail).map(p => chip(p).replace('class="pchip', 'class="pchip in')).join("") : ""));
     return `<div class="pkg" style="--c:var(--${c})">${cs.length > 1 ? `<b class="pkh">${PC[c].local}</b>` : ""}
-      ${sec("Eat &amp; drink", own.filter(p => p.type === "food" || p.type === "cafe").map(chip))}${sec("Sights", own.filter(p => p.type === "sight").map(chip))}${sec("Day trips &amp; nature", trips)}</div>`;
+      ${sec("Home base", [chip(placeBy[`${c}:HOME`])])}${sec("Eat &amp; drink", own.filter(p => p.type === "food" || p.type === "cafe").map(chip))}${sec("Sights", own.filter(p => p.type === "sight").map(chip))}${sec("Day trips &amp; nature", trips)}</div>`;
   }).join("");
   const where = x.kind === "travel" ? `${PC[x.from].local} → ${PC[x.to].local}` : PC[x.city].local;
   return `<div class="dayv" style="--a:var(--${dayCity(x)})">
@@ -1199,14 +1242,14 @@ function dayViewHTML(x) {
     ${travel}
     <h4>The day <span>${n} / ${PIN_MAX} pinned</span></h4>
     <div class="dclock"><label>Start <input type="time" id="pl-start" value="${clockStr(clk.start)}"></label>
-      ${clk.auto ? `<span class="muted">${fixedRide ? `in time for the ${fixedRide.dep} ${fixedRide.mode === "flight" ? "flight" : "train"}` : x.afterTrain ? "when the sleeper gets in" : "default"}</span>` : `<button class="lnk" data-act="start-auto">reset</button>`}
+      ${clk.auto ? (fixedRide ? `<span class="muted">for the ${fixedRide.dep} ${fixedRide.mode === "flight" ? "flight" : "train"}</span>` : x.afterTrain ? `<span class="muted">off the sleeper</span>` : "") : `<button class="lnk" data-act="start-auto">reset</button>`}
       <span class="end">${clk.end == null ? "overnight on the sleeper" : `back ~${clockStr(clk.end)}`}</span></div>
     ${clk.warn.map(w => `<p class="warn">${esc(w)}</p>`).join("")}
     ${itinHTML(x, it, clk)}
-    ${n ? "" : `<p class="muted small">Nothing pinned yet. Add up to ${PIN_MAX} places below, drag them from the slides, or use 📌 in the menus and on the map.</p>`}
+    ${n ? "" : `<p class="muted small edhint">Nothing pinned yet. Add up to ${PIN_MAX} places below, drag them from the slides, or use 📌 in the menus and on the map.</p>`}
     <details class="add" id="pl-add"${plAdd ? " open" : ""}><summary>Add a place</summary>${groups}</details>
     <label class="fld"><span>Note</span><textarea id="pl-note" rows="2" placeholder="e.g. dinner reservation 20:00">${esc(PLAN.notes[x.iso] || "")}</textarea></label>
-    <p class="muted small">Times are rough estimates. Set how long to spend at each place with its time menu.</p>
+    <p class="muted small edhint">Times are rough estimates. Set how long to spend at each place with its time menu.</p>
   </div>`;
 }
 function calCells(days = DAYS, live = null) {
@@ -1245,8 +1288,7 @@ function planHTML() {
 
   const shareLink = /github\.io$|^localhost$|^127\.0\.0\.1$/.test(location.hostname);
   const outside = Object.keys(PLAN.notes).filter(d => !DAYS.some(x => x.iso === d));
-  return `<button class="x" id="calClose" aria-label="Close planner">×</button>
-  <div class="phead"><h2>Plan</h2><button class="shareb${plShare ? " on" : ""}" data-act="share" aria-haspopup="true" aria-expanded="${plShare}">Share <span aria-hidden="true">▾</span></button>
+  return `<div class="phead"><button class="x" id="calClose" aria-label="Close planner">×</button><h2>Plan</h2><button class="shareb${plShare ? " on" : ""}" data-act="share" aria-haspopup="true" aria-expanded="${plShare}">Share <span aria-hidden="true">▾</span></button>
     ${plShare ? `<div class="smenu" role="menu">
       ${shareLink ? `<button role="menuitem" data-act="link">Copy share link</button>` : ""}<button role="menuitem" data-act="code">Copy plan code</button>
       <button role="menuitem" data-act="import" aria-expanded="${plImport}">Paste a plan code</button>
@@ -1310,13 +1352,11 @@ function dayClock(x, it) {
 function itinHTML(x, it, clk = dayClock(x, it)) {
   const ks = pinsOn(x), n = ks.length;
   return `<ol class="itin">${it.map((e, i) => {
-    if (!e.stop) return `<li class="hp ${e.hop.mode}" style="--c:var(--${PC[e.hop.b?.city] ? e.hop.b.city : dayCity(x)})"><span class="ln"></span><span>${HOP_ICON[e.hop.mode]} ${esc(e.hop.text)}</span></li>`;
-    const p = e.stop.kind === "place" ? e.stop.place : null, j = p ? ks.indexOf(keyOf(p)) : -1;
-    const d = p && j >= 0 ? durOf(x, p) : 0;
-    const len = j < 0 ? "" : `<select class="dur" data-dur="${keyOf(p)}" aria-label="Time at ${esc(p.name)}" title="Time spent here">${DUR_OPTS.map(m => `<option value="${m}"${m === d ? " selected" : ""}>${fmtDur(m)}</option>`).join("")}</select>`;
-    const c = clk.at[i], when = c ? `<small class="clk">${clockStr(c.arr)}${c.leave > c.arr ? ` – ${clockStr(c.leave)}` : ""}</small>` : "";
-    const ctl = j < 0 ? "" : `<span class="ctl">${len}<button class="ib" data-mv="${j}" data-dir="-1" aria-label="Earlier in the day"${j ? "" : " disabled"}>↑</button><button class="ib" data-mv="${j}" data-dir="1" aria-label="Later in the day"${j < n - 1 ? "" : " disabled"}>↓</button><button class="ib" data-unpin="${keyOf(p)}" aria-label="Remove ${esc(p.name)}">×</button></span>`;
-    return `<li class="st ${e.stop.kind}" style="--c:var(--${PC[e.stop.city] ? e.stop.city : homeOf(p)})"${p ? ` data-p="${keyOf(p)}" tabindex="0"${j >= 0 ? ` draggable="true" data-dpin="${keyOf(p)}" data-from="${x.iso}" title="Drag to another day"` : ""}` : ""}><span class="mk">${p ? pinBadge(p) : `<span class="hub">${HUB_ICON[e.stop.kind]}</span>`}</span><span>${when}<b>${esc(e.stop.name)}</b>${e.stop.sub ? `<small>${esc(e.stop.sub)}</small>` : ""}</span>${ctl}</li>`;
+    if (!e.stop) return `<li class="hp ${e.hop.mode}" style="--c:var(--${PC[e.hop.b?.city] ? e.hop.b.city : dayCity(x)})"><span></span><span class="ln"></span><span class="ht">${esc(e.hop.text)}</span></li>`;
+    const p = e.stop.kind === "place" ? e.stop.place : null, j = p ? ks.indexOf(keyOf(p)) : -1, c = clk.at[i];
+    const len = j < 0 ? "" : `<span class="durw"><select class="dur" data-dur="${keyOf(p)}" aria-label="Time at ${esc(p.name)}" title="Time spent here">${DUR_OPTS.map(m => `<option value="${m}"${m === durOf(x, p) ? " selected" : ""}>${fmtDur(m)}</option>`).join("")}</select></span>`;
+    const ctl = j < 0 ? "" : `<span class="ctl">${len}<span class="mv"><button class="ib" data-mv="${j}" data-dir="-1" aria-label="Earlier in the day"${j ? "" : " disabled"}>↑</button><button class="ib" data-mv="${j}" data-dir="1" aria-label="Later in the day"${j < n - 1 ? "" : " disabled"}>↓</button><button class="ib" data-unpin="${keyOf(p)}" aria-label="Remove ${esc(p.name)}">×</button></span></span>`;
+    return `<li class="st ${e.stop.kind}" style="--c:var(--${PC[e.stop.city] ? e.stop.city : homeOf(p)})" data-si="${i}" tabindex="0"${p ? ` data-p="${keyOf(p)}"${j >= 0 ? ` draggable="true" data-dpin="${keyOf(p)}" data-from="${x.iso}" title="Drag to another day"` : ""}` : ""}><span class="tm">${c ? clockStr(c.arr) : ""}</span><span class="mk">${p ? pinBadge(p) : e.stop.kind === "home" && e.stop.place ? pinBadge(e.stop.place) : `<span class="hub">${HUB_ICON[e.stop.kind]}</span>`}</span><span class="nm"><b title="${esc(e.stop.name)}">${esc(e.stop.name)}</b>${e.stop.sub ? `<small>${esc(e.stop.sub)}</small>` : ""}</span>${ctl}</li>`;
   }).join("")}</ol>`;
 }
 
@@ -1659,7 +1699,7 @@ function roadRoute(a, b) {
   if (!c) return null; // not loaded yet, or off the map: try again on a later frame
   if (!c.graph) { // a few hundred ms of work: do it once the camera has settled, straight lines until then
     if (!c.graphQueued) { c.graphQueued = true; (window.requestIdleCallback || setTimeout)(() => { roadGraph(c); invalidate(); }, { timeout: 1500 }); }
-    return null;
+    return undefined; // the streets are still being joined up: ask again in a moment
   }
   const g = c.graph, [ox, oy] = c.origin, L = p => [(p[0] - ox) * 1000, (p[1] - oy) * 1000];
   const A = L(a), B = L(b), from = nodesNear(g, ...A), to = nodesNear(g, ...B);
@@ -1759,11 +1799,20 @@ function buildPlaces(data, stays, images) {
     for (const f of ["thumb", "full"]) if (p[f]) p[f] += `?v=${DATA_V}`;
     if (p.fulls) p.fulls = p.fulls.map(u => `${u}?v=${DATA_V}`);
   }
+  for (const c of NIGHT_ORDER) placeBy[`${c}:HOME`] = homeStop(c);
+}
+// "back to our Airbnb" (or the city centre, with none picked): a stop you can pin to come back mid-day.
+// It isn't on the map or in the menus; where it is and what it's called follow the home base you pick.
+function homeStop(c) {
+  return { city: c, code: "HOME", type: "home", blurb: "",
+    get name() { return home(c).place ? "Back to our Airbnb" : `Back to ${home(c).name}`; },
+    get xy() { return home(c).xy; } };
 }
 function cityPts(city, codes) { return codes.map(c => placeBy[`${city}:${c}`]).filter(Boolean).map(p => p.xy); }
 
 // ---------- camera ----------
-const zoom = d3.zoom().scaleExtent([0.35, 8000]).on("zoom", e => { T = e.transform; invalidate(); });
+const K_MIN = innerWidth < 760 ? 0.16 : 0.35; // phones: the whole trip fits in the strip above the card
+const zoom = d3.zoom().scaleExtent([K_MIN, 8000]).on("zoom", e => { T = e.transform; invalidate(); });
 const cvSel = d3.select(cv).call(zoom);
 
 function viewRect() {
@@ -1772,15 +1821,24 @@ function viewRect() {
   const pr = document.getElementById("card").getBoundingClientRect();
   const top = 70, bottom = docked() ? 24 : 80;
   if (W >= 760) return { x: pr.right, y: top, w: right - pr.right, h: H - top - bottom };
-  return { x: 0, y: top, w: W, h: Math.max(160, pr.top - top) };
+  const cb = calPanel.hidden ? null : calPanel.getBoundingClientRect(); // phones: the planner sheet replaces the card
+  return { x: 0, y: top, w: W, h: Math.max(140, (cb ? cb.top : pr.top) - top) };
+}
+// where to put a place whose popup is about to open: on phones the popup docks under the top bar, so below it
+function popViewRect(photo) {
+  const r = viewRect();
+  if (W >= 760) return r;
+  const d = Math.min(photo ? 128 : 88, r.h - 60);
+  return { ...r, y: r.y + d, h: r.h - d };
 }
 function fitBox(b, pad = 56, minSpan = 0) {
   const r = viewRect();
   let [x0, y0, x1, y1] = b;
   const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
   const bw = Math.max(x1 - x0, minSpan), bh = Math.max(y1 - y0, minSpan);
+  pad = Math.min(pad, r.h * 0.14, r.w * 0.12); // small screens: less margin, more map
   const k = Math.min((r.w - 2 * pad) / bw, (r.h - 2 * pad) / bh);
-  return d3.zoomIdentity.translate(r.x + r.w / 2 - cx * k, r.y + r.h / 2 - cy * k).scale(Math.max(k, 0.35));
+  return d3.zoomIdentity.translate(r.x + r.w / 2 - cx * k, r.y + r.h / 2 - cy * k).scale(Math.max(k, K_MIN));
 }
 function fitPts(pts, pad, minSpan = 1.5) {
   const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
@@ -1957,7 +2015,7 @@ function drawLegs() {
 // a place's chip on the map, as in the HTML: rounded box (a pill for food), icon, label; returns its half size
 const PIN_P2D = {}; // Path2D per kind, made once
 function pinChip(p, x, y, big, alpha) {
-  const k = pinKind(p), h = big ? 22 : 17, ic = big ? 13 : 10, fs = big ? 13 : 10.5, label = p.label || p.code;
+  const k = pinKind(p), h = big ? 22 : 17, ic = big ? 13 : 10, fs = big ? 13 : 10.5, label = p.type === "home" ? "" : p.label || p.code;
   ctx.font = fontFor({ size: fs, weight: 700, fam: "--f-display" });
   const tw = ctx.measureText(label).width, w = Math.round(ic + tw + (big ? 13 : 10)), x0 = x - w / 2, y0 = y - h / 2;
   const rad = k === "eat" ? h / 2 : big ? 5 : 4, col = C[homeOf(p)], trip = k === "trip";
@@ -2026,12 +2084,16 @@ function drawPins() {
   }
   const isF = p => focus.has(`${p.city}:${p.code}`) || openPlace === p;
   const isTrip = p => p.type === "nature" || p.type === "daytrip";
+  // a day with places pinned: the others stay out of the way until you zoom in close to look around
+  const others = sl.day && focus.size ? smooth(350, 800, k) : 1;
+  const dayHomes = new Set(sl.day ? sl.it.filter(e => e.stop?.kind === "home" && e.stop.place).map(e => e.stop.place) : []); // drawn by drawDay
   for (const p of [...PLACES.filter(q => !isF(q)), ...PLACES.filter(isF)]) { // focused pins on top
+    if (dayHomes.has(p)) continue;
     const [x, y] = toS(p.xy);
     if (!inView(x, y)) continue;
-    const vis = isTrip(p) || isF(p) ? tripShow : show; // a slide's own places show zoomed out too (Split's spread-out villas)
-    if (vis <= 0) continue;
     const f = isF(p);
+    const vis = (isTrip(p) || f ? tripShow : show) * (f ? 1 : others); // a slide's own places show zoomed out too (Split's spread-out villas)
+    if (vis <= 0.04) continue;
     const [hw, hh] = pinChip(p, x, y, f, vis * (f || !sl.city ? 1 : 0.6)), r = hw;
     taken.push([x - hw - 2, y - hh - 2, x + hw + 2, y + hh + 2]);
     if (f || k > 170 || (isTrip(p) && k < 25)) labels.push({ p, x, y, r, f, vis });
@@ -2183,6 +2245,7 @@ function drawPlane(now) {
 // ---------- popup ----------
 const pop = document.getElementById("pop");
 function openPop(p) {
+  if (p.type === "home") { const h = home(p.city); if (h.place) openPop(h.place); else openStopPop(h); return; }
   openPlace = p;
   const where = p.type === "nature" || p.type === "daytrip" ? "" : `, ${(CITIES[p.city] || DETAIL[p.city]).local}`;
   const imageSearch = `https://duckduckgo.com/?q=${encodeURIComponent(p.name + where)}&iax=images&ia=images`;
@@ -2247,6 +2310,7 @@ function placePop() {
   let px = x + 22, py = y - h / 2;
   if (px + w > right - 16) px = x - w - 22;
   px = Math.max(16, px); py = Math.max(16, Math.min(H - h - 80, py));
+  if (W < 760) { px = (W - w) / 2; py = document.getElementById("tools").getBoundingClientRect().bottom + 8; } // phones: docked under the top bar
   pop.style.translate = `${Math.round(px)}px ${Math.round(py)}px`; // translate, not transform: it's applied after the opening scale, which then grows from the icon
   pop.style.transformOrigin = `${Math.round(x - px)}px ${Math.round(y - py)}px`; // it grows out of, and shrinks back into, its icon
 }
@@ -2394,6 +2458,7 @@ document.getElementById("roam").onclick = toggleRoam;
 const calBtn = document.getElementById("calBtn"), calPanel = document.getElementById("calPanel");
 const docked = () => document.body.classList.contains("dock");
 function renderPlanner() {
+  document.body.classList.toggle("daypick", plSel != null);
   if (calPanel.hidden) return;
   const y = calPanel.scrollTop;
   calPanel.innerHTML = planHTML();
@@ -2403,6 +2468,7 @@ function renderPlanner() {
 function setCal(open) {
   if (docked()) open = true; // locked on screen on wide screens
   calPanel.hidden = !open; calBtn.setAttribute("aria-expanded", open);
+  document.body.classList.toggle("planopen", open);
   if (open) renderPlanner();
   remeasure();
 }
@@ -2468,8 +2534,8 @@ calPanel.addEventListener("click", e => {
     const a = arr.indexOf(ks[j]), b = arr.indexOf(ks[o]); [arr[a], arr[b]] = [arr[b], arr[a]];
     plMsg = ""; planChanged(); return;
   }
-  const sp = t.closest(".itin [data-p]");
-  if (sp && !t.closest("button, select")) { focusPlace(placeBy[sp.dataset.p]); return; }
+  const sp = t.closest(".dayv .itin [data-si]");
+  if (sp && !t.closest("button, select")) { focusStop(+sp.dataset.si); return; }
   const act = t.closest("[data-act]")?.dataset.act;
   if (!act) return;
   const strip = () => { try { history.replaceState(null, "", location.pathname + location.hash); } catch (err) {} };
@@ -2512,6 +2578,10 @@ calPanel.addEventListener("change", e => {
   }
   if (t.id === "pl-dep" && t.value) { PLAN.legs[t.dataset.leg === "vz" ? "vs" : t.dataset.leg].dep = t.value; planChanged(); }
 });
+calPanel.addEventListener("keydown", e => { // Enter on a stop in the day's list does what a click does
+  const sp = e.key === "Enter" && e.target.matches?.(".dayv .itin [data-si]") ? e.target : null;
+  if (sp) { e.preventDefault(); focusStop(+sp.dataset.si); }
+});
 calPanel.addEventListener("input", e => {
   if (e.target.id !== "pl-note") return;
   const x = DAYS[plSel], v = e.target.value.trim();
@@ -2539,13 +2609,29 @@ let dragPin = null;
 document.addEventListener("dragstart", e => {
   const s = e.target.closest?.("[data-dpin]"); if (!s) return;
   dragPin = { key: s.dataset.dpin, from: s.dataset.from || null };
+  if (s.matches(".itin .st")) setTimeout(() => s.classList.add("dragging"));
   e.dataTransfer.setData("text/plain", placeBy[dragPin.key]?.name || dragPin.key); e.dataTransfer.effectAllowed = dragPin.from ? "move" : "copy";
   document.body.classList.add("pindrag");
   if (calPanel.hidden) setTimeout(() => setCal(true)); // somewhere to drop it (after the drag has started)
 });
 const pinDropOk = x => { const p = placeBy[dragPin.key], on = pinsOn(x); return canPin(x, p) && (on.includes(dragPin.key) || on.length < PIN_MAX); };
+// within the open day's list: drop a place above or below another to reorder the day
+const clearRowDrop = () => calPanel.querySelectorAll(".itin .drop-above, .itin .drop-below").forEach(r => r.classList.remove("drop-above", "drop-below"));
+// anywhere over the list counts (rides, home and station rows too): the drop goes in the nearest gap between
+// the other places, so the very top and bottom are easy to hit
+function rowDrop(e) {
+  const list = e.target.closest(".dayv .itin"), x = plSel != null && DAYS[plSel];
+  if (!list || !x || dragPin.from !== x.iso) return null;
+  const rows = [...list.querySelectorAll(".st[data-dpin]")].filter(r => r.dataset.dpin !== dragPin.key);
+  if (!rows.length) return null;
+  const before = rows.filter(r => { const b = r.getBoundingClientRect(); return e.clientY > b.top + b.height / 2; }).length;
+  return before ? { row: rows[before - 1], below: true, x } : { row: rows[0], below: false, x };
+}
 calPanel.addEventListener("dragover", e => {
   if (!dragPin) return;
+  clearRowDrop();
+  const rd = rowDrop(e);
+  if (rd) { rd.row.classList.add(rd.below ? "drop-below" : "drop-above"); e.preventDefault(); e.dataTransfer.dropEffect = "move"; return; }
   const cell = e.target.closest(".cal.planner [data-day]");
   calPanel.querySelectorAll(".cd.drop-ok, .cd.drop-no").forEach(c => c !== cell && c.classList.remove("drop-ok", "drop-no"));
   if (!cell) return;
@@ -2554,6 +2640,14 @@ calPanel.addEventListener("dragover", e => {
   if (ok) { e.preventDefault(); e.dataTransfer.dropEffect = dragPin.from ? "move" : "copy"; }
 });
 calPanel.addEventListener("drop", e => {
+  const rd = dragPin && rowDrop(e);
+  if (rd) {
+    e.preventDefault(); clearRowDrop();
+    const arr = PLAN.pins[rd.x.iso], key = dragPin.key; dragPin = null;
+    arr.splice(arr.indexOf(key), 1);
+    arr.splice(arr.indexOf(rd.row.dataset.dpin) + (rd.below ? 1 : 0), 0, key);
+    plMsg = ""; planChanged(); return;
+  }
   const cell = e.target.closest(".cal.planner [data-day]"); if (!cell || !dragPin) return;
   e.preventDefault();
   dropPin(cell);
@@ -2574,7 +2668,8 @@ function dropPin(cell) {
 }
 function movedOff(key, iso) { const arr = PLAN.pins[iso] || [], k = arr.indexOf(key); if (k >= 0) arr.splice(k, 1); if (!arr.length) delete PLAN.pins[iso]; }
 document.addEventListener("dragend", () => {
-  dragPin = null; document.body.classList.remove("pindrag");
+  dragPin = null; document.body.classList.remove("pindrag"); clearRowDrop();
+  calPanel.querySelectorAll(".itin .dragging").forEach(r => r.classList.remove("dragging"));
   calPanel.querySelectorAll(".cd.drop-ok, .cd.drop-no").forEach(c => c.classList.remove("drop-ok", "drop-no"));
 });
 
@@ -2650,9 +2745,11 @@ function goDay(i, { instant = false } = {}) {
   const g = dayCity(DAYS[i]), first = groupSlides(g)[0];
   dayCard = lastSeen[g] ?? first ?? (cur >= 0 ? cur : 0);
   for (const e of daySl.it) if (e.stop) needCity(e.stop.place?.city || e.stop.city);
+  renderPlanner(); // first, so a phone's planner sheet has its day size when the map fits the day
   showSlide(daySl, instant);
   try { history.replaceState(null, "", "#" + daySl.id); } catch (e) {}
-  renderPlanner();
+  const dv = calPanel.querySelector(".dayv"); // phones: the day's plan in view, the map above it
+  if (dv && !docked() && W < 760) calPanel.scrollTop = dv.offsetTop - (calPanel.querySelector(".phead")?.offsetHeight || 0) - 8;
 }
 function stepAny(dir) { if (daySl) goDay(daySl.i + dir); else go(stepFrom(cur, dir)); }
 
@@ -2745,6 +2842,7 @@ function drawDay(sl) {
     // walks and city rides follow the streets; when the streets can't connect the two ends (another map, an
     // airport, a day trip) the hop rides its transfer or trip route instead
     const route = (h.mode === "walk" || h.mode === "city") && roadRoute(h.a.xy, h.b.xy);
+    if (route === undefined) continue; // its streets aren't ready yet: draw the leg in a moment, not as a straight line
     const trip = !route && hopParts(hopRoutes(h), h.a.xy, h.b.xy, col);
     const parts = trip || [{ pts: (route || [h.a.xy, h.b.xy]).map(toS), dash, w, color: h.mode === "walk" ? C.ink2 : col }];
     ctx.globalAlpha = 1; strokeParts(parts);
@@ -2766,6 +2864,11 @@ function drawDay(sl) {
     const [x, y] = toS(s.xy); if (!inView(x, y)) continue;
     const crowded = named.some(([a, b]) => Math.abs(a - x) < 150 && Math.abs(b - y) < 18); // stops close together keep one label
     if (!crowded) named.push([x, y]);
+    if (s.kind === "home" && s.place) { // our Airbnb: its own chip, the same at every zoom (drawPins leaves it to us)
+      const [hw] = pinChip(s.place, x, y, true, 1); ctx.globalAlpha = 1;
+      hits.push({ x, y, r: hw + 6, grab: hw + 1, place: s.place });
+      continue;
+    }
     ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x - 11, y - 11, 22, 22, 5) : ctx.rect(x - 11, y - 11, 22, 22);
     ctx.fillStyle = C.halo; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = C.ink; ctx.stroke();
     text(HUB_ICON[s.kind], x, y + 1, { size: s.kind === "home" ? 15 : 12, weight: 700, color: C.ink, align: "center", halo: 0 });
@@ -2782,7 +2885,7 @@ async function playDay() {
     if (tok !== playTok || !daySl) return;
     closePop();
     const full = s.place && (s.kind === "place" || s.kind === "home"); // a place or our Airbnb: its usual popup
-    const r = viewRect(), k = full ? 420 : 180;
+    const r = popViewRect(full), k = full ? 420 : 180;
     await new Promise(res => flyTo(d3.zoomIdentity.translate(r.x + r.w / 2 - s.xy[0] * k, r.y + r.h / 2 - s.xy[1] * k).scale(k), res));
     if (tok !== playTok) return;
     if (full) openPop(s.place); else openStopPop(s, it.slice(i + 1).find(e => e.hop)?.hop);
@@ -2974,9 +3077,18 @@ card.addEventListener("keydown", e => {
   const li = e.target.closest("[data-p]");
   if (li && (e.key === "Enter")) { e.preventDefault(); focusPlace(placeBy[li.dataset.p]); }
 });
+// a stop in the open day's list: fly there and open its popup (a place's, our Airbnb's, or a station's small one)
+function focusStop(i) {
+  const it = daySl?.it || (plSel != null ? itinerary(DAYS[plSel]) : null), s = it?.[i]?.stop;
+  if (!s) return;
+  if (s.place && (s.kind === "place" || s.kind === "home")) { focusPlace(s.place); return; }
+  closePop();
+  const r = popViewRect(false), k = Math.max(T.k, 180);
+  flyTo(d3.zoomIdentity.translate(r.x + r.w / 2 - s.xy[0] * k, r.y + r.h / 2 - s.xy[1] * k).scale(k), () => openStopPop(s, it.slice(i + 1).find(e => e.hop)?.hop));
+}
 function focusPlace(p) {
   closePop();
-  const r = viewRect(), k = Math.max(T.k, p.type === "area" ? 260 : p.type === "stay" ? 380 : 520);
+  const r = popViewRect(true), k = Math.max(T.k, p.type === "area" ? 260 : p.type === "stay" ? 380 : 520);
   flyTo(d3.zoomIdentity.translate(r.x + r.w / 2 - p.xy[0] * k, r.y + r.h / 2 - p.xy[1] * k).scale(k), () => openPop(p));
 }
 

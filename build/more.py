@@ -30,6 +30,9 @@ OUTER = {
 }
 COASTAL = {"split"}
 TILE = {"base": 0.06, "bd": 0.03}  # degrees per download tile
+# the outer ring is seen zoomed out or in passing: coarser shapes, and small buildings and patches dropped
+MORE_TOL = {**TOL, "r3": 4.0, "gr": 6.0, "bd": 2.0}
+MORE_MIN = {**MIN_AREA, "gr": 2500, "bd": 350}
 
 
 def tiles(b, step):
@@ -88,10 +91,10 @@ def build(city):
                 area, area_p = (bd_ring, bd_p) if layer == "bd" else (ring, ring_p)
                 if not area_p.intersects(g):
                     continue
-                g = g.intersection(area).simplify(TOL[layer])
+                g = g.intersection(area).simplify(MORE_TOL[layer])
                 for part in iter_parts(g):
                     if isinstance(part, Polygon):
-                        if part.area >= MIN_AREA.get(layer, 0):
+                        if part.area >= MORE_MIN.get(layer, 0):
                             layers[layer].append([flat_delta(part.exterior.coords)] + [flat_delta(i.coords) for i in part.interiors if i.length > 30])
                     elif isinstance(part, LineString) and part.length > 5:
                         layers[layer].append(flat_delta(part.coords))
