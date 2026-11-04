@@ -1282,6 +1282,7 @@ function calCells(days = DAYS, live = null) {
   days.forEach(x => {
     const c = x.kind === "travel" ? (x.sleeper ? null : x.to) : x.kind === "depart" ? null : x.city;
     if (c && ncs.indexOf(c) < ncs.length - 1) lastStay[c] = x.i;
+    if (x.kind === "travel" && x.leg === "vs" && byRail()) lastStay.zagreb = x.i; // no night there yet: drag right to stay over
   });
   days.forEach(x => {
     const n = x.date.getDate(), m = n === 1 || x.i === 0 ? ` ${MON[x.date.getMonth()]}` : "";
@@ -1321,7 +1322,7 @@ function planHTML() {
   ${sharedPending ? `<div class="banner"><span>You opened a shared plan.</span><button class="mini" data-act="keep">Keep it as mine</button><button class="mini ghost" data-act="discard">Use my own</button></div>` : ""}
   ${settingsHTML()}
   <div class="cal planner">${WD_CAL.map(w => `<div class="wd">${w}</div>`).join("")}${cells.join("")}</div>
-  <p class="pl-status" role="status">${esc(plMsg || `Click a day to see it on the map and pin up to ${PIN_MAX} places. Drag the handle on a city's last day to move nights between cities (drag Wien's left to stop over in Zagreb).`)}</p>
+  <p class="pl-status" role="status">${esc(plMsg || `Click a day to see it on the map and pin up to ${PIN_MAX} places. Drag the handle on a city's last day to move nights between cities (drag Zagreb's right to stay the night there).`)}</p>
   ${plSel != null && DAYS[plSel] ? dayViewHTML(DAYS[plSel]) : ""}
   ${lostHTML}
   ${outside.length ? `<p class="note">Notes on ${outside.length} date${outside.length > 1 ? "s" : ""} outside the trip are kept in case the dates move back.</p>` : ""}
