@@ -379,8 +379,9 @@ def main():
             user_list = user if isinstance(user, list) else [user] if user else []
             if p["name"] in result and not (user_list and result[p["name"]].get("user") != user_list[0]):
                 continue
-            if p["name"] in USER:
-                (RAW / f"{slug}.bin").unlink() if (RAW / f"{slug}.bin").exists() else None
+            if p["name"] in USER:  # a chosen photo replaces both cached copies, the large original too
+                for old in (RAW / f"{slug}.bin", RAW / f"{slug}.full.bin"):
+                    old.unlink() if old.exists() else None
             info = None
             path = None
             sources = [("img", user_list[0])] if user_list else []

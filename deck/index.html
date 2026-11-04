@@ -72,8 +72,8 @@ canvas#map:active { cursor: grabbing; }
   pointer-events: none; z-index: 5;
 }
 #card {
-  pointer-events: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
-  box-shadow: 0 10px 40px rgba(10, 20, 25, 0.16); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  pointer-events: auto; background: var(--panel-solid); border: 1px solid var(--line); border-radius: 6px;
+  box-shadow: 0 10px 40px rgba(10, 20, 25, 0.16); /* solid, no backdrop blur: re-blurring the map under a panel this big every frame made panning stutter */
   padding: 22px 24px 20px; overflow-y: auto; min-height: 0; min-width: 0; flex: 1 1 auto; /* fills the column, so the slide buttons sit at the same spot on every slide */
   transition: opacity .25s ease, transform .25s ease;
 }
@@ -218,7 +218,7 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .btn.wide .dates { margin-left: auto; font: 500 11.5px var(--f-mono); color: var(--ink-2); letter-spacing: .02em; }
 #calBtn[aria-expanded="true"] { border-bottom: 3px solid var(--ink-2); }
 .calpanel { position: fixed; z-index: 7; top: calc(70px + env(safe-area-inset-top, 0px)); right: var(--gr); width: min(540px, calc(100vw - 32px)); max-height: calc(100% - 160px); overflow-y: auto;
-  background: var(--panel); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 14px 40px rgba(10,20,25,.28); padding: 20px 22px 18px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  background: var(--panel-solid); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 14px 40px rgba(10,20,25,.28); padding: 20px 22px 18px; } /* solid: see #card */
 .calpanel .x { position: absolute; z-index: 8; top: 8px; right: 8px; width: 34px; height: 34px; border: 0; background: none; color: var(--ink-2); font-size: 22px; cursor: pointer; border-radius: 4px; }
 .calpanel .x:hover { background: var(--chip); }
 .calpanel .phead .x { top: 50%; right: 6px; translate: 0 -50%; }
@@ -1557,7 +1557,9 @@ function drawTowns(k) {
 
 const POLY = new Set(["wa", "gr", "bd", "sea"]);
 const TILE = 2000, LOD_K = 100, LOD_M = 20; // tiles in metres; below zoom LOD_K draw copies thinned to LOD_M
+const LOD2_K = 50, LOD2_M = 60; // and below LOD2_K, coarser ones still: a whole city and its outskirts on screen at once
 const LOD_LAYERS = new Set(["sea", "gr", "wa", "wl", "r1", "r2", "r3", "pa", "rl"]);
+const LOD2_SKIP = new Set(["r3", "pa"]); // side streets and paths have all but faded out below LOD2_K
 // one delta-encoded line as absolute points, plus its bounding box
 function decode(a) {
   const pts = new Float64Array(a.length); let x = a[0], y = a[1], x0 = x, y0 = y, x1 = x, y1 = y;
@@ -1570,11 +1572,11 @@ function decode(a) {
   return { pts, bb: [x0, y0, x1, y1] };
 }
 // the same line with vertices closer than LOD_M to the last kept one dropped
-function addThin(p, pts, close) {
+function addThin(p, pts, close, step = LOD_M) {
   let lx = pts[0], ly = pts[1], n = 1; p.moveTo(lx, ly);
   for (let i = 2; i < pts.length; i += 2) {
     const x = pts[i], y = pts[i + 1], last = i === pts.length - 2;
-    if (last || Math.abs(x - lx) + Math.abs(y - ly) >= LOD_M) { p.lineTo(x, y); lx = x; ly = y; n++; }
+    if (last || Math.abs(x - lx) + Math.abs(y - ly) >= step) { p.lineTo(x, y); lx = x; ly = y; n++; }
   }
   if (close) p.closePath();
   return n;
@@ -1591,8 +1593,8 @@ function buildCity(name, c) {
 const setBounds = (city, b) => { const [ox, oy] = city.origin; city.bounds = b; city.box = [ox + b[0] / 1000, oy + b[1] / 1000, ox + b[2] / 1000, oy + b[3] / 1000]; };
 // every layer is split into TILE-sized cells (by each feature's top-left corner), so a zoomed-in view
 // strokes only the cells it can see; each cell's box grows to cover its features
-function addLayers(city, layers, { roads = false, replace = [] } = {}) {
-  for (const layer of replace) { delete city.lo[layer]; for (const t of city.tileMap.values()) delete t.paths[layer]; }
+function addLayers(city, layers, { roads = false, replace = [], noLo = [] } = {}) {
+  for (const layer of replace) { delete city.lo[layer]; if (city.lo2) delete city.lo2[layer]; for (const t of city.tileMap.values()) delete t.paths[layer]; }
   const cell = (bb) => {
     const key = `${Math.floor(bb[0] / TILE)},${Math.floor(bb[1] / TILE)}`;
     let t = city.tileMap.get(key);
@@ -1601,7 +1603,9 @@ function addLayers(city, layers, { roads = false, replace = [] } = {}) {
     return t;
   };
   for (const [layer, items] of Object.entries(layers)) {
-    const poly = POLY.has(layer), thin = LOD_LAYERS.has(layer) ? (city.lo[layer] ||= new Path2D()) : null;
+    const low = LOD_LAYERS.has(layer) && !noLo.includes(layer); // noLo: drawn only zoomed in (the outskirts' side streets)
+    const poly = POLY.has(layer), thin = low ? (city.lo[layer] ||= new Path2D()) : null;
+    const thin2 = low && !LOD2_SKIP.has(layer) ? ((city.lo2 ||= {})[layer] ||= new Path2D()) : null;
     for (const it of items) {
       const lines = (poly ? it : [it]).map(decode);
       const bb = lines[0].bb.slice();
@@ -1610,7 +1614,9 @@ function addLayers(city, layers, { roads = false, replace = [] } = {}) {
       for (const l of lines) addAbs(p, l.pts, poly);
       if (roads && ROAD_LAYERS.has(layer)) city.roads.push(lines[0].pts);
       // the thinned copy skips features smaller than a couple of pixels at LOD_K
-      if (thin && (bb[2] - bb[0]) + (bb[3] - bb[1]) >= 2 * LOD_M) for (const l of lines) addThin(thin, l.pts, poly);
+      const span = (bb[2] - bb[0]) + (bb[3] - bb[1]);
+      if (thin && span >= 2 * LOD_M) for (const l of lines) addThin(thin, l.pts, poly);
+      if (thin2 && span >= (layer === "gr" ? 8 : 4) * LOD2_M) for (const l of lines) addThin(thin2, l.pts, poly, LOD2_M);
     }
   }
   city.tiles = [...city.tileMap.values()];
@@ -1623,7 +1629,7 @@ function needMore(name) {
   moreReq[name] = true;
   (window.requestIdleCallback || setTimeout)(() => fetch(`data/${name}_more.json?v=${DATA_V}`).then(r => r.json()).then(m => {
     const city = S.cities[name];
-    addLayers(city, m.layers, { replace: m.replace || [] });
+    addLayers(city, m.layers, { replace: m.replace || [], noLo: ["r3", "pa"] });
     setBounds(city, m.bounds);
     invalidate();
   }).catch(() => { moreReq[name] = false; }), { timeout: 4000 });
@@ -1838,7 +1844,10 @@ function cityPts(city, codes) { return codes.map(c => placeBy[`${city}:${c}`]).f
 
 // ---------- camera ----------
 const K_MIN = innerWidth < 760 ? 0.16 : 0.35; // phones: the whole trip fits in the strip above the card
-const zoom = d3.zoom().scaleExtent([K_MIN, 8000]).on("zoom", e => { T = e.transform; invalidate(); });
+const zoom = d3.zoom().scaleExtent([K_MIN, 8000])
+  .on("start", e => { if (e.sourceEvent) gest = { bad: 0, slow: false }; }) // a drag, pinch or wheel by hand
+  .on("zoom", e => { T = e.transform; if (gest?.slow) settleSoon(); invalidate(); })
+  .on("end", () => { if (gest) { const was = gest.slow; gest = null; clearTimeout(settleT); if (was) invalidate(); } });
 const cvSel = d3.select(cv).call(zoom);
 
 function viewRect() {
@@ -1899,10 +1908,11 @@ function text(str, x, y, { size = 12, weight = 600, fam = "--f-body", color = C.
 
 // paint a city's layers onto g, which is already in the city's metre frame; view is the visible part in metres
 function paintCity(g, c, k, view) {
-  const px = 1000 / k, lo = k < LOD_K;
+  const px = 1000 / k, lo = k < LOD_K, lo2 = k < LOD2_K && c.lo2;
   const vis = c.tiles.filter(t => t.bb[0] < view[2] && t.bb[2] > view[0] && t.bb[1] < view[3] && t.bb[3] > view[1]);
-  const fill = (layer, rule = "nonzero") => { if (lo && c.lo[layer]) g.fill(c.lo[layer], rule); else for (const t of vis) if (t.paths[layer]) g.fill(t.paths[layer], rule); };
-  const stroke = layer => { if (lo && c.lo[layer]) g.stroke(c.lo[layer]); else for (const t of vis) if (t.paths[layer]) g.stroke(t.paths[layer]); };
+  const pick = layer => lo2 ? (LOD2_SKIP.has(layer) ? "skip" : c.lo2[layer]) : lo ? c.lo[layer] : null;
+  const fill = (layer, rule = "nonzero") => { const q = pick(layer); if (q === "skip") return; if (q) g.fill(q, rule); else for (const t of vis) if (t.paths[layer]) g.fill(t.paths[layer], rule); };
+  const stroke = layer => { const q = pick(layer); if (q === "skip") return; if (q) g.stroke(q); else for (const t of vis) if (t.paths[layer]) g.stroke(t.paths[layer]); };
   g.lineCap = "round"; g.lineJoin = "round";
   if (c.lo.sea) { // coastal map: land everywhere, then the sea cut from the real coastline
     const [bw, bn, be, bs] = c.bounds;
@@ -1916,8 +1926,8 @@ function paintCity(g, c, k, view) {
   if (pA > 0 && c.lo.pa) { g.globalAlpha = pA * 0.7; g.strokeStyle = C.ink2; g.lineWidth = Math.max(0.6 * px, 2.5); g.setLineDash([3 * px, 2.5 * px]); stroke("pa"); g.setLineDash([]); g.globalAlpha = 1; }
   const bA = smooth(140, 320, k);
   if (bA > 0) { g.globalAlpha = bA; g.fillStyle = C.building; fill("bd", "evenodd"); g.globalAlpha = 1; }
-  const r3 = smooth(40, 120, k);
-  if (r3 > 0) { g.globalAlpha = r3; g.strokeStyle = C.casing; g.lineWidth = Math.max(1.4 * px, 8 + 1.2 * px); stroke("r3"); g.strokeStyle = C.road; g.lineWidth = Math.max(0.8 * px, 8); stroke("r3"); g.globalAlpha = 1; }
+  const r3 = smooth(55, 130, k); // side streets: faint and casing-less until they're worth the cost
+  if (r3 > 0) { g.globalAlpha = r3; if (!lo) { g.strokeStyle = C.casing; g.lineWidth = Math.max(1.4 * px, 8 + 1.2 * px); stroke("r3"); } g.strokeStyle = C.road; g.lineWidth = Math.max(0.8 * px, 8); stroke("r3"); g.globalAlpha = 1; }
   g.strokeStyle = C.casing; g.lineWidth = Math.max(2.4 * px, 13 + 1.6 * px); stroke("r2");
   g.strokeStyle = C.road; g.lineWidth = Math.max(1.4 * px, 13); stroke("r2");
   g.strokeStyle = C.casing; g.lineWidth = Math.max(3.4 * px, 18 + 2 * px); stroke("r1");
@@ -1937,8 +1947,38 @@ function drawCity(name, alpha) {
   if (alpha >= 1 && a[0] + f <= 0 && a[1] + f <= 0 && b[0] - f >= W && b[1] - f >= H) {
     ctx.save(); ctx.setTransform(...tf); paintCity(ctx, c, k, view); ctx.restore(); return;
   }
-  // otherwise paint offscreen, only inside the part of the box on screen, feather the edges and composite
   const x0 = a[0] * dpr, y0 = a[1] * dpr, x1 = b[0] * dpr, y1 = b[1] * dpr;
+  // an edge on screen, fully faded in: paint straight onto the map inside the feathered band, and only the band
+  // itself offscreen (a whole-screen offscreen copy every frame made panning near a map's edge stutter)
+  if (alpha >= 1) {
+    const fd = f * dpr, cw2 = cv.width, ch2 = cv.height;
+    const ix0 = Math.max(0, x0 + fd), iy0 = Math.max(0, y0 + fd), ix1 = Math.min(cw2, x1 - fd), iy1 = Math.min(ch2, y1 - fd);
+    if (ix1 > ix0 && iy1 > iy0) {
+      ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.beginPath(); ctx.rect(ix0, iy0, ix1 - ix0, iy1 - iy0); ctx.clip();
+      ctx.setTransform(...tf); paintCity(ctx, c, k, view); ctx.restore();
+    }
+    const strips = [[x0, y0, x1 - x0, fd], [x0, y1 - fd, x1 - x0, fd], [x0, y0 + fd, fd, y1 - y0 - 2 * fd], [x1 - fd, y0 + fd, fd, y1 - y0 - 2 * fd]]
+      .map(([rx, ry, rw, rh]) => { const sx = Math.max(0, Math.floor(rx)), sy = Math.max(0, Math.floor(ry)); return [sx, sy, Math.min(cw2, Math.ceil(rx + rw)) - sx, Math.min(ch2, Math.ceil(ry + rh)) - sy]; })
+      .filter(([, , rw, rh]) => rw > 0 && rh > 0);
+    if (!strips.length) return;
+    oc.save();
+    oc.setTransform(1, 0, 0, 1, 0, 0); oc.globalCompositeOperation = "source-over"; oc.globalAlpha = 1;
+    oc.beginPath(); for (const [rx, ry, rw, rh] of strips) { oc.clearRect(rx, ry, rw, rh); oc.rect(rx, ry, rw, rh); } oc.clip();
+    oc.setTransform(...tf); paintCity(oc, c, k, view);
+    oc.setTransform(1, 0, 0, 1, 0, 0); oc.globalCompositeOperation = "destination-out";
+    for (const [gx0, gy0, gx1, gy1, rx, ry, rw, rh] of [
+      [x0, 0, x0 + fd, 0, x0, y0, fd, y1 - y0], [x1, 0, x1 - fd, 0, x1 - fd, y0, fd, y1 - y0],
+      [0, y0, 0, y0 + fd, x0, y0, x1 - x0, fd], [0, y1, 0, y1 - fd, x0, y1 - fd, x1 - x0, fd]]) {
+      const g = oc.createLinearGradient(gx0, gy0, gx1, gy1); g.addColorStop(0, "#000"); g.addColorStop(1, "rgba(0,0,0,0)");
+      oc.fillStyle = g; oc.fillRect(rx, ry, rw, rh);
+    }
+    oc.restore();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    for (const [rx, ry, rw, rh] of strips) ctx.drawImage(off, rx, ry, rw, rh, rx, ry, rw, rh);
+    return;
+  }
+  // fading in: paint offscreen, only inside the part of the box on screen, feather the edges and composite
+
   const cx0 = Math.max(0, Math.floor(x0)), cy0 = Math.max(0, Math.floor(y0));
   const cw = Math.min(off.width, Math.ceil(x1)) - cx0, ch = Math.min(off.height, Math.ceil(y1)) - cy0;
   if (cw <= 0 || ch <= 0) return;
@@ -1982,9 +2022,10 @@ function drawFlights() {
   const sl = SL();
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   for (const f of FLIGHTS) {
-    // only when we fly it: then the arc stands in for the track everywhere
+    // only when we fly it: then the arc stands in for the track everywhere (but not down at street level, where
+    // its dashes would run for thousands of screen pixels off screen)
     const active = sl.day ? sl.flight === f.leg : sl.leg === f.leg;
-    if (railLeg(f.leg)) continue;
+    if (railLeg(f.leg) || T.k > 40) continue;
     const [a, b, cx, cy] = flightArc(f);
     ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.quadraticCurveTo(cx, cy, b[0], b[1]);
     ctx.setLineDash([2, 7]); ctx.lineCap = "round"; ctx.lineWidth = 3; ctx.strokeStyle = C.ink2;
@@ -1999,6 +2040,20 @@ function drawFlights() {
   }
 }
 const railLeg = id => id !== "vs" || byRail(); // flying to Split leaves its track off the map
+// zoomed in, a whole track (thousands of points) is mostly off screen: hand the canvas only the stretches on it.
+// Safari strokes every point of a path each frame however far off screen, which made panning by the track stutter
+function visibleRuns(pts, pad) {
+  const k = T.k, x0 = -T.x / k - pad, y0 = -T.y / k - pad, x1 = (W - T.x) / k + pad, y1 = (H - T.y) / k + pad;
+  const runs = []; let run = null, cum = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const a = pts[i - 1], b = pts[i], d = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    const on = Math.max(a[0], b[0]) >= x0 && Math.min(a[0], b[0]) <= x1 && Math.max(a[1], b[1]) >= y0 && Math.min(a[1], b[1]) <= y1;
+    if (on) { if (!run) runs.push(run = { at: cum, pts: [a] }); run.pts.push(b); } else run = null;
+    cum += d;
+  }
+  return runs;
+}
+function runsPath(runs) { const p = new Path2D(); for (const r of runs) { p.moveTo(r.pts[0][0], r.pts[0][1]); for (let i = 1; i < r.pts.length; i++) p.lineTo(r.pts[i][0], r.pts[i][1]); } return p; }
 function drawLegs() {
   const sl = SL(), k = T.k;
   ctx.lineCap = "round"; ctx.lineJoin = "round";
@@ -2018,11 +2073,16 @@ function drawLegs() {
     g.addColorStop(0.9, C[L.to]);
     ctx.globalAlpha = dim ? (sl.day ? 0.28 : 0.5) : 1;
     const w = active ? 5 : 3;
+    const runs = k > 4 ? visibleRuns(L.pts, 20 / k) : null, path = runs ? runsPath(runs) : L.path2d;
     ctx.setLineDash([]);
-    ctx.strokeStyle = C.halo; ctx.lineWidth = (w + 4) / k; ctx.stroke(L.path2d);
+    ctx.strokeStyle = C.halo; ctx.lineWidth = (w + 4) / k; ctx.stroke(path);
     ctx.strokeStyle = g; ctx.lineWidth = w / k;
-    if (L.optional && !active) ctx.setLineDash([7 / k, 6 / k]);
-    ctx.stroke(L.path2d); ctx.setLineDash([]);
+    if (L.optional && !active) { // dashed: each stretch keeps its place in the pattern, so the dashes don't crawl while panning
+      ctx.setLineDash([7 / k, 6 / k]);
+      if (runs) for (const r of runs) { ctx.lineDashOffset = r.at; ctx.stroke(runsPath([r])); } else ctx.stroke(path);
+      ctx.lineDashOffset = 0;
+    } else ctx.stroke(path);
+    ctx.setLineDash([]);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     if ((active && k > 1.2) || k > 3) {
       for (let i = 1; i < L.stations.length - 1; i++) {
@@ -2205,10 +2265,13 @@ function draw(now) {
     ctx.globalAlpha = 1;
   }
   drawLand(k);
-  ctx.strokeStyle = C.border; ctx.lineWidth = 1.1 / k; ctx.setLineDash([4 / k, 3 / k]);
-  const vx0 = -T.x / k, vy0 = -T.y / k, vx1 = (W - T.x) / k, vy1 = (H - T.y) / k;
-  for (const b of S.borders) if (b.bb[0] < vx1 && b.bb[2] > vx0 && b.bb[1] < vy1 && b.bb[3] > vy0) ctx.stroke(b.p);
-  ctx.setLineDash([]);
+  const bA = 1 - smooth(25, 45, k); // national borders fade out on the way down into a city: their dashes get costly
+  if (bA > 0) {
+    ctx.globalAlpha = bA; ctx.strokeStyle = C.border; ctx.lineWidth = 1.1 / k; ctx.setLineDash([4 / k, 3 / k]);
+    const vx0 = -T.x / k, vy0 = -T.y / k, vx1 = (W - T.x) / k, vy1 = (H - T.y) / k;
+    for (const b of S.borders) if (b.bb[0] < vx1 && b.bb[2] > vx0 && b.bb[1] < vy1 && b.bb[3] > vy0) ctx.stroke(b.p);
+    ctx.setLineDash([]); ctx.globalAlpha = 1;
+  }
   if (k >= 8) needNear();
   const cA = smooth(14, 40, k);
   if (cA > 0) for (const name in S.cities) drawCity(name, cA);
@@ -2232,11 +2295,32 @@ function draw(now) {
 
 // frames run only when asked for: a change calls invalidate(), and the loop keeps going only while a train animates
 let frame = 0;
-function invalidate() { dirty = true; if (!frame) frame = requestAnimationFrame(loop); }
+let reqAt = 0;
+function invalidate() { dirty = true; if (!frame) { reqAt = performance.now(); frame = requestAnimationFrame(loop); } }
+// panning and zooming by hand on a machine that can't redraw the whole map every frame: once two frames in a row
+// run long, the rest of that gesture moves a snapshot of the map, redrawn properly whenever the hand rests and at
+// the end. Fast machines never switch.
+let gest = null, settleT = 0, snapT = null, drawnT = null;
+const snap = document.createElement("canvas"), sc = snap.getContext("2d");
+function takeSnap() { snap.width = base.width; snap.height = base.height; sc.drawImage(base, 0, 0); snapT = drawnT; }
+function settleSoon() { clearTimeout(settleT); settleT = setTimeout(() => { if (gest?.slow) { draw(); drawnT = T; takeSnap(); vc.setTransform(1, 0, 0, 1, 0, 0); vc.drawImage(base, 0, 0); } }, 140); }
 function loop(now) {
   frame = 0;
   const animating = !reduce && legT0 && (SL().leg || flightOf(SL()));
-  if (dirty) { dirty = false; draw(now); }
+  // while a gesture runs, a frame is slow if it came late (the screen still busy with the last one) or took long to draw
+  const late = gest && !gest.slow && dirty ? performance.now() - reqAt > 30 : false;
+  if (dirty && gest?.slow && snapT) { // move the snapshot instead of redrawing
+    dirty = false;
+    const sk = T.k / snapT.k;
+    vc.setTransform(1, 0, 0, 1, 0, 0); vc.fillStyle = C.water; vc.fillRect(0, 0, cv.width, cv.height);
+    vc.setTransform(sk, 0, 0, sk, dpr * (T.x - snapT.x * sk), dpr * (T.y - snapT.y * sk)); vc.drawImage(snap, 0, 0);
+    if (animating) { flightOf(SL()) ? drawPlane(now) : drawTrain(now); frame = requestAnimationFrame(loop); }
+    return;
+  }
+  if (dirty) {
+    dirty = false; const t0 = performance.now(); draw(now); drawnT = T;
+    if (gest && !gest.slow) { gest.bad = late || performance.now() - t0 > 14 ? gest.bad + 1 : 0; if (gest.bad >= 2) { gest.slow = true; takeSnap(); } }
+  }
   vc.setTransform(1, 0, 0, 1, 0, 0); vc.drawImage(base, 0, 0);
   if (animating) { flightOf(SL()) ? drawPlane(now) : drawTrain(now); frame = requestAnimationFrame(loop); }
   if (playDot) { drawPlayDot(now); if (!frame) frame = requestAnimationFrame(loop); }
@@ -3186,7 +3270,7 @@ cv.addEventListener("pointerup", ev => endMapDrag(ev, true));
 cv.addEventListener("pointercancel", ev => endMapDrag(ev, false));
 
 // ---------- boot ----------
-const DATA_V = "33"; // bump when data files change so browsers don't reuse stale copies
+const DATA_V = "34"; // bump when data files change so browsers don't reuse stale copies
 async function boot() {
   readTheme(); resize();
   invalidate();
