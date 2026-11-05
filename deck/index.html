@@ -1848,7 +1848,25 @@ const K_MIN = innerWidth < 760 ? 0.16 : 0.35; // phones: the whole trip fits in 
 const zoom = d3.zoom().scaleExtent([K_MIN, 8000])
   .on("start", e => { if (e.sourceEvent) gest = { bad: 0, slow: false }; }) // a drag, pinch or wheel by hand
   .on("zoom", e => { T = e.transform; if (gest?.slow) settleSoon(); invalidate(); })
-  .on("end", () => { if (gest) { const was = gest.slow; gest = null; clearTimeout(settleT); if (was) invalidate(); } });
+  .on("end", () => { if (gest) { const was = gest.slow; gest = null; clearTimeout(settleT); if (was) invalidate(); followZoom(); } });
+// zooming into a city by hand brings up its slides, and zooming out until every city on the route is in view
+// brings back the trip's: the one last looked at there, else its first. The map stays put. On an open day only
+// the card changes (the day stays on the map), as the card's own switcher does.
+const FOLLOW_K = 12, FOLLOW_KM = 25;
+function followZoom() {
+  if (!slides.length) return;
+  const r = viewRect(), cx = (r.x + r.w / 2 - T.x) / T.k, cy = (r.y + r.h / 2 - T.y) / T.k;
+  const ids = NIGHT_ORDER.filter(id => !menuOff(id));
+  const all = ids.every(id => { const [x, y] = toS(PC[id].xy); return x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h; });
+  let best = null, bd = FOLLOW_KM;
+  if (all && T.k < FOLLOW_K) best = "trip";
+  else if (T.k >= FOLLOW_K) for (const id of ids) { const d = Math.hypot(PC[id].xy[0] - cx, PC[id].xy[1] - cy); if (d < bd) { bd = d; best = id; } }
+  if (!best || groupOf(daySl ? dayCard : cur) === best) return;
+  const list = groupSlides(best); if (!list.length) return;
+  const j = lastSeen[best] != null && groupOf(lastSeen[best]) === best ? lastSeen[best] : list[0];
+  if (daySl) { dayCard = lastSeen[best] = j; renderCard(); card.style.setProperty("--c", `var(${slides[j].color})`); card.scrollTop = 0; buildMenu(); }
+  else go(j, { fly: false });
+}
 const cvSel = d3.select(cv).call(zoom);
 
 function viewRect() {
