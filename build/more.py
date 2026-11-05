@@ -35,9 +35,10 @@ MORE_TOL = {**TOL, "r3": 4.0, "gr": 6.0, "bd": 2.0}
 MORE_MIN = {**MIN_AREA, "gr": 2500, "bd": 350}
 # Prague's core map is big and built up, so its ring held twice Zagreb's points and panned unevenly in Safari:
 # there, coarser still, fewer small buildings and patches, and no short side-street stubs (min length in m)
-CITY_TOL = {"prague": {"r3": 5.0, "gr": 8.0, "bd": 3.0}}
-CITY_MIN = {"prague": {"gr": 6000, "bd": 800}}
-CITY_LEN = {"prague": {"r3": 45}}
+LIGHT_TOL = {"r3": 5.0, "gr": 8.0, "bd": 3.0}
+CITY_TOL = {"prague": LIGHT_TOL, "vienna": LIGHT_TOL}  # Vienna's ring is built up wall to wall too
+CITY_MIN = {"prague": {"gr": 6000, "bd": 800}, "vienna": {"gr": 6000, "bd": 1500}}
+CITY_LEN = {"prague": {"r3": 45}, "vienna": {"r3": 45}}
 
 
 def tiles(b, step):

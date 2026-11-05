@@ -113,15 +113,15 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 
 
 .places { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
-.places li { display: grid; grid-template-columns: 92px 1fr; gap: 14px; padding: 9px 8px; margin: 0 -8px; border-radius: 5px; cursor: pointer; }
+.places li { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 14px; padding: 9px 8px; margin: 0 -8px; border-radius: 5px; cursor: pointer; }
 .places li:hover, .places li:focus-visible { background: var(--chip); outline: none; }
 .places li:focus-visible { box-shadow: inset 0 0 0 2px var(--c); }
 .places .name { font-weight: 600; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; line-height: 1.25; }
-.places .ract { position: relative; margin-left: auto; flex: none; width: 30px; height: 28px; display: grid; place-items: center; font-size: 14px; color: var(--ink); background: none; border: 1px solid transparent; border-radius: 5px; cursor: pointer; opacity: .4; }
+.places .ract { position: relative; overflow: hidden; margin-left: auto; flex: none; width: 30px; height: 28px; display: grid; place-items: center; font-size: 14px; color: var(--ink); background: none; border: 1px solid transparent; border-radius: 5px; cursor: pointer; opacity: .4; }
 .places .ract:hover, .places .ract:focus-within, .places .ract.on { opacity: 1; }
 .places .ract:hover, .places .ract:focus-within { border-color: var(--line); background: var(--panel); }
 .places .ract.on { background: color-mix(in srgb, var(--c) 18%, transparent); }
-.places .ract select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 16px; }
+.places .ract select { position: absolute; inset: 0; width: 100%; height: 100%; min-width: 0; max-width: 100%; opacity: 0; cursor: pointer; font-size: 16px; } /* iPhones size a select by its longest option: kept to the button */
 .places .txt { min-width: 0; }
 .thumb { width: 92px; height: 92px; object-fit: cover; border-radius: 4px; background: var(--chip); display: block; }
 .back { display: flex; justify-content: space-between; gap: 8px; margin: -4px 0 12px; font-size: 13px; color: var(--ink-2); }
@@ -529,18 +529,18 @@ body.dock #panel { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
   body.daypick .calpanel { max-height: 46vh; max-height: 46dvh; }
   /* phones show one sheet at a time and the planner is for looking at the trip: editing stays on bigger screens */
   body.planopen #panel { display: none; }
-  .calpanel .pset, .calpanel .banner ~ .pset, .cd .grip, .dayv .add, .itin .ctl, .dayv .edhint, .pl-status, .dclock .lnk,
-  .dayv .fld:has(#pl-note:placeholder-shown) { display: none; }
-  #pl-note, #pl-start, #pl-dep { pointer-events: none; border-color: transparent; background: none; padding-inline: 0; resize: none; }
-  #pl-start::-webkit-calendar-picker-indicator, #pl-dep::-webkit-calendar-picker-indicator { display: none; }
+  /* phones edit too: the trip's settings, a day's stops (order, time there, remove), its start and note. Only
+     dragging nights between cities stays on bigger screens, where a drag doesn't fight the sheet's scrolling */
+  .cd .grip, .dayv .edhint { display: none; }
   .itin .st { grid-template-columns: 38px 40px minmax(0, 1fr); }
+  .itin .mv .ib, .itin .ctl .ib { width: 32px; height: 32px; font-size: 14px; } /* big enough for a finger */
+  .itin .dur { padding-block: 6px; }
   .cal.planner .cd { min-height: 54px; padding: 3px 3px 5px; }
   .cd .t, .cd .tr { font-size: 9.5px; }
   #tools { left: calc(var(--gl) + 52px); }
   #calBtn .dates { display: none; }
   .prow { grid-template-columns: 1fr; gap: 6px; }
-  .calpanel .psum { display: block; }
-  .places li { grid-template-columns: 68px 1fr; gap: 12px; }
+  .places li { grid-template-columns: 68px minmax(0, 1fr); gap: 12px; }
   .thumb { width: 68px; height: 68px; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -586,10 +586,17 @@ body.cardmin #panel { display: none; } /* upright phones: the card tucked away, 
   body.planopen #panel { display: none; }
   #card { padding: 12px 14px 12px; }
   h1 { font-size: 26px; } h2 { font-size: 22px; } .lede { font-size: 13px; }
-  .places li { grid-template-columns: 56px 1fr; gap: 10px; } .thumb { width: 56px; height: 56px; }
+  .places li { grid-template-columns: 56px minmax(0, 1fr); gap: 10px; } .thumb { width: 56px; height: 56px; }
   #pop { width: min(320px, 46vw); max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); overflow-y: auto; }
 }
 
+/* nothing scrolls sideways anywhere: the page, the card, the planner, popups and menus (a long word or a picker
+   can't push them wider), and a touch on them only ever scrolls up and down */
+html, body { overflow-x: hidden; overscroll-behavior-x: none; }
+#card, .calpanel, #pop, .mbmenu, .board { overflow-x: hidden; }
+#card, .calpanel { touch-action: pan-y; overscroll-behavior-x: none; }
+#card, .calpanel, #pop { overflow-wrap: break-word; }
+.board table { min-width: 0; }
 </style>
 
 <canvas id="map" aria-label="Map of Prague, Vienna and Split with train routes"></canvas>
@@ -1400,7 +1407,7 @@ function planHTML() {
   <p class="psum">${fmtDay(DAYS[0].date)} → ${fmtDay(DAYS.at(-1).date)} · ${totalNights()} nights · ${ptoChip()}</p>
   ${settingsHTML()}
   <div class="cal planner">${WD_CAL.map(w => `<div class="wd">${w}</div>`).join("")}${cells.join("")}</div>
-  <p class="pl-status" role="status">${esc(plMsg || `Click a day to see it on the map and pin up to ${PIN_MAX} places. Drag the handle on a city's last day to move nights between cities (drag Zagreb's right to stay the night there).`)}</p>
+  <p class="pl-status" role="status">${esc(plMsg || (portraitPhone() || LAND.matches ? `Tap a day to see it on the map and pin up to ${PIN_MAX} places. Move nights between cities on a bigger screen.` : `Click a day to see it on the map and pin up to ${PIN_MAX} places. Drag the handle on a city's last day to move nights between cities (drag Zagreb's right to stay the night there).`))}</p>
   ${plSel != null && DAYS[plSel] ? dayViewHTML(DAYS[plSel]) : ""}
   ${lostHTML}
   ${outside.length ? `<p class="note">Notes on ${outside.length} date${outside.length > 1 ? "s" : ""} outside the trip are kept in case the dates move back.</p>` : ""}
@@ -3609,7 +3616,7 @@ cv.addEventListener("pointerup", ev => endMapDrag(ev, true));
 cv.addEventListener("pointercancel", ev => endMapDrag(ev, false));
 
 // ---------- boot ----------
-const DATA_V = "39"; // bump when data files change so browsers don't reuse stale copies
+const DATA_V = "40"; // bump when data files change so browsers don't reuse stale copies
 async function boot() {
   readTheme(); resize();
   invalidate();
