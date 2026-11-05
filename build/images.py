@@ -30,6 +30,18 @@ BROWSER_UA = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) App
 
 # per place name: list of ("wiki", "lang:Title") / ("site", url) / ("commons", "search terms")
 SOURCES = {
+    # attractions and activities added to each city's Sights slide
+    "Vyšehrad": [("wiki", "en:Vyšehrad"), ("commons", "Vyšehrad Praha")],
+    "Pedal boats on the Vltava": [("commons", "Slovanský ostrov šlapadla"), ("commons", "Pedal boats Vltava Prague"), ("wiki", "en:Slavonic Island")],
+    "Petřín lookout tower": [("wiki", "en:Petřín Lookout Tower"), ("commons", "Petřínská rozhledna")],
+    "Náplavka riverbank": [("commons", "Farmářské trhy Náplavka"), ("commons", "Hausbóty Rašínovo nábřeží"), ("commons", "Prague embankment Vltava boats Vyšehrad"), ("commons", "Náplavka Praha")],
+    "Prater & the Riesenrad": [("wiki", "en:Wiener Riesenrad")],
+    "Naschmarkt": [("wiki", "en:Naschmarkt"), ("commons", "Naschmarkt Wien")],
+    "Gänsehäufel swim": [("wiki", "de:Gänsehäufel"), ("commons", "Gänsehäufel")],
+    "Film Festival on Rathausplatz": [("commons", "Film Festival Rathausplatz Wien"), ("wiki", "en:Vienna City Hall")],
+    "St. Domnius bell tower": [("wiki", "en:Cathedral of Saint Domnius"), ("commons", "Split cathedral bell tower")],
+    "Meštrović Gallery": [("commons", "Meštrović Gallery Split villa"), ("commons", "Galerija Meštrović zgrada"), ("wiki", "en:Meštrović Gallery"), ("commons", "Galerija Meštrović Split")],
+    "Kayak around Marjan": [("commons", "Kayak Split Marjan"), ("commons", "Kašjuni beach Split"), ("wiki", "hr:Kašjuni")],
     "Figlmüller Wollzeile": [("wiki", "de:Figlmüller"), ("site", "https://figlmueller.at"), ("commons", "Figlmüller Wien")],
     "Mayer am Pfarrplatz": [("commons", "Mayer am Pfarrplatz Heiligenstadt"), ("site", "https://pfarrplatz.at"), ("wiki", "de:Pfarrplatz (Wien)")],
     "Steirereck im Stadtpark": [("wiki", "en:Steirereck"), ("commons", "Steirereck Stadtpark"), ("site", "https://www.steirereck.at")],

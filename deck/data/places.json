@@ -89,6 +89,42 @@
      265.0393,
      136.0815
     ]
+   },
+   {
+    "name": "Prater & the Riesenrad",
+    "blurb": "Ride the 1897 Giant Ferris Wheel, then the coasters and beer gardens of the Wurstelprater.",
+    "act": true,
+    "xy": [
+     266.7113,
+     131.8726
+    ]
+   },
+   {
+    "name": "Naschmarkt",
+    "blurb": "Graze a mile of food stalls: falafel, cheese, oysters, Turkish sweets. Saturday adds a flea market.",
+    "act": true,
+    "xy": [
+     263.0058,
+     134.9729
+    ]
+   },
+   {
+    "name": "Gänsehäufel swim",
+    "blurb": "An island lido on the Alte Donau: lawns, warm lake water and a break from the city's heat.",
+    "act": true,
+    "xy": [
+     270.5491,
+     129.7477
+    ]
+   },
+   {
+    "name": "Film Festival on Rathausplatz",
+    "blurb": "Free open-air concert films outside City Hall every night into early September, with food stalls.",
+    "act": true,
+    "xy": [
+     262.5593,
+     133.1876
+    ]
    }
   ],
   "trips": [
@@ -235,9 +271,45 @@
    {
     "name": "Letná Beer Garden",
     "blurb": "Cheap beer under chestnut trees with the whole city below you. Best at sunset.",
+    "act": true,
     "xy": [
      47.5529,
      -188.1357
+    ]
+   },
+   {
+    "name": "Vyšehrad",
+    "blurb": "The other castle hill: ramparts over the river, Dvořák's grave and far fewer people.",
+    "xy": [
+     46.6926,
+     -182.5427
+    ]
+   },
+   {
+    "name": "Pedal boats on the Vltava",
+    "blurb": "Rent a pedal boat off Slavonic Island and float past the National Theatre. Swan-shaped ones too.",
+    "act": true,
+    "xy": [
+     45.9784,
+     -185.0121
+    ]
+   },
+   {
+    "name": "Petřín lookout tower",
+    "blurb": "Funicular up the hill, then 299 steps up the mini Eiffel Tower for the best view of the spires.",
+    "act": true,
+    "xy": [
+     43.9808,
+     -185.8906
+    ]
+   },
+   {
+    "name": "Náplavka riverbank",
+    "blurb": "Saturday farmers' market, then boat bars and food stalls along the river into the evening.",
+    "act": true,
+    "xy": [
+     46.0652,
+     -184.3593
     ]
    }
   ],
@@ -624,6 +696,7 @@
    {
     "name": "Riva promenade",
     "blurb": "The palm-lined waterfront where all of Split strolls at sunset.",
+    "act": true,
     "xy": [
      271.4161,
      885.2754
@@ -632,6 +705,7 @@
    {
     "name": "Marjan Hill",
     "blurb": "A forested peninsula park with viewpoints, chapels and quiet swimming coves.",
+    "act": true,
     "xy": [
      270.5429,
      885.2895
@@ -643,6 +717,40 @@
     "xy": [
      271.5956,
      885.309
+    ]
+   },
+   {
+    "name": "St. Domnius bell tower",
+    "blurb": "Climb the Romanesque bell tower in the middle of the palace for views over the roofs to the islands.",
+    "xy": [
+     271.6672,
+     885.2372
+    ]
+   },
+   {
+    "name": "Meštrović Gallery",
+    "blurb": "The great Croatian sculptor's seaside villa, with his work in the rooms and the gardens.",
+    "xy": [
+     269.1638,
+     885.7175
+    ]
+   },
+   {
+    "name": "Bačvice beach",
+    "blurb": "The sandy city beach where locals play picigin, keeping a tiny ball in the air in the shallows.",
+    "act": true,
+    "xy": [
+     272.4239,
+     885.8823
+    ]
+   },
+   {
+    "name": "Kayak around Marjan",
+    "blurb": "Paddle from Kašjuni along the cliffs and coves under Marjan. Guided sunset trips run every evening.",
+    "act": true,
+    "xy": [
+     267.2268,
+     885.492
     ]
    }
   ],

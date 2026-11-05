@@ -694,5 +694,89 @@
   "credit": "Photo: trogir-excursions.com",
   "link": "https://trogir-excursions.com/wp-content/uploads/2023/11/Pakleni-Islands-eplit-excursions-1.webp",
   "user": "https://trogir-excursions.com/wp-content/uploads/2023/11/Pakleni-Islands-eplit-excursions-1.webp"
+ },
+ "Prater & the Riesenrad": {
+  "img": "img/vienna-s4.webp",
+  "thumb": "img/vienna-s4-t.webp",
+  "full": "img/full/vienna-s4.webp",
+  "credit": "Thomas Ledl · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Wien_Riesenrad.jpg"
+ },
+ "Naschmarkt": {
+  "img": "img/vienna-s5.webp",
+  "thumb": "img/vienna-s5-t.webp",
+  "full": "img/full/vienna-s5.webp",
+  "credit": "C.Stadler/Bwag · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Wien_-_Naschmarkt.JPG"
+ },
+ "Gänsehäufel swim": {
+  "img": "img/vienna-s6.webp",
+  "thumb": "img/vienna-s6-t.webp",
+  "full": "img/full/vienna-s6.webp",
+  "credit": "Daniel-tbs · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:G%C3%A4nseh%C3%A4ufel_Zentralbereich.jpg"
+ },
+ "Film Festival on Rathausplatz": {
+  "img": "img/vienna-s7.webp",
+  "thumb": "img/vienna-s7-t.webp",
+  "full": "img/full/vienna-s7.webp",
+  "credit": "Thomas Ledl · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Wien_Rathaus_hochaufl%C3%B6send.jpg"
+ },
+ "Vyšehrad": {
+  "img": "img/prague-s4.webp",
+  "thumb": "img/prague-s4-t.webp",
+  "full": "img/full/prague-s4.webp",
+  "credit": "Stanislav Jelen · CC BY-SA 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Parn%C3%ADk_Vy%C5%A1ehrad_pod_Vy%C5%A1ehradem.jpg"
+ },
+ "Pedal boats on the Vltava": {
+  "img": "img/prague-s5.webp",
+  "thumb": "img/prague-s5-t.webp",
+  "full": "img/full/prague-s5.webp",
+  "credit": "Francisco Anzola · CC BY 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Pedal_Boats_(263980323).jpeg"
+ },
+ "Petřín lookout tower": {
+  "img": "img/prague-s6.webp",
+  "thumb": "img/prague-s6-t.webp",
+  "full": "img/full/prague-s6.webp",
+  "credit": "Ivan Korostelev · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Pet%C5%99%C3%ADnsk%C3%A1_rozhledna,_Prague.jpg"
+ },
+ "St. Domnius bell tower": {
+  "img": "img/split-s4.webp",
+  "thumb": "img/split-s4-t.webp",
+  "full": "img/full/split-s4.webp",
+  "credit": "Berthold Werner · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Split_BW_2024-10-02_13-14-50_(cropped).jpg"
+ },
+ "Bačvice beach": {
+  "img": "img/split-s6.webp",
+  "thumb": "img/split-s6-t.webp",
+  "full": "img/full/split-s6.webp",
+  "credit": "dronepicr · CC BY 2.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Strand_Bacvice_in_Split,_Kroatien_(48608740097).jpg"
+ },
+ "Kayak around Marjan": {
+  "img": "img/split-s7.webp",
+  "thumb": "img/split-s7-t.webp",
+  "full": "img/full/split-s7.webp",
+  "credit": "Elbert Hampton · CC0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Kasjuni_Beach_-_Split_-_Croatia_2023_07.jpg"
+ },
+ "Meštrović Gallery": {
+  "img": "img/split-s5.webp",
+  "thumb": "img/split-s5-t.webp",
+  "full": "img/full/split-s5.webp",
+  "credit": "Bgag · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Ivan_Me%C5%A1trovi%C4%87_Gallery,_Split_01.jpg"
+ },
+ "Náplavka riverbank": {
+  "img": "img/prague-s7.webp",
+  "thumb": "img/prague-s7-t.webp",
+  "full": "img/full/prague-s7.webp",
+  "credit": "Txllxt TxllxT · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Praha_-_Ra%C5%A1%C3%ADnovo_n%C3%A1b%C5%99e%C5%BE%C3%AD_-_View_North.jpg"
  }
 }

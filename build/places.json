@@ -62,6 +62,30 @@
     "name": "Belvedere Palace",
     "q": "Oberes Belvedere, Wien",
     "blurb": "Two baroque palaces facing each other across terraced gardens. Klimt's The Kiss hangs in the Upper Belvedere."
+   },
+   {
+    "name": "Prater & the Riesenrad",
+    "q": "Wiener Riesenrad, Wien",
+    "blurb": "Ride the 1897 Giant Ferris Wheel, then the coasters and beer gardens of the Wurstelprater.",
+    "act": true
+   },
+   {
+    "name": "Naschmarkt",
+    "q": "Naschmarkt, Wien",
+    "blurb": "Graze a mile of food stalls: falafel, cheese, oysters, Turkish sweets. Saturday adds a flea market.",
+    "act": true
+   },
+   {
+    "name": "Gänsehäufel swim",
+    "q": "Gänsehäufel, Wien",
+    "blurb": "An island lido on the Alte Donau: lawns, warm lake water and a break from the city's heat.",
+    "act": true
+   },
+   {
+    "name": "Film Festival on Rathausplatz",
+    "q": "Rathausplatz, Wien",
+    "blurb": "Free open-air concert films outside City Hall every night into early September, with food stalls.",
+    "act": true
    }
   ],
   "trips": [
@@ -169,7 +193,31 @@
    {
     "name": "Letná Beer Garden",
     "q": "Letenské sady, Praha",
-    "blurb": "Cheap beer under chestnut trees with the whole city below you. Best at sunset."
+    "blurb": "Cheap beer under chestnut trees with the whole city below you. Best at sunset.",
+    "act": true
+   },
+   {
+    "name": "Vyšehrad",
+    "q": "Vyšehrad, Praha",
+    "blurb": "The other castle hill: ramparts over the river, Dvořák's grave and far fewer people."
+   },
+   {
+    "name": "Pedal boats on the Vltava",
+    "q": "Slovanský ostrov, Praha",
+    "blurb": "Rent a pedal boat off Slavonic Island and float past the National Theatre. Swan-shaped ones too.",
+    "act": true
+   },
+   {
+    "name": "Petřín lookout tower",
+    "q": "Petřínská rozhledna, Praha",
+    "blurb": "Funicular up the hill, then 299 steps up the mini Eiffel Tower for the best view of the spires.",
+    "act": true
+   },
+   {
+    "name": "Náplavka riverbank",
+    "q": "Rašínovo nábřeží, Praha",
+    "blurb": "Saturday farmers' market, then boat bars and food stalls along the river into the evening.",
+    "act": true
    }
   ],
   "trips": [
@@ -444,17 +492,41 @@
    {
     "name": "Riva promenade",
     "q": "Riva, Split",
-    "blurb": "The palm-lined waterfront where all of Split strolls at sunset."
+    "blurb": "The palm-lined waterfront where all of Split strolls at sunset.",
+    "act": true
    },
    {
     "name": "Marjan Hill",
     "q": "Marjan, Split",
-    "blurb": "A forested peninsula park with viewpoints, chapels and quiet swimming coves."
+    "blurb": "A forested peninsula park with viewpoints, chapels and quiet swimming coves.",
+    "act": true
    },
    {
     "name": "Podrum",
     "q": "Podrumi Dioklecijanove palače, Split",
     "blurb": "The palace's vaulted cellars under the Peristyle: a market hall now, and Daenerys's dragon lair in Game of Thrones."
+   },
+   {
+    "name": "St. Domnius bell tower",
+    "q": "Katedrala svetog Duje, Split",
+    "blurb": "Climb the Romanesque bell tower in the middle of the palace for views over the roofs to the islands."
+   },
+   {
+    "name": "Meštrović Gallery",
+    "q": "Galerija Ivana Meštrovića, Split",
+    "blurb": "The great Croatian sculptor's seaside villa, with his work in the rooms and the gardens."
+   },
+   {
+    "name": "Bačvice beach",
+    "q": "Bačvice, Split",
+    "blurb": "The sandy city beach where locals play picigin, keeping a tiny ball in the air in the shallows.",
+    "act": true
+   },
+   {
+    "name": "Kayak around Marjan",
+    "q": "Plaža Kašjuni, Split",
+    "blurb": "Paddle from Kašjuni along the cliffs and coves under Marjan. Guided sunset trips run every evening.",
+    "act": true
    }
   ],
   "trips": [
