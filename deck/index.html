@@ -33,7 +33,7 @@
   --tram: #d4483c;
   --bus: #7d5cc0;
   --board: #15191c;
-  --board-ink: #f5c04a;
+  --board-ink: #e9ecee;
   --board-dim: #8b9196;
   --f-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
   --f-body: "Barlow", "Helvetica Neue", Arial, sans-serif;
@@ -155,12 +155,13 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .board tr:last-child td { border-bottom: 0; }
 .board tr.opt td { color: var(--board-dim); font-size: 10px; letter-spacing: .1em; padding: 12px 0 2px; border-bottom: 0; }
 .board tr.total td { border-top: 1px solid #3a4045; border-bottom: 0; font-weight: 600; color: #fff; }
-.board.sum tr.sec td { padding: 18px 0 8px; border-bottom: 2px solid #3a4045; color: var(--board-ink); font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+/* the board is dark in both themes, so it uses the cities' dark-theme colors; each leg fades from one city's color to the next */
+.board.sum { --b-prague: #e8584c; --b-vienna: #f0b630; --b-zagreb: #e07cb6; --b-split: #2fb8b0; }
+.board.sum tr.sec td { padding: 18px 0 8px; border-bottom: 0; background: var(--g) left bottom / 100% 2px no-repeat; font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+.board.sum tr.sec span { color: var(--cc); } /* only city names take a color */
 .board.sum tr.sec:first-child td { padding-top: 4px; }
 .board.sum tr.opt td { padding: 10px 0 2px 10px; color: #e9ecee; font-size: 10.5px; }
-.board.sum tr[data-g] td:first-child { box-shadow: inset 3px 0 0 var(--g); padding-left: 10px; }
-.board.sum tr[data-g="a"] { --g: #f5c04a; }
-.board.sum tr[data-g="b"] { --g: #6fb3e0; }
+.board.sum tr[data-g] td:first-child { background: var(--gv) left top / 3px 100% no-repeat; padding-left: 10px; }
 .board.sum tr.subt td { border-bottom: 0; font-weight: 600; color: #e9ecee; padding-bottom: 12px; }
 .board.sum tr.total td { border-top: 0; padding: 8px 0 6px; }
 .board td.t { font-weight: 600; font-size: 15px; }
@@ -264,7 +265,7 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .planned { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; margin: 6px 0 10px; font-size: 13px; }
 .planned > span { font: 600 10px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--panel); background: var(--c, var(--ink)); padding: 1px 6px; border-radius: 3px; }
 .planned.none > span { background: var(--chip); color: var(--ink-2); }
-.board.sum.pick-a tr[data-g="b"], .board.sum.pick-a tr[data-t="b"], .board.sum.pick-b tr[data-g="a"], .board.sum.pick-b tr[data-t="a"] { opacity: .38; }
+.board.sum.pick-a tr[data-g="b"], .board.sum.pick-a tr[data-t="b"], .board.sum.pick-b tr[data-g="a"], .board.sum.pick-b tr[data-t="a"] { opacity: .38; cursor: pointer; } /* click to switch */
 .menu { position: absolute; right: 0; top: calc(100% + 8px); width: 250px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; box-shadow: 0 10px 30px rgba(10,20,25,.22); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: grid; gap: 4px; }
 .menu .mh { margin: 0 0 4px; font: 600 10.5px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
 .menu label { display: flex; align-items: center; gap: 10px; font-size: 14px; padding: 6px 4px; border-radius: 4px; cursor: pointer; }
@@ -276,6 +277,7 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .menu .sw.bus { background: var(--bus); height: 3px; }
 .menu .mnote { margin: 4px 0 0; font-size: 12px; color: var(--ink-2); }
 #transitBtn[aria-expanded="true"], #transitBtn.on { border-bottom: 3px solid var(--tram); }
+#overview, #roam { display: none !important; } /* stripped back: the Trip tab is the overview */
 #tools { position: fixed; top: calc(16px + env(safe-area-inset-top, 0px)); right: var(--gr); display: flex; gap: 8px; z-index: 6; }
 
 #pop {
@@ -450,6 +452,7 @@ body.pindrag, body.pindrag canvas#map { cursor: grabbing; }
 .itin .st { position: relative; display: grid; grid-template-columns: 38px 40px minmax(0, 1fr) auto; gap: 0 8px; align-items: center; padding: 4px 4px; margin: 0 -4px; border-radius: 5px; min-height: 34px; }
 .itin .st[data-si] { cursor: pointer; }
 .itin .st[draggable] { cursor: grab; }
+[data-nodrag] { -webkit-user-select: none; user-select: none; } /* an Airbnb that isn't home base: dragging it selects nothing */
 .itin .st[data-si]:hover, .itin .st[data-si]:focus-visible { background: var(--chip); outline: none; }
 .itin .tm { font: 600 12px var(--f-mono); color: var(--ink-2); text-align: right; }
 .itin .mk { display: grid; place-items: center; }
@@ -652,7 +655,8 @@ const placeBy = {};     // `${city}:${code}`
 
 function slideDeck() {
   const s = [];
-  s.push({ id: "intro", color: "--ink-2", view: () => W < 760 ? fitLL([13.9, 43.3, 17.0, 50.3]) : fitLL([11.5, 42.8, 19.5, 51.2]), html: introHTML });
+  s.push({ id: "intro", color: "--ink-2", view: () => W < 760 ? fitLL([13.9, 43.3, 17.0, 50.3]) : fitLL([11.5, 42.8, 19.5, 51.2]),
+    html: wrapHTML }); // the Trip slide: the trip's times and costs
   const order = [["prague", "pv", 1], ["vienna", "vs", 2], ["split", null, 3]];
   for (const [city, leg, n] of order) {
     s.push({ id: city, city, color: `--${city}`, focus: ["A", "B", "C", "D"], view: () => fitPts(cityPts(city, ["A", "B", "C", "D"]), 60), html: () => cityHTML(city, n) });
@@ -666,12 +670,10 @@ function slideDeck() {
       s.push({ id: dc, city: dc, side: `${city}-out`, color: `--${city}`, focus: ["A", "B", "C", "D"], view: () => fitPts(cityPts(dc, ["A", "B", "C", "D"]), 60), html: () => detailHTML(dc, t) });
     }
     if (!leg) continue;
-    s.push({ id: leg, leg, color: `--${LEGS[leg].from}`, color2: `--${LEGS[leg].to}`, view: () => fitPts(LEGS[leg].pts, 70), html: () => legHTML(leg, n) });
     // stopovers on this leg (e.g. an evening in Zagreb between trains) follow the leg in the main flow
     for (const [dc, d] of Object.entries(DETAIL)) if (d.stop === leg)
       s.push({ id: dc, city: dc, color: `--${PC[dc] ? dc : LEGS[leg].to}`, focus: ["A", "B", "C", "D", "1"], view: () => fitPts(cityPts(dc, ["A", "B", "C", "D", "1"]), 60), html: () => stopHTML(dc) });
   }
-  s.push({ id: "in", color: "--ink-2", view: () => fitPts(Object.values(CITIES).map(c => c.xy), 70), html: wrapHTML });
   // human-readable names for the progress bar preview
   const LBL = { intro: "Intro: the trip at a glance", route: "The route: one line across the map", in: "Summary: travel times & costs" };
   const PART = { eat: "eat & drink", stay: "where to stay (Airbnbs)", out: "day trips & nature" };
@@ -690,14 +692,6 @@ const KIND = { regional: "Regional", splurge: "Splurge", cafe: "Café", world: "
 function railHours() { // hours awake on trains: Prague–Vienna, Vienna–Zagreb, and Zagreb–Split by day
   return 4 + 6.5 + (byRail() && PLAN.nights.zagreb && PLAN.legs.zs.opt === "day" ? 6.25 : 0);
 }
-function introHTML() {
-  const fly = PLAN.legs.vs.opt === "flight", zn = byRail() ? PLAN.nights.zagreb : 0;
-  return `<p class="eyebrow">${planRange()} ${DAYS[0].date.getFullYear()} · ${DAYS.length} days</p>
-  <h1>Praha <span class="arrow">→</span> Wien <span class="arrow">→</span> ${fly ? "" : `Zagreb <span class="arrow">→</span> `}Split</h1>
-  <p class="lede">Two old imperial capitals, then a sleeper train down to the Adriatic. Castles, coffee houses and wine taverns first, then sea, islands and old stone.</p>
-  <dl class="stats"><div><dt>Cities</dt><dd>${fly ? 3 : 4}</dd></div><div><dt>Nights</dt><dd>${totalNights()}</dd></div><div><dt>Of us</dt><dd>11</dd></div><div><dt>${fly ? "Travel" : "Awake on trains"}</dt><dd>${fly ? "~5.5 h" : `~${+railHours().toFixed(1)} h`}</dd></div></dl>
-  <p class="hint"><span class="kb">Press <kbd>→</kbd> or Next</span><span class="tch">Tap Next</span> to fly through it, use the city menus at the top, or pick a day in <b>Plan</b> to see its route and pin places to it. Your plan is saved in this browser.</p>`;
-}
 function badge(p) {
   return pinBadge(p);
 }
@@ -709,7 +703,7 @@ function li(p, extra = "") {
   const at = !/stay|daytrip|nature/.test(p.type) && pinDays(keyOf(p))[0]; // day trips show theirs in a fuller line
   if (at) extra = `<p class="planned"><span>Pinned</span> ${fmtDay(at.date)}</p>` + extra;
   const drag = p.type !== "stay" ? ` draggable="true" data-dpin="${p.city}:${p.code}" title="Drag onto a day in the plan"`
-    : PLAN.stays[p.city] === p.code ? ` draggable="true" data-dpin="${p.city}:HOME" title="Drag onto a day for a stop back at the Airbnb"` : "";
+    : PLAN.stays[p.city] === p.code ? ` draggable="true" data-dpin="${p.city}:HOME" title="Drag onto a day for a stop back at the Airbnb"` : ` data-nodrag`; // other stays: a drag does nothing (rather than selecting the page)
   return `<li tabindex="0" data-p="${p.city}:${p.code}"${drag}>${thumb(p)}<div class="txt"><div class="name">${badge(p)}<span>${esc(p.name)}</span> ${chip}${rowAct(p)}</div><p>${esc(p.blurb)}</p>${extra}</div></li>`;
 }
 // a place row's own button: pin it to a day, or (an Airbnb) make it home base
@@ -787,37 +781,24 @@ function stayHTML(city) {
   ${list}
   ${names ? `<p class="legend"><span class="ring"></span><span><b>Outlined areas</b> are the historic neighborhoods (${esc(names)}). Anything inside or near them is a walk from the sights.</span></p>` : ""}`;
 }
-function legHTML(leg, n) {
-  const L = LEGS[leg], B = BOARDS[leg], from = L.stations[0][0], to = L.stations[L.stations.length - 1][0];
-  const zn = byRail() ? PLAN.nights.zagreb : 0;
-  const title = leg === "vs" ? `Vienna to Split, ${PLAN.legs.vs.opt === "flight" ? "by plane" : zn ? `with ${zn} night${zn === 1 ? "" : "s"} in Zagreb` : "by sleeper"}` : `${CITIES[L.from].en} to ${CITIES[L.to].en}`;
-  const planned = travelDays(leg).map(d => `<p class="planned"><span>Planned</span> ${fmtDay(d.date)} · ${esc(legSummary(d.leg).info.label)} · ${esc(legSummary(d.leg).text)} <a href="#" data-plan="1">Change</a></p>`).join("");
-  return `<p class="eyebrow" style="--c:var(--${L.from})"><span class="dot"></span>Leg ${n}${L.optional ? " · optional" : ""} · ${from} → ${to}</p>
-  <h2>${title}</h2>
-  ${planned}
-  <div class="board"><table><thead><tr><th>TIME</th><th>SERVICE</th><th style="text-align:right">FROM</th></tr></thead>
-  <tbody>${B.rows.map(r => r[0] === "" ? `<tr class="opt"><td colspan="3">${r[1]}</td></tr>` : `<tr><td class="t">${r[0]}</td><td class="op">${r[1]}<span class="sub2">${r[2]}</span></td><td class="c">${r[3]}</td></tr>`).join("")}</tbody></table>
-  <div class="foot">APPROXIMATE · CHECK OEBB.AT · CD.CZ · HZPP.HR BEFORE BOOKING</div></div>
-  <p class="via">Via ${B.via}</p>
-  <p class="note" style="--c:var(--${L.to})">${B.stop}</p>`;
-}
 // summary rows: [kind, ...]; "g" groups rows under an option (a coloured bar down the left)
 const SUMMARY = [
-  ["sec", "Getting there"],
+  // the last field of sec, opt and option rows names the cities whose colors that line fades through
+  ["sec", "Getting there", "prague"],
   ["row", "Fly in", "Home → Prague (PRG)", "depends on origin", "—"],
-  ["sec", "Prague → Vienna"],
+  ["sec", "Prague → Vienna", "prague vienna"],
   ["row", "4h 00", "Railjet", "awake · every 2 h", "€20–40"],
-  ["sec", "Vienna → Split · pick one"],
-  ["opt", "Option A · day train + sleeper", "a"],
-  ["row", "6h 30", "Vienna → Zagreb · day train", "awake · over the Semmering railway", "€30–50", "a"],
-  ["row", "~3h", "Evening in Zagreb", "dinner, old town", "—", "a"],
-  ["row", "~9h", "Zagreb → Split · sleeper", "asleep", "€40–70", "a"],
-  ["opt", "Option B · fly", "b"],
-  ["row", "1h 15", "Vienna → Split · flight", "skips Zagreb · add a hotel night in Vienna", "€80–150", "b"],
-  ["sec", "Whole trip by rail, per person"],
+  ["sec", "Vienna → Split · pick one", "vienna split"],
+  ["opt", "Option A · day train + sleeper", "a", "vienna"],
+  ["row", "6h 30", "Vienna → Zagreb · day train", "awake · over the Semmering railway", "€30–50", "a", "vienna zagreb"],
+  ["row", "~3h", "Evening in Zagreb", "dinner, old town", "—", "a", "zagreb"],
+  ["row", "~9h", "Zagreb → Split · sleeper", "asleep", "€40–70", "a", "zagreb split"],
+  ["opt", "Option B · fly", "b", "vienna"],
+  ["row", "1h 15", "Vienna → Split · flight", "skips Zagreb · add a hotel night in Vienna", "€80–150", "b", "vienna split"],
+  ["sec", "Whole trip by rail, per person", "prague vienna split"],
   ["total", "With Option A (sleeper): ~10.5 h awake on trains", "€90–160", "a"],
   ["total", "With Option B (flight): ~5.5 h of travel", "€100–190", "b"],
-  ["sec", "Getting home"],
+  ["sec", "Getting home", "split"],
   ["row", "Fly home", "Split (SPU) → home", "depends on origin", "—"],
 ];
 // ---------- trip plan: each person's own copy, saved in their browser ----------
@@ -839,7 +820,7 @@ const LEG_INFO = {
 // a day's clock: minutes at each pinned place (editable per day), choices stored as an index in plan codes
 const DUR_OPTS = [15, 30, 45, 60, 90, 120, 150, 180, 240, 300, 360, 480]; // 12 options, 4 bits
 const DUR_DEFAULT = { food: 90, cafe: 45, sight: 90, nature: 300, daytrip: 300, home: 60 }; // a day trip: time spent there
-const PIN_MAX = 4; // plan codes store 1–4 pins a day in 2 bits: raising this needs a new code version
+const PIN_MAX = 6; // plan codes (version 2) store 1–8 pins a day in 3 bits; version 1 codes held up to 4
 const PLAN_DEFAULT = { v: 2, start: "2027-08-22", nights: { prague: 4, vienna: 4, zagreb: 0, split: 4 },
   legs: { pv: { opt: "train", dep: "09:00" }, vs: { opt: "sleeper", dep: "09:00" }, zs: { opt: "sleeper", dep: "21:30" } },
   pins: {}, notes: {}, stays: { prague: "H1", vienna: "H1", zagreb: null, split: null },
@@ -891,7 +872,7 @@ const pinCode = (k, i) => k === 0 ? "ABCDEFGH"[i] : k === 1 ? (i === 7 ? "CF" : 
 
 function toCode(p) {
   const bits = [], put = (v, n) => { for (let i = n - 1; i >= 0; i--) bits.push((v >> i) & 1); }, D = PLAN_DEFAULT;
-  put(1, 2); // format version
+  put(2, 2); // format version: 2 has room for up to 8 pins a day
   const start = dayNo(p.start);
   put(p.start !== D.start, 1); if (p.start !== D.start) put(start, 12);
   const nightsSame = NIGHT_ORDER.every(c => p.nights[c] === D.nights[c]);
@@ -907,7 +888,7 @@ function toCode(p) {
   for (const [iso, ks] of Object.entries(p.pins)) {
     const off = dayNo(iso) - start + 32, pins = ks.map(k => { const [c, code] = k.split(":"); return [CODE_CITIES.indexOf(c), pinBits(code)]; }).filter(([c, b]) => c >= 0 && b);
     if (off < 0 || off > 127 || !pins.length) continue;
-    put(1, 1); put(off, 7); put(pins.length - 1, 2);
+    put(1, 1); put(off, 7); put(pins.length - 1, 3);
     for (const [c, [k, i]] of pins) { put(c, 4); put(k, 2); put(i, 3); }
   }
   put(0, 1);
@@ -919,11 +900,11 @@ function toCode(p) {
   put(0, 1);
   for (const iso of new Set([...Object.keys(p.starts || {}), ...Object.keys(p.durs || {})])) { // a day's clock
     const off = dayNo(iso) - start + 32, st = (p.starts || {})[iso], ks = p.pins[iso] || [];
-    const ds = Object.entries((p.durs || {})[iso] || {}).map(([k, m]) => [ks.indexOf(k), DUR_OPTS.indexOf(m)]).filter(([j, i]) => j >= 0 && j < 4 && i >= 0);
+    const ds = Object.entries((p.durs || {})[iso] || {}).map(([k, m]) => [ks.indexOf(k), DUR_OPTS.indexOf(m)]).filter(([j, i]) => j >= 0 && j < 8 && i >= 0);
     if (off < 0 || off > 127 || (!st && !ds.length)) continue;
     put(1, 1); put(off, 7); put(st ? 1 : 0, 1);
     if (st) { const [h, m] = st.split(":").map(Number); put(Math.round((h * 60 + m) / 15) % 96, 7); }
-    put(ds.length, 3); for (const [j, i] of ds) { put(j, 2); put(i, 4); }
+    put(ds.length, 4); for (const [j, i] of ds) { put(j, 3); put(i, 4); }
   }
   while (bits.length && !bits[bits.length - 1]) bits.pop(); // trailing zeros come back as "nothing more"
   let s = "";
@@ -948,7 +929,8 @@ function fromCode(s) {
   }
   let at = 0;
   const get = n => { let v = 0; for (let i = 0; i < n; i++) v = v * 2 + (bits[at++] || 0); return v; };
-  if (get(2) !== 1) throw new Error("unknown code version");
+  const ver = get(2), PB = ver === 1 ? 2 : 3; // a pin's place in its day: 2 bits in version 1, 3 in version 2
+  if (ver !== 1 && ver !== 2) throw new Error("unknown code version");
   const p = clone(PLAN_DEFAULT);
   if (get(1)) p.start = dayIso(get(12));
   const start = dayNo(p.start);
@@ -960,7 +942,7 @@ function fromCode(s) {
   }
   if (get(1)) NIGHT_ORDER.forEach(c => { const n = get(4); p.stays[c] = n ? `H${n}` : null; });
   while (get(1)) {
-    const iso = dayIso(start + get(7) - 32), n = get(2) + 1;
+    const iso = dayIso(start + get(7) - 32), n = get(PB) + 1;
     p.pins[iso] = Array.from({ length: n }, () => { const c = get(4), k = get(2), i = get(3); return `${CODE_CITIES[c]}:${pinCode(k, i)}`; });
   }
   while (get(1)) {
@@ -970,8 +952,8 @@ function fromCode(s) {
   while (get(1)) {
     const iso = dayIso(start + get(7) - 32);
     if (get(1)) { const q = get(7) * 15; p.starts[iso] = `${String(Math.floor(q / 60)).padStart(2, "0")}:${String(q % 60).padStart(2, "0")}`; }
-    const n = get(3), ks = p.pins[iso] || [];
-    for (let k = 0; k < n; k++) { const j = get(2), i = get(4); if (ks[j] && DUR_OPTS[i]) (p.durs[iso] ||= {})[ks[j]] = DUR_OPTS[i]; }
+    const n = get(PB + 1), ks = p.pins[iso] || [];
+    for (let k = 0; k < n; k++) { const j = get(PB), i = get(4); if (ks[j] && DUR_OPTS[i]) (p.durs[iso] ||= {})[ks[j]] = DUR_OPTS[i]; }
   }
   return normalizePlan(p);
 }
@@ -1388,23 +1370,25 @@ function itinHTML(x, it, clk = dayClock(x, it)) {
 }
 
 function wrapHTML() {
-  const g = r => r ? ` data-g="${r}"` : "";
+  // a fade through the named cities' colors; one city is a solid line
+  const grad = (dir, cs) => { const v = cs.split(" ").map(c => `var(--b-${c})`); return `linear-gradient(${dir}, ${(v.length > 1 ? v : [v[0], v[0]]).join(", ")})`; };
+  const g = (r, cs) => r ? ` data-g="${r}" style="--gv: ${grad("180deg", cs)}"` : "";
   const zn = byRail() ? PLAN.nights.zagreb : 0, zday = zn && PLAN.legs.zs.opt === "day";
   const plan = SUMMARY.map(r => { // the rail option as planned: nights in Zagreb, and the train on to Split
     if (!zn || r[0] === "sec") return r;
-    if (r[2] === "Evening in Zagreb") return ["row", "—", `${zn} night${zn === 1 ? "" : "s"} in Zagreb`, "a hotel or Airbnb", "—", "a"];
-    if (r[2] === "Zagreb → Split · sleeper" && zday) return ["row", "~6h 15", "Zagreb → Split · day train", "awake · through Lika to the coast", "€25–40", "a"];
-    if (r[0] === "opt" && r[2] === "a") return ["opt", `Option A · day train, ${zn} night${zn === 1 ? "" : "s"} in Zagreb, ${zday ? "day train" : "sleeper"}`, "a"];
+    if (r[2] === "Evening in Zagreb") return ["row", "—", `${zn} night${zn === 1 ? "" : "s"} in Zagreb`, "a hotel or Airbnb", "—", "a", r[6]];
+    if (r[2] === "Zagreb → Split · sleeper" && zday) return ["row", "~6h 15", "Zagreb → Split · day train", "awake · through Lika to the coast", "€25–40", "a", r[6]];
+    if (r[0] === "opt" && r[2] === "a") return ["opt", `Option A · day train, ${zn} night${zn === 1 ? "" : "s"} in Zagreb, ${zday ? "day train" : "sleeper"}`, "a", r[3]];
     if (r[0] === "total" && r[3] === "a") return ["total", `With Option A: ~${+railHours().toFixed(1)} h awake on trains`, zday ? "€75–130" : r[2], "a"];
     return r;
   });
   const rows = plan.map(r =>
-      r[0] === "sec" ? `<tr class="sec"><td colspan="3">${esc(r[1])}</td></tr>`
-    : r[0] === "opt" ? `<tr class="opt"${g(r[2])}><td colspan="3">${esc(r[1])}</td></tr>`
-    : r[0] === "sub" ? `<tr class="subt"${g(r[3])}><td></td><td class="op">${esc(r[1])}</td><td class="c">${r[2]}</td></tr>`
+      r[0] === "sec" ? `<tr class="sec" style="--g: ${grad("90deg", r[2])}"><td colspan="3">${esc(r[1]).replace(/Prague|Vienna|Zagreb|Split/g, n => `<span style="--cc: var(--b-${n.toLowerCase()})">${n}</span>`)}</td></tr>`
+    : r[0] === "opt" ? `<tr class="opt"${g(r[2], r[3])}><td colspan="3">${esc(r[1])}</td></tr>`
     : r[0] === "total" ? `<tr class="total" data-t="${r[3]}"><td></td><td class="op">${esc(r[1])}</td><td class="c">${r[2]}</td></tr>`
-    : `<tr${g(r[5])}><td class="t">${r[1]}</td><td class="op">${esc(r[2])}${r[3] ? `<span class="sub2">${esc(r[3])}</span>` : ""}</td><td class="c">${r[4]}</td></tr>`).join("");
-  return `<p class="eyebrow">The whole trip</p><h2>Times &amp; costs</h2>
+    : `<tr${g(r[5], r[6])}><td class="t">${r[1]}</td><td class="op">${esc(r[2])}${r[3] ? `<span class="sub2">${esc(r[3])}</span>` : ""}</td><td class="c">${r[4]}</td></tr>`).join("");
+  const city = c => `<span style="color: var(--${c})">${esc(PC[c].local)}</span>`;
+  return `<p class="eyebrow">The whole trip</p><h1>${city("prague")} <span class="arrow">→</span> ${city("vienna")} <span class="arrow">→</span> ${city("split")}</h1>
   <p class="lede">Every journey between cities, per person. Day trips are on each city's slides.</p>
   <div class="board sum pick-${PLAN.legs.vs.opt === "flight" ? "b" : "a"}"><table><thead><tr><th>TIME</th><th>JOURNEY</th><th style="text-align:right">COST</th></tr></thead><tbody>${rows}</tbody></table>
   <div class="foot">APPROXIMATE, BOOKED ~2 MONTHS AHEAD · SLEEPER PRICE IS A COUCHETTE</div></div>
@@ -2044,11 +2028,12 @@ function drawFlights() {
     // only when we fly it: then the arc stands in for the track everywhere (but not down at street level, where
     // its dashes would run for thousands of screen pixels off screen)
     const active = sl.day ? sl.flight === f.leg : sl.leg === f.leg;
-    if (railLeg(f.leg) || T.k > 40) continue;
+    const fade = 1 - smooth(12, 40, T.k); // fades out on the way down rather than blinking off
+    if (railLeg(f.leg) || fade <= 0) continue;
     const [a, b, cx, cy] = flightArc(f);
     ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.quadraticCurveTo(cx, cy, b[0], b[1]);
     ctx.setLineDash([2, 7]); ctx.lineCap = "round"; ctx.lineWidth = 3; ctx.strokeStyle = C.ink2;
-    ctx.globalAlpha = active || !(sl.leg || sl.day) ? 0.9 : sl.day ? 0.28 : 0.45; ctx.stroke(); ctx.setLineDash([]);
+    ctx.globalAlpha = fade * (active || !(sl.leg || sl.day) ? 0.9 : sl.day ? 0.28 : 0.45); ctx.stroke(); ctx.setLineDash([]);
     const lx = 0.25 * a[0] + 0.5 * cx + 0.25 * b[0], ly = 0.25 * a[1] + 0.5 * cy + 0.25 * b[1];
     text(f.label, lx, ly, { size: 12, weight: 600, fam: "--f-mono", color: C.ink2, align: "center", halo: 3.5 });
     for (const [end, [ax, ay], side] of [[f.from, a, 1], [f.to, b, -1]]) { // airport markers
@@ -2351,8 +2336,8 @@ function loop(now) {
   if (pinPop && performance.now() - pinPop.t0 < POP_MS + 20) { dirty = true; if (!frame) frame = requestAnimationFrame(loop); } else pinPop = null;
 }
 function drawTrain(now) {
-  const ph = ((now - legT0) / 6500) % 1.25;
-  if (ph >= 1) return; // a short pause at the end of each run
+  const ph = ridePhase(now, 6500, 1.25);
+  if (ph < 0) return; // a short pause at the end of each run
   const e = ph < 0.5 ? 2 * ph * ph : 1 - Math.pow(-2 * ph + 2, 2) / 2;
   const [lo, hi] = SL().span || [0, 1]; // a day on part of a leg runs the train over just that part
   const [x, y] = toS(legAt(LEGS[SL().leg], lo + (hi - lo) * e));
@@ -2363,8 +2348,8 @@ function drawTrain(now) {
 
 // a small plane along the flight arc, nose to its heading, a touch bigger at cruising height
 function drawPlane(now) {
-  const ph = ((now - legT0) / 5200) % 1.3;
-  if (ph >= 1) return; // a pause on the ground
+  const ph = ridePhase(now, 5200, 1.3);
+  if (ph < 0) return; // a pause on the ground
   const t = ph < 0.5 ? 2 * ph * ph : 1 - Math.pow(-2 * ph + 2, 2) / 2;
   const [a, b, cx, cy] = flightArc(flightOf(SL())), u = 1 - t;
   const x = u * u * a[0] + 2 * u * t * cx + t * t * b[0], y = u * u * a[1] + 2 * u * t * cy + t * t * b[1];
@@ -2770,6 +2755,7 @@ function gripNights(city, delta) {
   return { nights, msg: [city, ...after].filter(c => nights[c] !== PLAN.nights[c]).map(n).join(", ") + "." };
 }
 let dragPin = null;
+document.addEventListener("selectstart", e => { if (e.target.closest?.("[data-nodrag]") || e.target.parentElement?.closest("[data-nodrag]")) e.preventDefault(); });
 document.addEventListener("dragstart", e => {
   const s = e.target.closest?.("[data-dpin]"); if (!s) return;
   dragPin = { key: s.dataset.dpin, from: s.dataset.from || null };
@@ -3070,7 +3056,14 @@ function hopPath(h) {
   return out;
 }
 let playDot = null; // { pts, cum, len, color, e }: the dot's way and how far along it is (0..1)
-function stopPlay() { playTok++; if (playDot) { playDot = null; invalidate(); } }
+let playing = false, playRide = null; // while a day plays, its plane or train runs only when Play reaches it: { t0, dur }
+function stopPlay() { playTok++; playing = false; playRide = null; if (playDot) playDot = null; invalidate(); }
+// how far along its run the leg's plane or train is (0..1), or -1 when it shouldn't show: a loop with a pause on
+// its own, but during Play only the one run Play starts
+function ridePhase(now, cycle, rest) {
+  if (playing) return playRide ? Math.min(1, (now - playRide.t0) / playRide.dur) : -1;
+  const ph = ((now - legT0) / cycle) % rest; return ph >= 1 ? -1 : ph;
+}
 // a point a fraction e of the way along a polyline with cumulative lengths cum
 function alongPath(pts, cum, e) {
   const want = cum.at(-1) * Math.max(0, Math.min(1, e)); let i = 1; while (i < pts.length - 1 && cum[i] < want) i++;
@@ -3096,23 +3089,34 @@ function popScale(key) {
 // little in the middle so the route stays in view, as a fly does.
 function playHop(h, to, tok) {
   return new Promise(res => {
+    if (h.ride || !h.a || !h.b || reduce) { flyTo(to, res); return; } // trains and flights have their own line and animation (and no street way)
     const pts = hopPath(h).filter(Boolean);
-    if (h.ride || reduce || pts.length < 2) { flyTo(to, res); return; } // trains and flights have their own line and animation
+    if (pts.length < 2) { flyTo(to, res); return; }
     const cum = [0]; for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
     const r = viewRect(), A = pts[0], B = pts.at(-1), T0 = T; // the route's own ends (streets can stop a few metres short)
     const s0 = toS(A), s1 = [to.x + h.b.xy[0] * to.k, to.y + h.b.xy[1] * to.k]; // where each end sits on screen, at the start and end
     const zi = d3.interpolateZoom([A[0], A[1], r.w / T0.k], [B[0], B[1], r.w / to.k]);
     const dur = 1.3 * Math.max(1600, Math.min(4200, zi.duration * 1.1 + cum.at(-1) * 40));
-    const smooth = e => { // the route's course, averaged over a stretch either side, so the camera doesn't jink
-      let x = 0, y = 0, n = 0; for (let j = -4; j <= 4; j++) { const q = alongPath(pts, cum, e + j * 0.025); x += q[0]; y += q[1]; n++; } return [x / n, y / n]; };
+    const blur = e => { // the route's course, averaged (bell-weighted, finely) over a long stretch either side, so quick turns barely move the camera
+      let x = 0, y = 0, n = 0; for (let j = -30; j <= 30; j++) { const q = alongPath(pts, cum, e + j * 0.01), wt = Math.exp(-((j * 0.01) ** 2) / (2 * 0.15 * 0.15)); x += q[0] * wt; y += q[1] * wt; n += wt; } return [x / n, y / n]; };
+    const b0 = blur(0), b1 = blur(1), N = 240;
+    const cam = Array.from({ length: N + 1 }, (_, i) => { const e = i / N, q = blur(e); // shifted a little, evenly, so it still starts on A and ends on B
+      return [q[0] + (A[0] - b0[0]) * (1 - e) + (B[0] - b1[0]) * e, q[1] + (A[1] - b0[1]) * (1 - e) + (B[1] - b1[1]) * e]; });
+    const smooth = e => { const f = Math.max(0, Math.min(1, e)) * N, i = Math.min(N - 1, Math.floor(f)), g = f - i, a = cam[i], b = cam[i + 1]; return [a[0] + (b[0] - a[0]) * g, a[1] + (b[1] - a[1]) * g]; };
+    // a winding way strays far from that course: mid-hop the view eases out just enough to keep it all in reach,
+    // and the dot is on a soft leash, so near the screen's edge the camera is drawn after it rather than losing it
+    const M = Math.min(r.w, r.h), LEASH = 0.35, FIT = 0.3;
+    let D = 0; for (let i = 0; i <= N; i += 2) { const s = cam[i], d = alongPath(pts, cum, i / N); D = Math.max(D, Math.hypot(d[0] - s[0], d[1] - s[1])); }
+    const wNeed = r.w * D / (FIT * M), width = e => { const w = zi(e)[2]; return w + Math.max(0, wNeed - w) * Math.sin(Math.PI * e); };
+    const follow = (e, k) => { const s = smooth(e), d = alongPath(pts, cum, e), dx = d[0] - s[0], dy = d[1] - s[1], m = Math.hypot(dx, dy), L = LEASH * M / k;
+      if (m < 1e-12) return s; const f = L * Math.tanh(m / L) / m; return [d[0] - dx * f, d[1] - dy * f]; };
     playDot = { pts, cum, color: C[h.b.city] || C[h.a.city] || C.ink, e: 0 };
     const t0 = performance.now();
     const step = now => {
       if (tok !== playTok) { res(); return; }
       const f = Math.min(1, (now - t0) / dur), e = d3.easeCubicInOut(f);
-      const w = Math.sin(Math.PI * e), dot = alongPath(pts, cum, e), sm = smooth(e);
-      const c = [dot[0] + (sm[0] - dot[0]) * w, dot[1] + (sm[1] - dot[1]) * w]; // on the dot near the stops, its smoothed course between
-      const k = r.w / zi(e)[2], ax = s0[0] + (s1[0] - s0[0]) * e, ay = s0[1] + (s1[1] - s0[1]) * e;
+      const k = r.w / width(e), c = follow(e, k); // the smoothed course, leashed to the dot; it meets the stops exactly at each end
+      const ax = s0[0] + (s1[0] - s0[0]) * e, ay = s0[1] + (s1[1] - s0[1]) * e;
       playDot.e = e;
       cvSel.interrupt().call(zoom.transform, d3.zoomIdentity.translate(ax - c[0] * k, ay - c[1] * k).scale(k));
       if (f < 1) requestAnimationFrame(step);
@@ -3125,21 +3129,31 @@ function playHop(h, to, tok) {
 async function playDay() {
   if (!daySl) { if (plSel == null) return; goDay(plSel); await new Promise(r => setTimeout(r, 900)); }
   const tok = ++playTok, it = daySl.it;
-  let first = true;
-  for (let i = 0; i < it.length; i++) {
+  playing = true; invalidate();
+  const fly = t => new Promise(res => flyTo(t, res)), wait = ms => new Promise(res => setTimeout(res, ms));
+  let prev = null;
+  try { for (let i = 0; i < it.length; i++) {
     const s = it[i].stop; if (!s) continue;
     if (tok !== playTok || !daySl) return;
     closePop();
     const full = s.place && (s.kind === "place" || s.kind === "home"); // a place or our Airbnb: its usual popup
     const r = popViewRect(full), k = full ? 420 : 180;
     const to = d3.zoomIdentity.translate(r.x + r.w / 2 - s.xy[0] * k, r.y + r.h / 2 - s.xy[1] * k).scale(k);
-    const hop = !first && it.slice(0, i).reverse().find(e => e.hop)?.hop; // the way here from the stop before
-    if (hop) await playHop(hop, to, tok); else await new Promise(res => flyTo(to, res));
-    first = false;
+    const hop = prev && it.slice(0, i).reverse().find(e => e.hop)?.hop; // the way here from the stop before
+    if (hop?.ride && !reduce && (daySl.flight || daySl.leg)) {
+      // a flight or train: pull back to see the whole of it, run the plane or train once, then go in to where it arrives
+      await fly(fitPts([prev.xy, s.xy], 70)); if (tok !== playTok) return;
+      const dur = daySl.flight ? 3600 : 5200;
+      playRide = { t0: performance.now(), dur }; invalidate();
+      await wait(dur + 250); if (tok !== playTok) return;
+      playRide = null; invalidate();
+      await fly(to);
+    } else if (hop) await playHop(hop, to, tok); else await fly(to);
+    prev = s;
     if (tok !== playTok || !daySl) return;
     if (full) openPop(s.place); else openStopPop(s, it.slice(i + 1).find(e => e.hop)?.hop);
     await new Promise(res => setTimeout(res, full ? 2200 : 1600));
-  }
+  } } finally { if (tok === playTok) { playing = false; playRide = null; invalidate(); } } // the leg's plane or train goes back to its own loop
   if (tok === playTok && daySl) { closePop(); flyTo(daySl.view()); }
 }
 
@@ -3242,6 +3256,8 @@ card.addEventListener("click", e => {
   const jump = e.target.closest("[data-go]");
   if (jump) { e.preventDefault(); e.stopPropagation(); go(slides.findIndex(s => s.id === jump.dataset.go)); return; }
   if (e.target.closest("[data-plan]")) { e.preventDefault(); e.stopPropagation(); setCal(true); return; }
+  const alt = e.target.closest(".board.sum tr[data-g], .board.sum tr[data-t]"); // the dimmed option on the Trip slide: switches to it
+  if (alt) { const opt = (alt.dataset.g || alt.dataset.t) === "b" ? "flight" : "sleeper"; if (opt !== PLAN.legs.vs.opt) { e.stopPropagation(); setVsOpt(opt); planChanged(); } return; }
   const hb = e.target.closest("[data-home]"); if (hb) { e.stopPropagation(); setHome(hb.dataset.home); return; }
   if (e.target.closest(".ract")) return; // the pin picker opens; the row doesn't fly
   const li = e.target.closest("[data-p]"); if (!li) return;
@@ -3285,10 +3301,12 @@ cv.addEventListener("click", ev => {
   if (h.place) openPop(h.place);
   else if (h.city) go(slides.findIndex(s => s.id === h.city));
 });
+const OLD_TRIP = { pv: "intro", vs: "intro", in: "intro" }; // the train and summary slides now live on the Trip slide
+const slideAt = h => slides.findIndex(s => s.id === (OLD_TRIP[h] || h));
 addEventListener("hashchange", () => {
   const h = location.hash.slice(1), d = DAYS.findIndex(x => `day-${x.iso}` === h);
   if (d >= 0) { if (!daySl || daySl.i !== d) goDay(d); return; }
-  const i = slides.findIndex(s => s.id === h);
+  const i = slideAt(h);
   if (i >= 0 && i !== cur) go(i);
 });
 cv.addEventListener("mousemove", ev => { if (mapDrag) return; cv.classList.toggle("pointing", !!hitAt(ev)); cv.classList.toggle("grab", !!grabAt(ev)); });
@@ -3353,7 +3371,7 @@ async function boot() {
   (window.requestIdleCallback || setTimeout)(() => loadLand("land"), { timeout: 3000 }); // country detail, once the page is up
   document.getElementById("loading").remove();
   document.body.classList.toggle("dock", DOCK.matches);
-  const h = location.hash.slice(1), start = Math.max(0, slides.findIndex(s => s.id === h)), d = DAYS.findIndex(x => `day-${x.iso}` === h);
+  const h = location.hash.slice(1), start = Math.max(0, slideAt(h)), d = DAYS.findIndex(x => `day-${x.iso}` === h);
   cur = start;
   if (d >= 0) goDay(d, { instant: true }); else go(start, { instant: true });
   applyDock(); fitMenubar();
