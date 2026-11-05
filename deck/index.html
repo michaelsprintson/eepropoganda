@@ -3089,7 +3089,7 @@ const popKey = s => s.place ? keyOf(s.place) : `stop:${s.name}`;
 function popScale(key) {
   if (!pinPop || pinPop.key !== key) return 1;
   const f = (performance.now() - pinPop.t0) / POP_MS;
-  return f >= 1 ? 1 : 1 + 0.38 * Math.sin(Math.PI * f) * (1 - 0.35 * f);
+  return f >= 1 ? 1 : 1 + 0.22 * Math.sin(Math.PI * f) * (1 - 0.35 * f);
 }
 // one smooth move from a stop to the next: the camera glides along roughly with the dot, the dot rides
 // the real route, and the move ends framed on the next stop as `to` (a transform) has it. A long way eases out a
