@@ -566,21 +566,25 @@ body.cardmin #panel { display: none; } /* upright phones: the card tucked away, 
 }
 /* phones on their side: one column down the left (city tabs, card or planner, bottom bar), the map filling the rest */
 @media (orientation: landscape) and (max-height: 520px) {
+  /* side margins: the safe area (the Dynamic Island's side), else just clear of the screen's rounded corners.
+     iPhones report the same safe area on both sides, so the island's side comes from which way it's turned */
+  :root { --ll: max(10px, env(safe-area-inset-left, 0px)); --rr: max(10px, env(safe-area-inset-right, 0px)); }
+  body.isl-right { --ll: 24px; } body.isl-left { --rr: 24px; }
   #menubar, #tools { top: calc(6px + env(safe-area-inset-top, 0px)); }
-  #menubar { left: calc(var(--gl) + env(safe-area-inset-left, 0px)); }
-  #tools { right: calc(var(--gr) + env(safe-area-inset-right, 0px)); left: auto; }
+  #menubar { left: var(--ll); }
+  #tools { right: var(--rr); left: auto; }
   .mbitems { height: 36px; }
   .mbt { font-size: 13px; padding: 0 7px; }
   #menubar:not(.compact) .mbitems { width: min(42vw, 380px); }
   #tools .btn, #nav .btn { height: 36px; min-width: 36px; }
   #calBtn .dates { display: none; }
-  #nav { right: auto; left: calc(var(--gl) + env(safe-area-inset-left, 0px)); bottom: calc(6px + env(safe-area-inset-bottom, 0px)); width: min(42vw, 380px); }
+  #nav { right: auto; left: var(--ll); bottom: calc(6px + env(safe-area-inset-bottom, 0px)); width: min(42vw, 380px); }
   #navSw .sw button { min-height: 36px; }
   #navSw .sw button span { display: none; } /* icons only, the names in their tooltips */
   #cardHide { display: none !important; }
   #navSw .sw svg { width: 15px; height: 15px; }
   #navSw .solo { height: 36px; }
-  #panel, .calpanel { top: calc(48px + env(safe-area-inset-top, 0px)); bottom: calc(48px + env(safe-area-inset-bottom, 0px)); left: calc(var(--gl) + env(safe-area-inset-left, 0px)); right: auto; width: min(42vw, 380px); max-height: none; }
+  #panel, .calpanel { top: calc(48px + env(safe-area-inset-top, 0px)); bottom: calc(48px + env(safe-area-inset-bottom, 0px)); left: var(--ll); right: auto; width: min(42vw, 380px); max-height: none; }
   #panel { justify-content: flex-start; }
   body.daypick .calpanel { max-height: none; }
   body.planopen #panel { display: none; }
@@ -2567,7 +2571,8 @@ function placePop() {
   if (portraitPhone()) { px = (W - w) / 2; py = document.getElementById("tools").getBoundingClientRect().bottom + 8; } // phones: docked under the top bar
   else if (LAND.matches) { // a phone on its side: kept in the map, clear of the column on the left
     const vr = viewRect();
-    px = Math.max(vr.x + 8, Math.min(W - w - 8, px)); py = Math.max(8, Math.min(H - h - 8, y - h / 2));
+    const rm = parseFloat(getComputedStyle(document.getElementById("tools")).right) || 8;
+    px = Math.max(vr.x + 8, Math.min(W - w - rm, px)); py = Math.max(8, Math.min(H - h - 8, y - h / 2));
   }
   pop.style.translate = `${Math.round(px)}px ${Math.round(py)}px`; // translate, not transform: it's applied after the opening scale, which then grows from the icon
   pop.style.transformOrigin = `${Math.round(x - px)}px ${Math.round(y - py)}px`; // it grows out of, and shrinks back into, its icon
@@ -2767,7 +2772,22 @@ navSw.addEventListener("click", e => {
   go(j);
 });
 document.getElementById("cardHide").addEventListener("click", e => { e.stopPropagation(); setCardMin(true); });
-LAND.addEventListener("change", () => { setCardMin(false); renderCard(); remeasure(); });
+// a phone on its side with a Dynamic Island: which side it's on (turned counter-clockwise, the top of the phone
+// is on the left). Only when the screen has a safe area at all; a square-cornered phone has none.
+const insetProbe = document.createElement("div");
+insetProbe.style.cssText = "position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)";
+document.body.appendChild(insetProbe);
+function syncIsland() {
+  const cs = getComputedStyle(insetProbe), safe = parseFloat(cs.paddingLeft) > 0 || parseFloat(cs.paddingRight) > 0;
+  const raw = typeof window.orientation === "number" ? window.orientation : screen.orientation?.angle === 270 ? -90 : screen.orientation?.angle ?? 0;
+  const turn = ((raw % 360) + 360) % 360, on = safe && LAND.matches;
+  document.body.classList.toggle("isl-left", on && turn === 90);
+  document.body.classList.toggle("isl-right", on && turn === 270);
+}
+syncIsland();
+addEventListener("orientationchange", () => setTimeout(() => { syncIsland(); remeasure(); }, 50));
+screen.orientation?.addEventListener?.("change", () => { syncIsland(); remeasure(); });
+LAND.addEventListener("change", () => { syncIsland(); setCardMin(false); renderCard(); remeasure(); });
 function renderPlanner() {
   document.body.classList.toggle("daypick", plSel != null);
   if (calPanel.hidden) return;
