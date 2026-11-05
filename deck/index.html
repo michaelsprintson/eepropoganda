@@ -2316,7 +2316,7 @@ function draw(now) {
 
 // frames run only when asked for: a change calls invalidate(), and the loop keeps going only while a train animates
 let frame = 0;
-let reqAt = 0;
+let reqAt = 0; // when the next frame was asked for: a frame is late if it comes long after (the plane's or train's own loop asks too)
 function invalidate() { dirty = true; if (!frame) { reqAt = performance.now(); frame = requestAnimationFrame(loop); } }
 // panning and zooming by hand on a machine that can't redraw the whole map every frame: once two frames in a row
 // run long, the rest of that gesture moves a snapshot of the map, redrawn properly whenever the hand rests and at
@@ -2335,7 +2335,7 @@ function loop(now) {
     const sk = T.k / snapT.k;
     vc.setTransform(1, 0, 0, 1, 0, 0); vc.fillStyle = C.water; vc.fillRect(0, 0, cv.width, cv.height);
     vc.setTransform(sk, 0, 0, sk, dpr * (T.x - snapT.x * sk), dpr * (T.y - snapT.y * sk)); vc.drawImage(snap, 0, 0);
-    if (animating) { flightOf(SL()) ? drawPlane(now) : drawTrain(now); frame = requestAnimationFrame(loop); }
+    if (animating) { flightOf(SL()) ? drawPlane(now) : drawTrain(now); reqAt = performance.now(); frame = requestAnimationFrame(loop); }
     return;
   }
   if (dirty) {
@@ -2343,7 +2343,7 @@ function loop(now) {
     if (gest && !gest.slow) { gest.bad = late || performance.now() - t0 > 14 ? gest.bad + 1 : 0; if (gest.bad >= 2) { gest.slow = true; takeSnap(); } }
   }
   vc.setTransform(1, 0, 0, 1, 0, 0); vc.drawImage(base, 0, 0);
-  if (animating) { flightOf(SL()) ? drawPlane(now) : drawTrain(now); frame = requestAnimationFrame(loop); }
+  if (animating) { flightOf(SL()) ? drawPlane(now) : drawTrain(now); reqAt = performance.now(); frame = requestAnimationFrame(loop); }
   if (pinPop && performance.now() - pinPop.t0 < POP_MS + 20) { dirty = true; if (!frame) frame = requestAnimationFrame(loop); } else pinPop = null;
 }
 function drawTrain(now) {
