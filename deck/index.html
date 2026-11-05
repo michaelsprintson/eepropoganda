@@ -1,5 +1,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#172026" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#e9ece8" media="(prefers-color-scheme: light)">
 <title>Praha · Wien · Split</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,13 +58,16 @@
   --vienna: #f0b630; --prague: #e8584c; --split: #2fb8b0; --zagreb: #e07cb6; --tram: #f06a5c; --bus: #a98be6; color-scheme: dark;
 }
 html, body { height: 100%; overflow: hidden; }
+/* phones: Safari tints its status bar and the band round its toolbar from the page, so the page is the map's
+   own land color there rather than near-black */
+html { background: var(--land); }
 [hidden] { display: none !important; }
 body {
-  background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5;
+  background: var(--land); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5;
   padding-left: var(--gl); padding-right: var(--gr); padding-block: 0;
   -webkit-font-smoothing: antialiased;
 }
-canvas#map { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+canvas#map { position: fixed; top: 0; left: 0; width: 100%; height: 100%; height: 100lvh; display: block; touch-action: none; cursor: grab; } /* as tall as the screen with Safari's toolbar out of the way: the map runs on behind it */
 canvas#map.pointing { cursor: pointer; }
 canvas#map:active { cursor: grabbing; }
 
@@ -550,7 +555,7 @@ body.dock #panel { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
 @media (prefers-reduced-motion: reduce) {
   #card { transition: none; }
 }
-/* phones (and phones on their side): the bottom bar holds this city's four-panel switcher; its arrows go city to city */
+/* phones (and phones on their side): the bottom bar holds this city's four-panel switcher; its arrows go day by day */
 #navSw, #cardHide { display: none; }
 #navSw .solo { display: flex; align-items: center; justify-content: center; height: 44px; box-sizing: border-box; padding: 0 10px; font: 600 13px var(--f-body); color: var(--ink-2); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 body.cardmin #panel { display: none; } /* upright phones: the card tucked away, the map in full */
@@ -1529,7 +1534,7 @@ new MutationObserver(readTheme).observe(document.documentElement, { attributes: 
 
 function resize() {
   dpr = Math.min(window.devicePixelRatio || 1, 2);
-  W = innerWidth; H = innerHeight;
+  W = innerWidth; H = Math.max(innerHeight, Math.round(cv.getBoundingClientRect().height) || 0); // the map's own height: behind a phone's toolbar too
   for (const c of [cv, base, off]) { c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); }
   invalidate();
 }
@@ -2731,8 +2736,15 @@ function buildNav() {
   });
 }
 const prevBtn = document.getElementById("prev"), nextBtn = document.getElementById("next");
-nextBtn.onclick = () => phoneBar() && !daySl ? stepCity(1) : stepAny(1); // phones: city to city (a day still steps day to day)
-prevBtn.onclick = () => phoneBar() && !daySl ? stepCity(-1) : stepAny(-1);
+// phones: always day by day. From a slide, into that city's first day (or its last, going back); the trip's first or last
+function dayFromSlide(dir) {
+  const g = groupOf(cur), mine = DAYS.map((x, i) => i).filter(i => g === "trip" || dayCity(DAYS[i]) === g);
+  const list = mine.length ? mine : DAYS.map((x, i) => i);
+  return dir > 0 ? list[0] : list.at(-1);
+}
+const phoneStep = dir => daySl ? stepAny(dir) : goDay(dayFromSlide(dir));
+nextBtn.onclick = () => phoneBar() ? phoneStep(1) : stepAny(1);
+prevBtn.onclick = () => phoneBar() ? phoneStep(-1) : stepAny(-1);
 // Overview is the intro slide: the whole trip, so the calendar lets go of its day too
 document.getElementById("overview").onclick = () => { closePop(); plSel = null; go(slides.findIndex(s => s.id === "intro")); renderPlanner(); };
 function toggleRoam() {
@@ -2746,7 +2758,7 @@ const calBtn = document.getElementById("calBtn"), calPanel = document.getElement
 const docked = () => document.body.classList.contains("dock");
 // ---------- phones ----------
 const LAND = matchMedia("(orientation: landscape) and (max-height: 520px)"); // a phone on its side: the card becomes a left column
-const phoneBar = () => W < 760 || LAND.matches; // the bottom bar holds the four-panel switcher, its arrows go city to city
+const phoneBar = () => W < 760 || LAND.matches; // the bottom bar holds the four-panel switcher, its arrows go day by day
 const portraitPhone = () => W < 760 && !LAND.matches; // upright: one sheet at a time over the map
 const navSw = document.getElementById("navSw");
 // upright phones: the card tucks away (the bar's switcher brings it back); a popup or the planner tucks it away too
@@ -2755,20 +2767,19 @@ function setCardMin(on) {
   if (document.body.classList.contains("cardmin") === on) return;
   document.body.classList.toggle("cardmin", on); syncNavSw(); remeasure();
 }
-const tripIds = () => MENU_IDS.filter(id => !menuOff(id));
-function stepCity(dir) { const ids = tripIds(), j = ids.indexOf(groupOf(cur)) + dir; if (j >= 0 && j < ids.length) goGroup(ids[j]); }
 function syncNavSw() { // the bar's copy of the switcher, and its arrows named for the cities they go to
   if (!phoneBar()) { navSw.innerHTML = ""; for (const b of [prevBtn, nextBtn]) { b.disabled = false; b.removeAttribute("title"); } prevBtn.title = "Previous (←)"; nextBtn.title = "Next (→)"; return; }
   const i = daySl ? dayCard : cur, g = i >= 0 ? groupOf(i) : "trip";
   navSw.innerHTML = cardFoot() || `<div class="solo">${g === "trip" ? "Praha → Wien → Split" : esc(PC[g]?.en || "")}</div>`;
   navSw.style.setProperty("--c", `var(--${g === "trip" ? "ink-2" : g})`);
   navSw.querySelectorAll("[data-cstep]").forEach(b => b.classList.toggle("tuck", document.body.classList.contains("cardmin")));
-  if (daySl) { prevBtn.disabled = daySl.i <= 0; nextBtn.disabled = daySl.i >= DAYS.length - 1; prevBtn.title = "Previous day"; nextBtn.title = "Next day"; return; }
-  const ids = tripIds(), at = ids.indexOf(g), pv = ids[at - 1], nx = ids[at + 1];
-  prevBtn.disabled = !pv; nextBtn.disabled = !nx;
-  prevBtn.title = pv ? `Back to ${pv === "trip" ? "the trip" : PC[pv].en}` : ""; nextBtn.title = nx ? `On to ${PC[nx].en}` : "";
-  prevBtn.setAttribute("aria-label", prevBtn.title || "Previous"); nextBtn.setAttribute("aria-label", nextBtn.title || "Next");
-  nextBtn.style.setProperty("--nc", `var(--${nx || "ink-2"})`);
+  // the arrows go day by day: the day before and after, or from a slide into its city's days
+  const pi = daySl ? daySl.i - 1 : dayFromSlide(-1), ni = daySl ? daySl.i + 1 : dayFromSlide(1), pd = DAYS[pi], nd = DAYS[ni];
+  prevBtn.disabled = !pd; nextBtn.disabled = !nd;
+  prevBtn.title = pd ? `${daySl ? "Previous day" : "Last day here"}: ${fmtDay(pd.date)}` : "";
+  nextBtn.title = nd ? `${daySl ? "Next day" : "First day here"}: ${fmtDay(nd.date)}` : "";
+  prevBtn.setAttribute("aria-label", prevBtn.title || "Previous day"); nextBtn.setAttribute("aria-label", nextBtn.title || "Next day");
+  nextBtn.style.setProperty("--nc", `var(--${nd ? dayCity(nd) : "ink-2"})`);
 }
 navSw.addEventListener("click", e => {
   const cs = e.target.closest("[data-cstep]"); if (!cs) return;
