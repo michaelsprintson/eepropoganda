@@ -255,10 +255,11 @@
  },
  "Karlštejn village": {
   "img": "img/karlstejn-s1.webp",
-  "credit": "Josef Kreuz (PEPan) · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Karl%C5%A1tejn_(z%C3%A1mek),_CZ140506-186.jpg",
   "thumb": "img/karlstejn-s1-t.webp",
-  "full": "img/full/karlstejn-s1.webp"
+  "full": "img/full/karlstejn-s1.webp",
+  "credit": "Photo: live.staticflickr.com",
+  "link": "https://live.staticflickr.com/4335/35957867040_c6160e6929_h.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flive.staticflickr.com%2F4335%2F35957867040_c6160e6929_h.jpg&f=1&nofb=1&ipt=96343cd51d2881c1bd8431184477d5f44e3f757bfa2862c2443f63ca47d6ca59&ipo=images"
  },
  "Velká Amerika quarry": {
   "img": "img/karlstejn-s2.webp",

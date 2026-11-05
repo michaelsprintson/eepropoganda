@@ -278,6 +278,7 @@ USER = {
     "Fortica fortress": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlsQBeDg2RgnKDk68k4mL1mIfh8WFrVhFQH0yMAj8avVF5MEyDPhpbEJOW&s=10",
     "St. Stephen's Square": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F18191218%2Fpexels-photo-18191218%2Ffree-photo-of-square-near-st-stephens-basilica-in-budapest.jpeg%3Fauto%3Dcompress%26w%3D1260%26h%3D750%26dpr%3D1&f=1&nofb=1&ipt=246afe714bf45c9f57e6e736260ef03d5a7f59961cbde9a7725b20a0761a9175&ipo=images",
     "Cathedral of St. Lawrence": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLjdVMrWQVuIMGVAacUAqA3UdrLfsP2t8f3ksCqnB9kFh4BT7dtQwfoaI&s=10",
+    "Karlštejn village": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flive.staticflickr.com%2F4335%2F35957867040_c6160e6929_h.jpg&f=1&nofb=1&ipt=96343cd51d2881c1bd8431184477d5f44e3f757bfa2862c2443f63ca47d6ca59&ipo=images",
     "Trogir waterfront": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmedia02.stockfood.com%2Flargepreviews%2FMjIwMjA3OTE0MQ%3D%3D%2F71034811-Trogir-waterfront-Obala-Bana-Berislavica-Trogir-UNESCO-World-Heritage-Site-Dalmatian-Coast-Adriatic-Croatia.jpg&f=1&nofb=1&ipt=dcae57306303ea28dfcdb6d9a318f4208724fe6638e10c8b17bd4618b5cb19f6&ipo=images",
 }
 # Airbnb listings with a chosen photo instead of the listing's cover (by room id)

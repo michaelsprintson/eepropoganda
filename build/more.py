@@ -33,6 +33,11 @@ TILE = {"base": 0.06, "bd": 0.03}  # degrees per download tile
 # the outer ring is seen zoomed out or in passing: coarser shapes, and small buildings and patches dropped
 MORE_TOL = {**TOL, "r3": 4.0, "gr": 6.0, "bd": 2.0}
 MORE_MIN = {**MIN_AREA, "gr": 2500, "bd": 350}
+# Prague's core map is big and built up, so its ring held twice Zagreb's points and panned unevenly in Safari:
+# there, coarser still, fewer small buildings and patches, and no short side-street stubs (min length in m)
+CITY_TOL = {"prague": {"r3": 5.0, "gr": 8.0, "bd": 3.0}}
+CITY_MIN = {"prague": {"gr": 6000, "bd": 800}}
+CITY_LEN = {"prague": {"r3": 45}}
 
 
 def tiles(b, step):
@@ -74,6 +79,7 @@ def build(city):
     bd_ring = inner.difference(core_bd)  # buildings: the core map outside its old-town box
     ring_p, bd_p = prep(ring), prep(bd_ring)
     layers = {k: [] for k in TOL}
+    tol, mins, lens = {**MORE_TOL, **CITY_TOL.get(city, {})}, {**MORE_MIN, **CITY_MIN.get(city, {})}, CITY_LEN.get(city, {})
     seen = set()
     for kind in ("base", "bd"):
         for path in files[kind]:
@@ -91,12 +97,12 @@ def build(city):
                 area, area_p = (bd_ring, bd_p) if layer == "bd" else (ring, ring_p)
                 if not area_p.intersects(g):
                     continue
-                g = g.intersection(area).simplify(MORE_TOL[layer])
+                g = g.intersection(area).simplify(tol[layer])
                 for part in iter_parts(g):
                     if isinstance(part, Polygon):
-                        if part.area >= MORE_MIN.get(layer, 0):
+                        if part.area >= mins.get(layer, 0):
                             layers[layer].append([flat_delta(part.exterior.coords)] + [flat_delta(i.coords) for i in part.interiors if i.length > 30])
-                    elif isinstance(part, LineString) and part.length > 5:
+                    elif isinstance(part, LineString) and part.length > lens.get(layer, 5):
                         layers[layer].append(flat_delta(part.coords))
     replace = []
     if coast:  # the sea is redrawn for the whole wider box

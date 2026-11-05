@@ -1578,33 +1578,38 @@ function buildCity(name, c) {
 const setBounds = (city, b) => { const [ox, oy] = city.origin; city.bounds = b; city.box = [ox + b[0] / 1000, oy + b[1] / 1000, ox + b[2] / 1000, oy + b[3] / 1000]; };
 // every layer is split into TILE-sized cells (by each feature's top-left corner), so a zoomed-in view
 // strokes only the cells it can see; each cell's box grows to cover its features
+// The thinned copies are tiled too, in bigger cells: Safari strokes every point of a path however far off screen,
+// so one path per layer for the whole map (outer ring and all) made it slow at those zooms
+const LO_TILE = 8000;
 function addLayers(city, layers, { roads = false, replace = [], noLo = [] } = {}) {
-  for (const layer of replace) { delete city.lo[layer]; if (city.lo2) delete city.lo2[layer]; for (const t of city.tileMap.values()) delete t.paths[layer]; }
-  const cell = (bb) => {
-    const key = `${Math.floor(bb[0] / TILE)},${Math.floor(bb[1] / TILE)}`;
-    let t = city.tileMap.get(key);
-    if (!t) city.tileMap.set(key, t = { bb: bb.slice(), paths: {} });
+  city.loMap ||= new Map(); city.lo2Map ||= new Map();
+  for (const layer of replace) { delete city.lo[layer]; for (const m of [city.tileMap, city.loMap, city.lo2Map]) for (const t of m.values()) delete t.paths[layer]; }
+  const cell = (map, size, bb) => {
+    const key = `${Math.floor(bb[0] / size)},${Math.floor(bb[1] / size)}`;
+    let t = map.get(key);
+    if (!t) map.set(key, t = { bb: bb.slice(), paths: {} });
     else { t.bb[0] = Math.min(t.bb[0], bb[0]); t.bb[1] = Math.min(t.bb[1], bb[1]); t.bb[2] = Math.max(t.bb[2], bb[2]); t.bb[3] = Math.max(t.bb[3], bb[3]); }
     return t;
   };
+  const pathIn = (map, size, bb, layer) => { const t = cell(map, size, bb); return t.paths[layer] || (t.paths[layer] = new Path2D()); };
   for (const [layer, items] of Object.entries(layers)) {
     const low = LOD_LAYERS.has(layer) && !noLo.includes(layer); // noLo: drawn only zoomed in (the outskirts' side streets)
-    const poly = POLY.has(layer), thin = low ? (city.lo[layer] ||= new Path2D()) : null;
-    const thin2 = low && !LOD2_SKIP.has(layer) ? ((city.lo2 ||= {})[layer] ||= new Path2D()) : null;
+    const poly = POLY.has(layer), low2 = low && !LOD2_SKIP.has(layer);
+    if (low) city.lo[layer] = true; // which layers have thinned copies
     for (const it of items) {
       const lines = (poly ? it : [it]).map(decode);
       const bb = lines[0].bb.slice();
       for (const l of lines) { bb[0] = Math.min(bb[0], l.bb[0]); bb[1] = Math.min(bb[1], l.bb[1]); bb[2] = Math.max(bb[2], l.bb[2]); bb[3] = Math.max(bb[3], l.bb[3]); }
-      const t = cell(bb), p = t.paths[layer] || (t.paths[layer] = new Path2D());
+      const p = pathIn(city.tileMap, TILE, bb, layer);
       for (const l of lines) addAbs(p, l.pts, poly);
       if (roads && ROAD_LAYERS.has(layer)) city.roads.push(lines[0].pts);
       // the thinned copy skips features smaller than a couple of pixels at LOD_K
       const span = (bb[2] - bb[0]) + (bb[3] - bb[1]);
-      if (thin && span >= 2 * LOD_M) for (const l of lines) addThin(thin, l.pts, poly);
-      if (thin2 && span >= (layer === "gr" ? 8 : 4) * LOD2_M) for (const l of lines) addThin(thin2, l.pts, poly, LOD2_M);
+      if (low && span >= 2 * LOD_M) { const q = pathIn(city.loMap, LO_TILE, bb, layer); for (const l of lines) addThin(q, l.pts, poly); }
+      if (low2 && span >= (layer === "gr" ? 8 : 4) * LOD2_M) { const q = pathIn(city.lo2Map, LO_TILE, bb, layer); for (const l of lines) addThin(q, l.pts, poly, LOD2_M); }
     }
   }
-  city.tiles = [...city.tileMap.values()];
+  city.tiles = [...city.tileMap.values()]; city.loTiles = [...city.loMap.values()]; city.lo2Tiles = [...city.lo2Map.values()];
 }
 // the rest of a city (data/<city>_more.json: the streets around it, buildings everywhere) loads once its core
 // map is up and the page is idle. Its streets stay out of day routing, which keeps that graph quick to build.
@@ -1837,13 +1842,16 @@ const zoom = d3.zoom().scaleExtent([K_MIN, 8000])
 // brings back the trip's: the one last looked at there, else its first. The map stays put. On an open day only
 // the card changes (the day stays on the map), as the card's own switcher does.
 const FOLLOW_K = 12, FOLLOW_KM = 25;
-function followZoom() {
+// also after each move of a day's Play, so the card keeps up with where it has flown. By hand the whole trip needs
+// every city in view; in Play two will do (a travel day's overview shows where it set off and where it arrives),
+// as asking for two by hand swapped the card at the end of nearly every zoom
+function followZoom(play = false) {
   if (!slides.length) return;
   const r = viewRect(), cx = (r.x + r.w / 2 - T.x) / T.k, cy = (r.y + r.h / 2 - T.y) / T.k;
   const ids = NIGHT_ORDER.filter(id => !menuOff(id));
-  const all = ids.every(id => { const [x, y] = toS(PC[id].xy); return x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h; });
+  const seen = ids.filter(id => { const [x, y] = toS(PC[id].xy); return x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h; }).length;
   let best = null, bd = FOLLOW_KM;
-  if (all && T.k < FOLLOW_K) best = "trip";
+  if (seen >= (play ? Math.min(2, ids.length) : ids.length) && T.k < FOLLOW_K) best = "trip";
   else if (T.k >= FOLLOW_K) for (const id of ids) { const d = Math.hypot(PC[id].xy[0] - cx, PC[id].xy[1] - cy); if (d < bd) { bd = d; best = id; } }
   if (!best || groupOf(daySl ? dayCard : cur) === best) return;
   const list = groupSlides(best); if (!list.length) return;
@@ -1911,11 +1919,14 @@ function text(str, x, y, { size = 12, weight = 600, fam = "--f-body", color = C.
 
 // paint a city's layers onto g, which is already in the city's metre frame; view is the visible part in metres
 function paintCity(g, c, k, view) {
-  const px = 1000 / k, lo = k < LOD_K, lo2 = k < LOD2_K && c.lo2;
-  const vis = c.tiles.filter(t => t.bb[0] < view[2] && t.bb[2] > view[0] && t.bb[1] < view[3] && t.bb[3] > view[1]);
-  const pick = layer => lo2 ? (LOD2_SKIP.has(layer) ? "skip" : c.lo2[layer]) : lo ? c.lo[layer] : null;
-  const fill = (layer, rule = "nonzero") => { const q = pick(layer); if (q === "skip") return; if (q) g.fill(q, rule); else for (const t of vis) if (t.paths[layer]) g.fill(t.paths[layer], rule); };
-  const stroke = layer => { const q = pick(layer); if (q === "skip") return; if (q) g.stroke(q); else for (const t of vis) if (t.paths[layer]) g.stroke(t.paths[layer]); };
+  const px = 1000 / k, lo = k < LOD_K, lo2 = k < LOD2_K && c.lo2Tiles.length;
+  const inView = t => t.bb[0] < view[2] && t.bb[2] > view[0] && t.bb[1] < view[3] && t.bb[3] > view[1];
+  const vis = c.tiles.filter(inView);
+  const visLo = lo ? (lo2 ? c.lo2Tiles : c.loTiles).filter(inView) : null; // the thinned copies' cells in view
+  // which cells to draw a layer from: the thinned ones zoomed out (when the layer has them), else the full ones
+  const pick = layer => lo2 && LOD2_SKIP.has(layer) ? null : lo && c.lo[layer] ? visLo : vis;
+  const fill = (layer, rule = "nonzero") => { const ts = pick(layer); if (ts) for (const t of ts) if (t.paths[layer]) g.fill(t.paths[layer], rule); };
+  const stroke = layer => { const ts = pick(layer); if (ts) for (const t of ts) if (t.paths[layer]) g.stroke(t.paths[layer]); };
   g.lineCap = "round"; g.lineJoin = "round";
   if (c.lo.sea) { // coastal map: land everywhere, then the sea cut from the real coastline
     const [bw, bn, be, bs] = c.bounds;
@@ -3143,7 +3154,9 @@ async function playDay() {
     if (hop?.ride && !reduce && (daySl.flight || daySl.leg)) {
       // a flight or train: pull back to see the whole of it, run the plane or train once, then go in to where it arrives
       await fly(fitPts([prev.xy, s.xy], 70)); if (tok !== playTok) return;
+      followZoom(true); // the card follows: the whole trip while both ends are in view
       const dur = daySl.flight ? 3600 : 5200;
+      if (!legT0) legT0 = performance.now(); // the day's own fly-in can be cut short by Play, before it starts the plane's clock
       playRide = { t0: performance.now(), dur }; invalidate();
       await wait(dur + 250); if (tok !== playTok) return;
       playRide = null; invalidate();
@@ -3151,10 +3164,11 @@ async function playDay() {
     } else if (hop) await playHop(hop, to, tok); else await fly(to);
     prev = s;
     if (tok !== playTok || !daySl) return;
+    followZoom(true); // the card follows to the city we've arrived in
     if (full) openPop(s.place); else openStopPop(s, it.slice(i + 1).find(e => e.hop)?.hop);
     await new Promise(res => setTimeout(res, full ? 2200 : 1600));
   } } finally { if (tok === playTok) { playing = false; playRide = null; invalidate(); } } // the leg's plane or train goes back to its own loop
-  if (tok === playTok && daySl) { closePop(); flyTo(daySl.view()); }
+  if (tok === playTok && daySl) { closePop(); flyTo(daySl.view(), () => { if (tok === playTok && daySl) followZoom(true); }); }
 }
 
 // ---------- menu bar: a tab per city, straight to its slides ----------
@@ -3179,7 +3193,7 @@ function goGroup(id) {
 }
 // the tabs; on narrow screens they fold into one Menu button that lists the same cities
 function buildMenu() {
-  const on = menuOf(SL());
+  const on = menuOf(cardSl() || SL()); // on a day, the card's city: it follows Play and zooming, as the card does
   const tab = (id, cls) => `<button role="menuitem" class="${cls}${on === id ? " cur" : ""}" data-menu="${id}"${on === id ? ` aria-current="true"` : ""}${menuOff(id) ? ` disabled title="Only on the train route: the flight skips Zagreb"` : ""} style="--c:var(--${id === "trip" ? "ink-2" : id})">${menuTitle(id)}</button>`;
   mbItems.innerHTML = MENU_IDS.map(id => tab(id, "mbt")).join("");
   if (!mbOpen) { mbMenu.hidden = true; return; }
@@ -3352,7 +3366,7 @@ cv.addEventListener("pointerup", ev => endMapDrag(ev, true));
 cv.addEventListener("pointercancel", ev => endMapDrag(ev, false));
 
 // ---------- boot ----------
-const DATA_V = "35"; // bump when data files change so browsers don't reuse stale copies
+const DATA_V = "38"; // bump when data files change so browsers don't reuse stale copies
 async function boot() {
   readTheme(); resize();
   invalidate();
