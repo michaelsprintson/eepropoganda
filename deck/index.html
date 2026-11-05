@@ -67,7 +67,10 @@ body {
   padding-left: var(--gl); padding-right: var(--gr); padding-block: 0;
   -webkit-font-smoothing: antialiased;
 }
-canvas#map { position: fixed; top: 0; left: 0; width: 100%; height: 100%; height: 100lvh; display: block; touch-action: none; cursor: grab; } /* as tall as the screen with Safari's toolbar out of the way: the map runs on behind it */
+canvas#map { position: fixed; top: 0; left: 0; width: 100%; height: 100%; height: 100lvh; display: block; touch-action: none; cursor: grab;
+  /* iOS 26 Safari cuts an opaque fixed layer off at its toolbars, but lets a see-through one cover the whole screen,
+     behind the status bar and the floating toolbar too. Not quite opaque, then: the map paints every pixel anyway */
+  background-color: color-mix(in srgb, var(--land) 99%, transparent); opacity: .999; }
 canvas#map.pointing { cursor: pointer; }
 canvas#map:active { cursor: grabbing; }
 
@@ -610,6 +613,10 @@ html, body { overflow-x: hidden; overscroll-behavior-x: none; }
 #card, .calpanel { touch-action: pan-y; overscroll-behavior-x: none; }
 #card, .calpanel, #pop { overflow-wrap: break-word; }
 .board table { min-width: 0; }
+body.popsheet .calpanel { display: none !important; } /* upright phones: a popup in the plan's place */
+#navSw .sw button.on.tuck { background: none; color: var(--ink); box-shadow: inset 0 0 0 2px var(--c); } /* its card isn't up: the plan is */
+#navSw .sw button.on.tuck svg { stroke: var(--c); }
+@media (max-width: 759px) and (orientation: portrait) { .calpanel { max-height: 60%; } } /* upright phones: the plan leaves the map room */
 </style>
 
 <canvas id="map" aria-label="Map of Prague, Vienna and Split with train routes"></canvas>
@@ -1983,7 +1990,7 @@ function viewRect() {
   }
   const top = 70, bottom = docked() ? 24 : 80;
   if (W >= 760) return { x: pr.right, y: top, w: right - pr.right, h: H - top - bottom };
-  const cb = calPanel.hidden ? null : calPanel.getBoundingClientRect(); // phones: the planner sheet replaces the card
+  const cb = calPanel.hidden || document.body.classList.contains("popsheet") ? null : calPanel.getBoundingClientRect(); // phones: the planner sheet replaces the card
   const navTop = document.getElementById("nav").getBoundingClientRect().top;
   const cardTop = document.body.classList.contains("cardmin") ? navTop : pr.top; // tucked away: down to the bar
   return { x: 0, y: top, w: W, h: Math.max(140, (cb ? cb.top : cardTop) - top) };
@@ -2556,10 +2563,18 @@ function showPop() {
   if (pop.hidden) { pop.classList.add("out"); pop.hidden = false; void pop.offsetWidth; } // start from the closed look
   pop.classList.remove("out");
   if (opening) setCardMin(true); // upright phones: the popup instead of the card, not on top of it
+  if (opening && portraitPhone() && !calPanel.hidden) popSheet(true); // and instead of the plan, which comes back after
   if (opening && openPlace) pinPop = { key: openPlace.stop ? `stop:${openPlace.name}` : keyOf(openPlace), t0: performance.now() }; // its marker pops as the card opens
   invalidate();
 }
+// upright phones: a place's popup stands in for the planner sheet while it's open (Play keeps it away for the
+// whole day, rather than the plan flashing back between stops)
+function popSheet(on) {
+  if (document.body.classList.contains("popsheet") === on) return;
+  document.body.classList.toggle("popsheet", on); try { syncNavSw(); } catch (e) {} remeasure();
+}
 function closePop() {
+  if (!playing) popSheet(false);
   openPlace = null;
   if (pop.hidden || pop.classList.contains("out")) { invalidate(); return; }
   pop.classList.add("out"); clearTimeout(popHide);
@@ -2772,7 +2787,8 @@ function syncNavSw() { // the bar's copy of the switcher, and its arrows named f
   const i = daySl ? dayCard : cur, g = i >= 0 ? groupOf(i) : "trip";
   navSw.innerHTML = cardFoot() || `<div class="solo">${g === "trip" ? "Praha → Wien → Split" : esc(PC[g]?.en || "")}</div>`;
   navSw.style.setProperty("--c", `var(--${g === "trip" ? "ink-2" : g})`);
-  navSw.querySelectorAll("[data-cstep]").forEach(b => b.classList.toggle("tuck", document.body.classList.contains("cardmin")));
+  const cardUp = calPanel.hidden && !document.body.classList.contains("cardmin") && !document.body.classList.contains("popsheet");
+  navSw.querySelectorAll("[data-cstep]").forEach(b => b.classList.toggle("tuck", !cardUp));
   // the arrows go day by day: the day before and after, or from a slide into its city's days
   const pi = daySl ? daySl.i - 1 : dayFromSlide(-1), ni = daySl ? daySl.i + 1 : dayFromSlide(1), pd = DAYS[pi], nd = DAYS[ni];
   prevBtn.disabled = !pd; nextBtn.disabled = !nd;
@@ -2784,15 +2800,15 @@ function syncNavSw() { // the bar's copy of the switcher, and its arrows named f
 navSw.addEventListener("click", e => {
   const cs = e.target.closest("[data-cstep]"); if (!cs) return;
   e.stopPropagation(); const j = +cs.dataset.cstep, same = j === (daySl ? dayCard : cur);
-  if (portraitPhone()) {
-    const tucked = document.body.classList.contains("cardmin") || !calPanel.hidden || !pop.hidden;
-    if (same && !tucked) { setCardMin(true); return; } // the open panel again: tuck the card away
-    closePop(); if (!docked()) setCal(false); setCardMin(false); // bring the card back, in place of the popup or planner
+  if (phoneBar()) { // phones: the plan is the usual sheet; a panel brings up its card in its place
+    const cardUp = calPanel.hidden && pop.hidden && !document.body.classList.contains("cardmin");
+    if (same && cardUp) { setCal(true); return; } // the open panel again: back to the plan
+    closePop(); if (!docked()) setCal(false); setCardMin(false);
     if (same) return;
   }
   go(j);
 });
-document.getElementById("cardHide").addEventListener("click", e => { e.stopPropagation(); setCardMin(true); });
+document.getElementById("cardHide").addEventListener("click", e => { e.stopPropagation(); setCal(true); }); // the card away: back to the plan
 // a phone on its side with a Dynamic Island: which side it's on (turned counter-clockwise, the top of the phone
 // is on the left). Only when the screen has a safe area at all; a square-cornered phone has none.
 const insetProbe = document.createElement("div");
@@ -2822,6 +2838,8 @@ function setCal(open) {
   calPanel.hidden = !open; calBtn.setAttribute("aria-expanded", open);
   document.body.classList.toggle("planopen", open);
   if (open) { renderPlanner(); setCardMin(true); }
+  if (open && document.body.classList.contains("popsheet")) { closePop(); popSheet(false); }
+  try { syncNavSw(); } catch (e) {} // (not before the bottom bar exists, at start-up)
   remeasure();
 }
 // one place to apply a plan change: recompute days, save, refresh whatever shows the plan
@@ -3457,7 +3475,7 @@ async function playDay() {
     followZoom(true); // the card follows to the city we've arrived in
     if (full) openPop(s.place); else openStopPop(s, it.slice(i + 1).find(e => e.hop)?.hop);
     await new Promise(res => setTimeout(res, full ? 2200 : 1600));
-  } } finally { if (tok === playTok) { playing = false; playRide = null; invalidate(); } } // the leg's plane or train goes back to its own loop
+  } } finally { if (tok === playTok) { playing = false; playRide = null; popSheet(false); invalidate(); } } // the leg's plane or train goes back to its own loop
   if (tok === playTok && daySl) { closePop(); flyTo(daySl.view(), () => { if (tok === playTok && daySl) followZoom(true); }); }
 }
 
@@ -3476,8 +3494,7 @@ const menuOff = id => id === "zagreb" && !byRail(); // flying straight to Split 
 // a city tab goes straight to that city's slides: the one last looked at, else its first
 function goGroup(id) {
   const list = groupSlides(id); if (!list.length || menuOff(id)) return;
-  closeMenu();
-  if (!docked() && phoneBar()) setCal(false); // phones: the card, not the planner
+  closeMenu(); // phones keep whichever sheet is up, the plan or a card
   const j = lastSeen[id];
   go(j != null && groupOf(j) === id ? j : list[0]);
 }
@@ -3516,7 +3533,7 @@ function fitMenubar() {
 const DOCK = matchMedia("(min-aspect-ratio: 3/2) and (min-width: 1100px)");
 function applyDock() {
   document.body.classList.toggle("dock", DOCK.matches);
-  setCal(DOCK.matches);
+  setCal(DOCK.matches || phoneBar()); // phones open on the plan too: a panel brings up its card
   renderCard(); fitMenubar(); remeasure();
   if (slides.length && !openPlace) cvSel.interrupt().call(zoom.transform, SL().view());
 }
