@@ -221,6 +221,10 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 #tip .n { display: block; font: 500 10px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; opacity: .7; margin-bottom: 2px; }
 .tmenu { position: relative; }
 .btn.wide { min-width: 250px; justify-content: flex-start; gap: 10px; }
+/* phones: the day open, after "Plan" (where wider screens show the trip's dates) */
+#calBtn .dayl { display: none; font: 600 13px var(--f-body); color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+#calBtn .dayl::before { content: "·"; margin-right: 8px; }
+@media (max-width: 759px), (orientation: landscape) and (max-height: 520px) { #calBtn .dayl:not([hidden]) { display: inline; color: var(--dc, var(--ink)); } }
 .btn.wide .dates { margin-left: auto; font: 500 11.5px var(--f-mono); color: var(--ink-2); letter-spacing: .02em; }
 #calBtn[aria-expanded="true"] { border-bottom: 3px solid var(--ink-2); }
 .calpanel { position: fixed; z-index: 7; top: calc(70px + env(safe-area-inset-top, 0px)); right: var(--gr); width: min(540px, calc(100vw - 32px)); max-height: calc(100% - 160px); overflow-y: auto;
@@ -613,7 +617,7 @@ html, body { overflow-x: hidden; overscroll-behavior-x: none; }
 </nav>
 <div id="tools">
   <button class="btn wide" id="calBtn" aria-expanded="false" aria-controls="calPanel" title="Plan the trip day by day">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Plan</span><span class="dates" id="calDates"></span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span>Plan</span><span class="dayl" id="calDay" hidden></span><span class="dates" id="calDates"></span>
   </button>
   <div class="tmenu">
     <button class="btn" id="transitBtn" aria-expanded="false" aria-controls="transitMenu" title="Show subway, tram and bus lines">
@@ -2661,7 +2665,13 @@ function showSlide(sl, instant, fly = true) {
   syncProgress(); buildMenu();
   invalidate();
 }
+function syncCalDay() { // the Plan button names the day open (phones show it)
+  const el = document.getElementById("calDay"), x = daySl?.day;
+  el.hidden = !x; el.textContent = x ? fmtDay(x.date) : "";
+  if (x) el.style.setProperty("--dc", `var(--${dayCity(x)})`);
+}
 function syncProgress() {
+  syncCalDay();
   const m = daySl ? -1 : MAIN.indexOf(mainOf(cur));
   progress.querySelectorAll("button").forEach((b, j) => { b.classList.toggle("on", j === m); b.setAttribute("aria-current", j === m ? "step" : "false"); });
   document.getElementById("count")?.remove();
@@ -2810,6 +2820,7 @@ function planChanged({ rerender = true } = {}) {
   document.getElementById("calDates").textContent = planRange();
   if (plSel != null) plSel = Math.min(plSel, DAYS.length - 1);
   if (daySl) daySl = daySlide(DAYS[Math.min(daySl.i, DAYS.length - 1)]);
+  syncCalDay();
   renderCard();
   buildMenu();
   invalidate();
