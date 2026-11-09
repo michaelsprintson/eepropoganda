@@ -257,7 +257,7 @@ kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line)
 .seg span { padding: 0 10px; font: 600 10.5px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
 .seg button { font: 600 13px var(--f-body); border: 0; border-left: 1px solid var(--line); background: none; color: var(--ink); padding: 7px 12px; cursor: pointer; }
 .seg button.on { background: var(--ink); color: var(--panel); }
-.cal.planner .cd { min-height: 62px; padding-bottom: 6px; }
+.cal.planner .cd { min-height: 62px; padding-bottom: 6px; justify-content: flex-start; gap: 2px; } /* the city always right under the date, pins after it */
 .cd.sel { box-shadow: 0 0 0 2px var(--ink); }
 .cd .tr { font-size: 10px; font-weight: 700; line-height: 1.15; color: var(--ink); background: color-mix(in srgb, var(--panel) 70%, transparent); border-radius: 3px; padding: 1px 3px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .cd .nd { position: absolute; top: 6px; right: 6px; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); }
@@ -529,7 +529,9 @@ body.dock #panel { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
 .fsb { grid-column: 1; grid-row: 1; justify-self: start; width: 28px; height: 28px; display: inline-grid; place-items: center; border: 1px solid var(--line); border-radius: 5px; background: none; color: var(--ink); cursor: pointer; padding: 0; }
 .fsb:hover { background: var(--chip); }
 .fsb svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-.cd .cw { margin-left: 4px; font: 700 9.5px var(--f-mono); background: color-mix(in srgb, var(--panel) 75%, transparent); border-radius: 3px; padding: 0 3px; }
+.cd .cw { position: absolute; bottom: 3px; right: 3px; font: 700 9.5px var(--f-mono); background: color-mix(in srgb, var(--panel) 80%, transparent); border-radius: 3px; padding: 0 3px; } /* who lands or leaves: in the corner, so the city stays put */
+.cd .n { white-space: nowrap; }
+.cd .n small { font-size: 9.5px; font-weight: 500; }
 .calfull { position: fixed; inset: 0; z-index: 15; background: var(--panel-solid); color: var(--ink); display: flex; flex-direction: column; gap: 10px; box-sizing: border-box; padding: calc(12px + env(safe-area-inset-top, 0px)) 20px 12px; }
 .calfull[hidden] { display: none; }
 .fhd { display: flex; align-items: center; gap: 8px 16px; flex-wrap: wrap; }
@@ -1502,7 +1504,7 @@ function calCells(days = DAYS, live = null) {
     if (x.kind === "travel" && x.leg === "vs" && byRail()) lastStay.zagreb = x.i; // no night there yet: drag right to stay over
   });
   days.forEach(x => {
-    const n = x.date.getDate(), m = n === 1 || x.i === 0 ? ` ${MON[x.date.getMonth()]}` : "";
+    const n = x.date.getDate(), m = n === 1 || x.i === 0 ? ` <small>${MON[x.date.getMonth()]}</small>` : "";
     const pins = pinsOn(x).map(k => placeBy[k]), note = PLAN.notes[x.iso];
     const cw = PLAN.crew.flatMap(m => [["in", "lands"], ["out", "leaves"]].filter(([k]) => m[k].d === x.iso).map(([k, v]) => `${m.name || "Someone"} ${v}${m[k].t ? ` ${m[k].t}` : ""}`));
     const sel = plSel === x.i ? " sel" : "";
@@ -1514,7 +1516,7 @@ function calCells(days = DAYS, live = null) {
     const icon = fly || (x.leg === "vs" && PLAN.legs.vs.opt === "flight") ? "✈︎" : x.sleeper ? "☾" : "";
     const via = x.kind === "travel" && x.leg === "vs" && byRail(); // the day train with an evening in Zagreb
     cells.push(`<button class="cd${x.kind === "travel" ? " travel" : ""}${via ? " zstop" : ""}${fly ? " fly" : ""}${sel}" data-day="${x.i}" style="${style}" aria-label="${esc(fmtDay(x.date))}${pins.length ? `, ${pins.length} pinned` : ""}" aria-pressed="${plSel === x.i}">
-      <span class="n">${n}${m}${cw.length ? `<span class="cw" title="${esc(cw.join(", "))}">✈${cw.length}</span>` : ""}</span>${icon ? `<span class="i">${icon}</span>` : ""}${note ? `<span class="nd" title="${esc(note)}"></span>` : ""}
+      <span class="n">${n}${m}</span>${cw.length ? `<span class="cw" title="${esc(cw.join(", "))}">✈${cw.length}</span>` : ""}${icon ? `<span class="i">${icon}</span>` : ""}${note ? `<span class="nd" title="${esc(note)}"></span>` : ""}
       <span class="t">${label}</span>${pins.length ? `<span class="pr">${pins.map(p => pinBadge(p, x.iso)).join("")}</span>` : ""}${grip}</button>`);
   });
   while (cells.length % 7) cells.push(`<div class="cd off"></div>`);
