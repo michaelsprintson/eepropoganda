@@ -525,6 +525,85 @@ body.dock #nav, body.dock #calBtn, body.dock #calClose { display: none; }
 body.dock #tools { right: calc(var(--gr) + 432px); }
 body.dock #panel { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
 
+/* the full-screen calendar (desktop): a week hour by hour, who's here, sun, typical weather, what's on */
+.fsb { grid-column: 1; grid-row: 1; justify-self: start; width: 28px; height: 28px; display: inline-grid; place-items: center; border: 1px solid var(--line); border-radius: 5px; background: none; color: var(--ink); cursor: pointer; padding: 0; }
+.fsb:hover { background: var(--chip); }
+.fsb svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.cd .cw { margin-left: 4px; font: 700 9.5px var(--f-mono); background: color-mix(in srgb, var(--panel) 75%, transparent); border-radius: 3px; padding: 0 3px; }
+.calfull { position: fixed; inset: 0; z-index: 15; background: var(--panel-solid); color: var(--ink); display: flex; flex-direction: column; gap: 10px; box-sizing: border-box; padding: calc(12px + env(safe-area-inset-top, 0px)) 20px 12px; }
+.calfull[hidden] { display: none; }
+.fhd { display: flex; align-items: center; gap: 8px 16px; flex-wrap: wrap; }
+.fhd h2 { margin: 0; font: 600 13px var(--f-mono); letter-spacing: .14em; text-transform: uppercase; }
+.fsum { font: 500 12px var(--f-mono); color: var(--ink-2); }
+.fsum b { color: var(--ink); font-weight: 600; }
+.fwk { display: inline-flex; gap: 4px; margin-left: auto; align-items: center; }
+.fwk button { font: 600 12px var(--f-body); border: 1px solid var(--line); background: none; color: var(--ink); border-radius: 5px; padding: 5px 10px; cursor: pointer; }
+.fwk button:hover { background: var(--chip); }
+.fwk button.on { background: var(--ink); color: var(--panel-solid); border-color: var(--ink); }
+.fwk button:disabled { opacity: .35; cursor: default; background: none; }
+.fhd .mini.on { background: var(--chip); color: var(--ink); border-color: var(--line); }
+.fhd .x { width: 34px; height: 34px; border: 0; background: none; color: var(--ink-2); font-size: 22px; cursor: pointer; border-radius: 4px; }
+.fhd .x:hover { background: var(--chip); }
+.fbody { flex: 1; min-height: 0; display: grid; grid-template-columns: 52px repeat(7, minmax(0, 1fr)); grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 6px 4px; }
+.fgl { font: 600 9.5px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); align-self: center; text-align: right; line-height: 1.2; }
+.fdh { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding: 6px 7px 7px; border-radius: 4px; border-top: 3px solid var(--a); background: color-mix(in srgb, var(--a) 14%, var(--panel-solid)); font-size: 11px; }
+.fdh.travel { border-top-color: transparent; border-image: linear-gradient(90deg, var(--a), var(--b)) 1; background: linear-gradient(90deg, color-mix(in srgb, var(--a) 14%, var(--panel-solid)), color-mix(in srgb, var(--b) 14%, var(--panel-solid))); }
+.fdh.off { border-top-color: var(--line); background: none; color: var(--ink-2); }
+.fdh.off > b { font: 600 13px var(--f-body); opacity: .6; }
+.fdt { all: unset; cursor: pointer; display: flex; flex-direction: column; min-width: 0; }
+.fdt b { font: 600 13px var(--f-body); }
+.fdt span { color: var(--ink-2); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fdt:hover b { text-decoration: underline; }
+.fdt:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 2px; }
+.fm { font: 500 10.5px var(--f-mono); color: var(--ink-2); }
+.fev { display: block; font-size: 10.5px; font-weight: 600; color: var(--ink); text-decoration: none; background: color-mix(in srgb, var(--panel-solid) 60%, transparent); border: 1px solid var(--line); border-radius: 3px; padding: 1px 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+a.fev:hover { text-decoration: underline; }
+.fnote { font-size: 10.5px; font-style: italic; color: var(--ink-2); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.fwarn { color: #c0392b; font-size: 10.5px; font-weight: 600; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.flane { grid-column: 2 / -1; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px 4px; align-items: center; min-height: 22px; }
+.fcb { display: flex; gap: 8px; align-items: center; min-width: 0; font-size: 11.5px; padding: 3px 8px; border-radius: 4px; background: color-mix(in srgb, var(--c) 22%, var(--panel-solid)); border-left: 3px solid var(--c); white-space: nowrap; overflow: hidden; }
+.fcb span { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; }
+.fcb .r { margin-left: auto; }
+.fcb.cl { border-left-style: dashed; border-radius: 0 4px 4px 0; }
+.fcb.cr { border-radius: 4px 0 0 4px; }
+.fcadd { grid-column: 1 / -1; justify-self: start; font: 600 12px var(--f-body); color: var(--ink-2); background: none; border: 1px dashed var(--line); border-radius: 5px; padding: 4px 10px; cursor: pointer; }
+.fcadd:hover { color: var(--ink); background: var(--chip); }
+.fgut { position: relative; }
+.fgut span { position: absolute; right: 4px; transform: translateY(-50%); font: 500 10px var(--f-mono); color: var(--ink-2); }
+.fgut span:first-child { transform: none; }
+.fcol { position: relative; min-width: 0; overflow: hidden; border-radius: 4px; background-color: color-mix(in srgb, var(--a, var(--line)) 5%, var(--panel-solid)); background-image: linear-gradient(var(--line) 1px, transparent 1px); background-size: 100% calc(100% / var(--hrs, 18)); }
+.fcol.off { opacity: .45; }
+.fband { position: absolute; left: 0; right: 0; pointer-events: none; }
+.fband.night { background: color-mix(in srgb, var(--ink) 7%, transparent); }
+.fband.gold { background: color-mix(in srgb, #f0b630 22%, transparent); }
+.fs { position: absolute; left: 3px; right: 3px; z-index: 2; min-height: 17px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-content: flex-start; align-items: center; gap: 1px 5px; padding: 2px 5px; border: 0; border-left: 3px solid var(--c); border-radius: 3px;
+  background: color-mix(in srgb, var(--c) 22%, var(--panel-solid)); color: var(--ink); font: 600 11px var(--f-body); text-align: left; cursor: pointer; overflow: hidden; }
+.fs:hover, .fs:focus-visible { background: color-mix(in srgb, var(--c) 38%, var(--panel-solid)); outline: none; z-index: 4; }
+.fs .pb { height: 15px; font-size: 9px; }
+.fs .fn { flex: 1 1 0; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fs .ft { flex-basis: 100%; font: 500 10px var(--f-mono); color: var(--ink-2); }
+.fs.thin .ft { display: none; }
+.fs.home, .fs.air, .fs.rail { background: var(--panel-solid); box-shadow: inset 0 0 0 1px var(--line); }
+.fs .hub { font-size: 11px; }
+.fh { position: absolute; left: 12px; right: 3px; z-index: 1; box-sizing: border-box; display: flex; align-items: center; border-left: 2px solid var(--c); padding-left: 6px; font: 500 10px var(--f-mono); color: var(--ink-2); overflow: hidden; }
+.fh span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fh.walk { border-left-style: dotted; }
+.fh.ride { border-left: 5px solid var(--ink); color: var(--ink); font-weight: 600; align-items: flex-start; padding-top: 3px; background: color-mix(in srgb, var(--ink) 6%, transparent); }
+.fh.ride span { white-space: normal; }
+.fh.flight { border-left-style: dotted; }
+.fh.tiny span { display: none; }
+.fcw { position: absolute; right: 3px; z-index: 5; transform: translateY(-50%); max-width: calc(100% - 6px); box-sizing: border-box; font: 700 10px var(--f-body); background: var(--c); color: #fff; padding: 1px 6px; border-radius: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 1px 4px rgba(10,20,25,.25); }
+.ffoot { font: 500 10.5px var(--f-mono); color: var(--ink-2); text-align: center; padding: 4px 2px 0; border-top: 1px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ffoot.off { border-top-color: transparent; }
+.fcrew { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; max-height: 40vh; overflow: auto; }
+.fcrew table { border-collapse: collapse; width: 100%; font-size: 12px; }
+.fcrew th { font: 600 10px var(--f-mono); text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2); text-align: left; padding: 0 4px 4px; }
+.fcrew td { padding: 2px 4px; }
+.fcrew .grp { border-left: 2px solid var(--line); padding-left: 10px; }
+.fcrew input, .fcrew select { font: inherit; color: var(--ink); background: var(--chip); border: 1px solid var(--line); border-radius: 4px; padding: 4px 6px; width: 100%; box-sizing: border-box; min-width: 0; }
+.fcrewf { display: flex; gap: 12px; align-items: center; margin-top: 8px; }
+.fcrewf .ghost { margin-left: auto; }
+@media (max-width: 759px), (orientation: landscape) and (max-height: 520px) { .fsb { display: none; } }
 .calpanel .psum { display: none; margin: 0 0 10px; font-family: var(--f-mono); font-size: 11.5px; color: var(--ink-2); } /* phones: the dates, nights and PTO, as the settings are hidden there */
 .pto { border-bottom: 1px dotted currentColor; cursor: help; }
 
@@ -669,6 +748,7 @@ body.popsheet .calpanel { display: none !important; } /* upright phones: a popup
   <div class="vload" aria-hidden="true">Loading full size…</div>
 </div>
 <div id="calPanel" class="calpanel" role="dialog" aria-label="Trip planner" hidden></div>
+<div id="calFull" class="calfull" role="dialog" aria-label="Full-screen trip calendar" hidden><div class="fhd"></div><div class="fcrewwrap"></div><div class="fbody"></div></div>
 <div id="tip" role="tooltip" hidden></div>
 
 <!-- only the d3 modules the camera uses (zoom and its dependencies), about a quarter of the full bundle -->
@@ -920,7 +1000,12 @@ const PIN_MAX = 6; // plan codes (version 2) store 1–8 pins a day in 3 bits; v
 const PLAN_DEFAULT = { v: 2, start: "2027-08-22", nights: { prague: 4, vienna: 4, zagreb: 0, split: 4 },
   legs: { pv: { opt: "train", dep: "09:00" }, vs: { opt: "sleeper", dep: "09:00" }, zs: { opt: "sleeper", dep: "21:30" } },
   pins: {}, notes: {}, stays: { prague: "H1", vienna: "H1", zagreb: null, split: null },
-  starts: {}, durs: {} }; // per day: when it starts ("HH:MM"), and minutes at a pinned place {key: min}
+  starts: {}, durs: {}, // per day: when it starts ("HH:MM"), and minutes at a pinned place {key: min}
+  crew: [] }; // who's coming: [{ name, ap, in: { d, t, f }, out: { d, t, f } }], their flights in and out
+const AIRPORTS = ["SPU", "VIE", "PRG"]; // plan codes store the index: never reorder, append new ones
+const AIR_CITY = { SPU: "split", VIE: "vienna", PRG: "prague" };
+const CREW_MAX = 12;
+const crewEnd = e => ({ d: ISO.test(e?.d || "") ? e.d : "", t: /^\d{2}:\d{2}$/.test(e?.t || "") ? e.t : "", f: String(e?.f || "").toUpperCase().replace(/[^A-Z0-9 ]/g, "").slice(0, 8) });
 const PLAN_KEY = "tripplan:split:v1";
 const WD = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const WD_CAL = ["Sun", ...WD.slice(0, 6)]; // calendars run Sunday to Saturday: the trip fits in fewer rows
@@ -952,6 +1037,8 @@ function normalizePlan(p) {
     const ok = Object.entries(v).filter(([k, m]) => /^[a-z]+:[A-Z0-9]+$/.test(k) && DUR_OPTS.includes(m));
     if (ok.length) d.durs[date] = Object.fromEntries(ok);
   }
+  if (Array.isArray(p.crew)) d.crew = p.crew.filter(m => m && typeof m === "object").slice(0, CREW_MAX)
+    .map(m => ({ name: String(m.name || "").slice(0, 24), ap: AIRPORTS.includes(m.ap) ? m.ap : "SPU", in: crewEnd(m.in), out: crewEnd(m.out) }));
   return d;
 }
 // Plan codes: the plan packed as bits, only what differs from the default, then written 14 bits per character as
@@ -1002,6 +1089,18 @@ function toCode(p) {
     if (st) { const [h, m] = st.split(":").map(Number); put(Math.round((h * 60 + m) / 15) % 96, 7); }
     put(ds.length, 4); for (const [j, i] of ds) { put(j, 3); put(i, 4); }
   }
+  put(0, 1);
+  const utf = (t, n) => { const b = [...new TextEncoder().encode(t)]; while (b.length >= 1 << n) b.pop(); put(b.length, n); b.forEach(x => put(x, 8)); };
+  for (const m of p.crew || []) { // who's coming: name, airport, then each flight's day, time and number
+    put(1, 1); utf(m.name, 5); put(Math.max(0, AIRPORTS.indexOf(m.ap)), 2);
+    for (const e of [m.in, m.out]) {
+      const off = e.d ? dayNo(e.d) - start + 32 : -1;
+      if (off < 0 || off > 127) { put(0, 1); continue; }
+      put(1, 1); put(off, 7); put(e.t ? 1 : 0, 1);
+      if (e.t) { const [h, mm] = e.t.split(":").map(Number); put(h * 60 + mm, 11); }
+      utf(e.f, 4);
+    }
+  }
   while (bits.length && !bits[bits.length - 1]) bits.pop(); // trailing zeros come back as "nothing more"
   let s = "";
   for (let i = 0; i < bits.length; i += CODE_BITS) {
@@ -1050,6 +1149,16 @@ function fromCode(s) {
     if (get(1)) { const q = get(7) * 15; p.starts[iso] = `${String(Math.floor(q / 60)).padStart(2, "0")}:${String(q % 60).padStart(2, "0")}`; }
     const n = get(PB + 1), ks = p.pins[iso] || [];
     for (let k = 0; k < n; k++) { const j = get(PB), i = get(4); if (ks[j] && DUR_OPTS[i]) (p.durs[iso] ||= {})[ks[j]] = DUR_OPTS[i]; }
+  }
+  const txt = n => { try { return new TextDecoder().decode(new Uint8Array(Array.from({ length: get(n) }, () => get(8)))); } catch (e) { return ""; } };
+  while (get(1)) { // older codes end before this: no one listed
+    const m = { name: txt(5), ap: AIRPORTS[get(2)] || "SPU", in: {}, out: {} };
+    for (const k of ["in", "out"]) if (get(1)) {
+      m[k].d = dayIso(start + get(7) - 32);
+      if (get(1)) { const q = get(11); m[k].t = `${String(Math.floor(q / 60) % 24).padStart(2, "0")}:${String(q % 60).padStart(2, "0")}`; }
+      m[k].f = txt(4);
+    }
+    p.crew.push(m);
   }
   return normalizePlan(p);
 }
@@ -1395,6 +1504,7 @@ function calCells(days = DAYS, live = null) {
   days.forEach(x => {
     const n = x.date.getDate(), m = n === 1 || x.i === 0 ? ` ${MON[x.date.getMonth()]}` : "";
     const pins = pinsOn(x).map(k => placeBy[k]), note = PLAN.notes[x.iso];
+    const cw = PLAN.crew.flatMap(m => [["in", "lands"], ["out", "leaves"]].filter(([k]) => m[k].d === x.iso).map(([k, v]) => `${m.name || "Someone"} ${v}${m[k].t ? ` ${m[k].t}` : ""}`));
     const sel = plSel === x.i ? " sel" : "";
     const gc = Object.keys(lastStay).find(c => lastStay[c] === x.i);
     const grip = gc ? `<span class="grip${gc === live ? " live" : ""}" data-grip="${gc}" title="Drag to change nights in ${PC[gc].en}"></span>` : "";
@@ -1404,7 +1514,7 @@ function calCells(days = DAYS, live = null) {
     const icon = fly || (x.leg === "vs" && PLAN.legs.vs.opt === "flight") ? "✈︎" : x.sleeper ? "☾" : "";
     const via = x.kind === "travel" && x.leg === "vs" && byRail(); // the day train with an evening in Zagreb
     cells.push(`<button class="cd${x.kind === "travel" ? " travel" : ""}${via ? " zstop" : ""}${fly ? " fly" : ""}${sel}" data-day="${x.i}" style="${style}" aria-label="${esc(fmtDay(x.date))}${pins.length ? `, ${pins.length} pinned` : ""}" aria-pressed="${plSel === x.i}">
-      <span class="n">${n}${m}</span>${icon ? `<span class="i">${icon}</span>` : ""}${note ? `<span class="nd" title="${esc(note)}"></span>` : ""}
+      <span class="n">${n}${m}${cw.length ? `<span class="cw" title="${esc(cw.join(", "))}">✈${cw.length}</span>` : ""}</span>${icon ? `<span class="i">${icon}</span>` : ""}${note ? `<span class="nd" title="${esc(note)}"></span>` : ""}
       <span class="t">${label}</span>${pins.length ? `<span class="pr">${pins.map(p => pinBadge(p, x.iso)).join("")}</span>` : ""}${grip}</button>`);
   });
   while (cells.length % 7) cells.push(`<div class="cd off"></div>`);
@@ -1418,7 +1528,7 @@ function planHTML() {
 
   const shareLink = /github\.io$|^localhost$|^127\.0\.0\.1$/.test(location.hostname);
   const outside = Object.keys(PLAN.notes).filter(d => !DAYS.some(x => x.iso === d));
-  return `<div class="phead"><button class="x" id="calClose" aria-label="Close planner">×</button><h2>Plan</h2><button class="shareb${plShare ? " on" : ""}" data-act="share" aria-haspopup="true" aria-expanded="${plShare}">Share <span aria-hidden="true">▾</span></button>
+  return `<div class="phead"><button class="x" id="calClose" aria-label="Close planner">×</button><button class="fsb" data-act="full" aria-label="Full-screen calendar" title="Full-screen calendar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button><h2>Plan</h2><button class="shareb${plShare ? " on" : ""}" data-act="share" aria-haspopup="true" aria-expanded="${plShare}">Share <span aria-hidden="true">▾</span></button>
     ${plShare ? `<div class="smenu" role="menu">
       ${shareLink ? `<button role="menuitem" data-act="link">Copy share link</button>` : ""}<button role="menuitem" data-act="code">Copy plan code</button>
       <button role="menuitem" data-act="import" aria-expanded="${plImport}">Paste a plan code</button>
@@ -1491,6 +1601,202 @@ function itinHTML(x, it, clk = dayClock(x, it)) {
     return `<li class="st ${e.stop.kind}" style="--c:var(--${PC[e.stop.city] ? e.stop.city : homeOf(p)})" data-si="${i}" tabindex="0"${p ? ` data-p="${keyOf(p)}"${j >= 0 ? ` draggable="true" data-dpin="${keyOf(p)}" data-from="${x.iso}" title="Drag to another day"` : ""}` : e.stop.kind === "home" && e.stop.place ? ` draggable="true" data-dpin="${e.stop.city}:HOME" title="Drag into the day for a stop back at the Airbnb"` : ""}><span class="tm">${c ? clockStr(c.arr) : ""}</span><span class="mk">${p ? pinBadge(p) : e.stop.kind === "home" && e.stop.place ? pinBadge(e.stop.place) : `<span class="hub">${HUB_ICON[e.stop.kind]}</span>`}</span><span class="nm"><b title="${esc(e.stop.name)}">${esc(e.stop.name)}</b>${e.stop.sub ? `<small>${esc(e.stop.sub)}</small>` : ""}</span>${ctl}</li>`;
   }).join("")}</ol>`;
 }
+
+// ---------- the full-screen calendar: a week at a time, hour by hour ----------
+// sunrise and sunset, and the sun 6° up (golden hour's edge), in minutes after midnight, Central European Summer Time
+function sunTimes(date, [lon, lat]) {
+  const rad = Math.PI / 180, E = Date.UTC(2000, 0, 1, 12);
+  const n = Math.round((Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 12) - E) / 864e5) - lon / 360;
+  const M = (357.5291 + 0.98560028 * n) * rad, C = (1.9148 * Math.sin(M) + 0.02 * Math.sin(2 * M) + 0.0003 * Math.sin(3 * M)) * rad;
+  const L = M + C + Math.PI + 102.9372 * rad, noon = n + 0.0053 * Math.sin(M) - 0.0069 * Math.sin(2 * L);
+  const dec = Math.asin(Math.sin(L) * Math.sin(23.4397 * rad)), phi = lat * rad;
+  const at = (h, s) => {
+    const w = Math.acos((Math.sin(h * rad) - Math.sin(phi) * Math.sin(dec)) / (Math.cos(phi) * Math.cos(dec))) / (2 * Math.PI);
+    return ((Math.round((E + (noon + s * w) * 864e5) / 6e4) + 120) % 1440 + 1440) % 1440;
+  };
+  return { rise: at(-0.833, -1), set: at(-0.833, 1), rise6: at(6, -1), set6: at(6, 1) };
+}
+// typical weather, not a forecast: 1991–2020 normals for August and September (taken as mid-month), in between by
+// date. Mean high and low °C, days with rain in the month, the sea off Split. Prague: Klementinum (its rainy days
+// are approximate); Vienna: Innere Stadt; Zagreb: Maksimir; Split: Marjan, sea from DHMZ
+const CLIMATE = {
+  prague: { hi: [25.9, 20.4], lo: [16.3, 12.2], rain: [9, 7] },
+  vienna: { hi: [26.6, 21.6], lo: [17.5, 13.8], rain: [8, 7.2] },
+  zagreb: { hi: [28.1, 22.6], lo: [16.0, 11.8], rain: [9.3, 11.9] },
+  split: { hi: [30.9, 25.4], lo: [22.9, 18.4], rain: [4.6, 8.2], sea: [23.6, 21.7] },
+};
+function climateOn(c, d) {
+  const k = CLIMATE[c]; if (!k) return null;
+  const a = new Date(d.getFullYear(), 7, 15), t = Math.max(0, Math.min(1, (d - a) / (new Date(d.getFullYear(), 8, 15) - a)));
+  const f = v => v[0] + (v[1] - v[0]) * t;
+  return { hi: Math.round(f(k.hi)), lo: Math.round(f(k.lo)), rain: Math.round(f(k.rain) / 30.5 * 20) * 5, sea: k.sea ? Math.round(f(k.sea)) : null };
+}
+// what's on: the usual dates, as 2027's aren't out yet (each says so)
+const EVENTS = [
+  { city: "prague", from: "2027-08-12", to: "2027-08-31", name: "Letní Letná circus festival", url: "https://en.letniletna.cz/" },
+  { city: "prague", from: "2027-08-29", to: "2027-08-29", name: "F.O.O.D. Piknik food festival" },
+  { city: "vienna", from: "2027-07-01", to: "2027-09-05", name: "Film Festival on Rathausplatz", url: "https://filmfestival-rathausplatz.at/en/" },
+  { city: "split", from: "2027-08-25", to: "2027-08-29", name: "VIBREZ at the Meštrović Gallery" },
+  { city: "split", from: "2027-08-27", to: "2027-08-30", name: "Days of Diocletian", url: "https://visitsplit.com/en/1204/days-of-diocletian" },
+  { city: "split", from: "2027-07-01", to: "2027-09-05", name: "Summer Colours of Split concerts", url: "https://visitsplit.com/en/1292/summer-colours-of-split" },
+];
+function eventsOn(d, x) {
+  const iso = isoDate(d), cs = x ? dayCities(x) : [];
+  const hol = usHolidays(d.getFullYear()).filter(([, h]) => isoDate(h) === iso).map(([n]) => ({ name: `${n} (US)`, hol: true }));
+  return [...hol, ...EVENTS.filter(e => cs.includes(e.city) && e.from <= iso && iso <= e.to)];
+}
+// getting between stops only: walks, rides, trains and flights; not the time at places
+function transitStats(x, it = itinerary(x)) {
+  let min = 0, km = 0, night = false;
+  for (const e of it) if (e.hop) {
+    if (e.hop.ride && e.hop.min == null) night = true; else min += e.hop.min || 0;
+    if (e.hop.mode === "walk") km += trueKm(e.hop.a.xy, e.hop.b.xy) * 1.3;
+  }
+  return { min, km, night };
+}
+const TRANSIT_ONLY = "Getting between stops only: walks, rides, trains and flights. Not the time spent at places.";
+const statText = s => `${s.min ? `${fmtDur(s.min)} in transit` : "No transit"} · ${s.km.toFixed(1)} km on foot${s.night ? " · + night train" : ""}`;
+function countdown() {
+  const t = new Date(); t.setHours(0, 0, 0, 0);
+  const n = Math.round((DAYS[0].date - t) / 864e5);
+  return n > 1 ? `${n} days to go` : n === 1 ? "Tomorrow!" : -n < DAYS.length ? `Day ${1 - n} of ${DAYS.length}` : "Back home";
+}
+let fullOn = false, fWeek = 0, crewOpen = false;
+const calFull = document.getElementById("calFull");
+function tripWeeks() {
+  const out = [];
+  for (let d = addDays(DAYS[0].date, -DAYS[0].date.getDay()); d <= DAYS.at(-1).date; d = addDays(d, 7)) out.push(d);
+  return out;
+}
+const crewName = m => esc(m.name || "Someone");
+function fullHeadHTML(weeks) {
+  const tot = DAYS.reduce((a, x) => { const s = transitStats(x); return { min: a.min + s.min, km: a.km + s.km, night: a.night || s.night }; }, { min: 0, km: 0, night: false });
+  return `<h2>Trip calendar</h2>
+    <span class="fsum"><b>${fmtDay(DAYS[0].date)} → ${fmtDay(DAYS.at(-1).date)}</b> · ${totalNights()} nights · ${ptoChip()} · <b>${countdown()}</b></span>
+    <span class="fsum" title="${TRANSIT_ONLY}">Transit only: ${statText(tot)}</span>
+    <div class="fwk" role="group" aria-label="Weeks"><button data-fw="-1" aria-label="Previous week"${fWeek ? "" : " disabled"}>‹</button>${weeks.map((w, k) => `<button data-fwk="${k}" class="${k === fWeek ? "on" : ""}" aria-pressed="${k === fWeek}">${w.getDate()} ${MON[w.getMonth()]}</button>`).join("")}<button data-fw="1" aria-label="Next week"${fWeek < weeks.length - 1 ? "" : " disabled"}>›</button></div>
+    <button class="mini${crewOpen ? " on" : ""}" data-fact="crew" aria-expanded="${crewOpen}">✈ Who's coming${PLAN.crew.length ? ` (${PLAN.crew.length})` : ""}</button>
+    <button class="x" data-fact="close" aria-label="Close the full-screen calendar" title="Close (Esc)">×</button>`;
+}
+function crewHTML() {
+  if (!crewOpen) return "";
+  const end = (m, j, k) => `<td class="grp"><input type="date" data-crew="${j}" data-f="${k}.d" value="${m[k].d}" aria-label="${k === "in" ? "Lands" : "Leaves"} on"></td>
+    <td><input type="time" data-crew="${j}" data-f="${k}.t" value="${m[k].t}" aria-label="At"></td>
+    <td><input data-crew="${j}" data-f="${k}.f" value="${esc(m[k].f)}" maxlength="8" placeholder="OU 123" aria-label="Flight number"></td>`;
+  return `<div class="fcrew"><table><thead><tr><th>Name</th><th>Airport</th><th class="grp">Lands</th><th>Time</th><th>Flight</th><th class="grp">Leaves</th><th>Time</th><th>Flight</th><th></th></tr></thead>
+    <tbody>${PLAN.crew.map((m, j) => `<tr><td><input data-crew="${j}" data-f="name" value="${esc(m.name)}" maxlength="24" placeholder="Name" aria-label="Name"></td>
+      <td><select data-crew="${j}" data-f="ap" aria-label="Airport">${AIRPORTS.map(a => `<option value="${a}"${a === m.ap ? " selected" : ""}>${a} · ${PC[AIR_CITY[a]].en}</option>`).join("")}</select></td>
+      ${end(m, j, "in")}${end(m, j, "out")}<td><button class="ib" data-crew-del="${j}" aria-label="Remove ${crewName(m)}">×</button></td></tr>`).join("")}</tbody></table>
+    <div class="fcrewf">${PLAN.crew.length < CREW_MAX ? `<button class="mini" data-crew-add>+ Add someone</button>` : ""}<span class="muted small">Local times. Saved with the plan and included in share links and plan codes.</span><button class="mini ghost" data-fact="crew">Done</button></div></div>`;
+}
+function fullBodyHTML(w0) {
+  const byIso = Object.fromEntries(DAYS.map(x => [x.iso, x]));
+  const info = Array.from({ length: 7 }, (_, k) => {
+    const d = addDays(w0, k), x = byIso[isoDate(d)];
+    if (!x) return { d };
+    const it = itinerary(x), clk = dayClock(x, it), c = x.kind === "travel" ? x.to : x.city; // the evening's city
+    return { d, x, it, clk, st: transitStats(x, it), sun: sunTimes(x.date, PC[c].ll), wx: climateOn(c, x.date) };
+  });
+  // 06:00 to midnight, earlier when a day starts earlier
+  const h0 = Math.min(360, ...info.filter(o => o.clk).map(o => Math.floor(o.clk.start / 60) * 60)), h1 = 1440, span = h1 - h0;
+  const y = m => (Math.max(h0, Math.min(h1, m)) - h0) / span * 100;
+  const box = (a, b) => `top:${y(a)}%;height:${Math.max(0, y(b) - y(a))}%`;
+  const head = o => {
+    const ev = eventsOn(o.d, o.x).map(e => { const t = `${e.name}${e.hol ? "" : " · usual dates, 2027 to confirm"}`;
+      return e.url ? `<a class="fev" href="${e.url}" target="_blank" rel="noopener" title="${esc(t)}">${esc(e.name)}</a>` : `<span class="fev" title="${esc(t)}">${esc(e.name)}</span>`; }).join("");
+    if (!o.x) return `<div class="fdh off"><b>${fmtDay(o.d)}</b>${ev}</div>`;
+    const x = o.x, tr = x.kind === "travel", where = tr ? `${PC[x.from].local} → ${PC[x.to].local}` : PC[x.city].local, note = PLAN.notes[x.iso];
+    return `<div class="fdh${tr ? " travel" : ""}" style="--a:var(--${tr ? x.from : x.city});--b:var(--${tr ? x.to : x.city})">
+      <button class="fdt" data-fday="${x.i}" title="Open this day on the map"><b>${fmtDay(x.date)}</b><span>Day ${x.i + 1} · ${where}${x.note0 ? ` · ${esc(x.note0)}` : ""}</span></button>
+      <span class="fm" title="Sunrise and sunset; golden hour shaded below">☀ ${clockStr(o.sun.rise)} – ${clockStr(o.sun.set)}</span>
+      ${o.wx ? `<span class="fm" title="Typical for the date (1991–2020 averages), not a forecast">${o.wx.hi}° / ${o.wx.lo}° · ${o.wx.rain}% rain${o.wx.sea != null ? ` · sea ${o.wx.sea}°` : ""}</span>` : ""}
+      ${ev}${note ? `<span class="fnote" title="${esc(note)}">${esc(note)}</span>` : ""}${o.clk.warn.map(w => `<span class="fwarn" title="${esc(w)}">⚠ ${esc(w)}</span>`).join("")}</div>`;
+  };
+  const tags = o => PLAN.crew.flatMap(m => [["in", "lands"], ["out", "leaves"]].filter(([k]) => m[k].d === isoDate(o.d) && m[k].t).map(([k, v]) =>
+    `<span class="fcw" style="top:${y(toMin(m[k].t))}%;--c:var(--${AIR_CITY[m.ap]})" title="${esc(`${m.name || "Someone"} ${v} ${m.ap} at ${m[k].t}${m[k].f ? ` · ${m[k].f}` : ""}`)}">✈ ${crewName(m)} ${v} ${m[k].t}</span>`)).join("");
+  const col = o => {
+    if (!o.x) return `<div class="fcol off">${tags(o)}</div>`;
+    const { x, it, clk, sun } = o, out = [];
+    out.push(`<i class="fband night" style="${box(h0, sun.rise)}"></i><i class="fband gold" style="${box(sun.rise, sun.rise6)}"></i><i class="fband gold" style="${box(sun.set6, sun.set)}"></i><i class="fband night" style="${box(sun.set, h1)}"></i>`);
+    it.forEach((e, i) => {
+      if (e.stop) {
+        const a = clk.at[i]; if (!a) return;
+        const p = e.stop.kind === "place" ? e.stop.place : null, len = a.leave - a.arr;
+        const mark = p ? pinBadge(p) : e.stop.kind === "home" && e.stop.place ? pinBadge(e.stop.place) : `<span class="hub">${HUB_ICON[e.stop.kind]}</span>`;
+        const tm = `${clockStr(a.arr)}${len ? `–${clockStr(a.leave)}` : ""}`;
+        out.push(`<button class="fs ${e.stop.kind}${len < 30 ? " thin" : ""}" style="${box(a.arr, a.leave)};--c:var(--${PC[e.stop.city] ? e.stop.city : homeOf(p)})" data-fstop="${x.i}:${i}" title="${esc(`${tm} · ${e.stop.name}`)}">${mark}<span class="fn">${esc(e.stop.name)}</span><span class="ft">${tm}</span></button>`);
+        return;
+      }
+      const h = e.hop, from = clk.at[i - 1]?.leave, to = h.ride && h.min == null ? h1 : clk.at[i + 1]?.arr;
+      if (from == null || to == null || to - from < 1) return;
+      const icon = h.mode === "city" ? RIDE_ICON[cityRide(h)] : HOP_ICON[h.mode];
+      const text = h.ride ? `${h.min == null ? "☾" : icon} ${h.text}` : `${icon} ${h.short || fmtDur(h.min)}`;
+      out.push(`<span class="fh ${h.mode}${h.ride ? " ride" : ""}${to - from < 20 ? " tiny" : ""}" style="${box(from, to)};--c:var(--${PC[h.b?.city] ? h.b.city : dayCity(x)})" title="${esc(h.text)}"><span>${esc(text)}</span></span>`);
+    });
+    return `<div class="fcol" style="--a:var(--${dayCity(x)})">${out.join("")}${tags(o)}</div>`;
+  };
+  // who's here: a bar per person from landing to leaving, clipped to the week
+  const bars = PLAN.crew.map((m, j) => {
+    const a = m.in.d ? parseISO(m.in.d) : DAYS[0].date, b = m.out.d ? parseISO(m.out.d) : DAYS.at(-1).date;
+    const s = Math.round((a - w0) / 864e5), e = Math.round((b - w0) / 864e5);
+    if (e < 0 || s > 6 || b < a) return "";
+    const l = s >= 0 && m.in.d ? `✈ lands ${m.ap}${m.in.t ? ` ${m.in.t}` : ""}${m.in.f ? ` · ${esc(m.in.f)}` : ""}` : "";
+    const r = e <= 6 && m.out.d ? `leaves ${m.ap}${m.out.t ? ` ${m.out.t}` : ""}${m.out.f ? ` · ${esc(m.out.f)}` : ""} ✈` : "";
+    return `<div class="fcb${s < 0 ? " cl" : ""}${e > 6 ? " cr" : ""}" style="grid-column:${Math.max(0, s) + 1} / ${Math.min(6, e) + 2};grid-row:${j + 1};--c:var(--${AIR_CITY[m.ap]})"><b>${crewName(m)}</b><span>${l}</span><span class="r">${r}</span></div>`;
+  }).join("");
+  const lane = PLAN.crew.length ? bars || `<span class="muted small">No one lands or leaves this week.</span>` : `<button class="fcadd" data-fact="crew">+ Add who's coming and their flights</button>`;
+  const hours = [];
+  for (let m = Math.ceil(h0 / 60) * 60; m < h1; m += 60) hours.push(`<span style="top:${y(m)}%">${clockStr(m)}</span>`);
+  return `<div class="fgl"></div>${info.map(head).join("")}
+    <div class="fgl">Who's here</div><div class="flane">${lane}</div>
+    <div class="fgut">${hours.join("")}</div>${info.map(col).join("")}
+    <div class="fgl" title="${TRANSIT_ONLY}">Transit only</div>${info.map(o => o.x ? `<div class="ffoot" title="${TRANSIT_ONLY}">${statText(o.st)}</div>` : `<div class="ffoot off"></div>`).join("")}`;
+}
+function renderFull(all = true) {
+  if (!fullOn) return;
+  const weeks = tripWeeks(); fWeek = Math.max(0, Math.min(weeks.length - 1, fWeek));
+  calFull.querySelector(".fhd").innerHTML = fullHeadHTML(weeks);
+  if (all) calFull.querySelector(".fcrewwrap").innerHTML = crewHTML();
+  const b = calFull.querySelector(".fbody");
+  b.innerHTML = fullBodyHTML(weeks[fWeek]);
+  b.style.setProperty("--hrs", b.querySelectorAll(".fgut span").length); // a line on each hour (the span starts on one)
+}
+function setFull(on) {
+  fullOn = on; calFull.hidden = !on; document.body.classList.toggle("fullcal", on);
+  if (on) {
+    const ws = tripWeeks(), d = plSel != null && DAYS[plSel] ? DAYS[plSel].date : DAYS[0].date;
+    fWeek = Math.max(0, ws.findIndex(s => d >= s && d < addDays(s, 7)));
+    renderFull(); calFull.querySelector('[data-fact="close"]')?.focus();
+  } else { crewOpen = false; calPanel.querySelector('[data-act="full"]')?.focus(); }
+}
+function crewSaved(all) { savePlan(); renderFull(all); renderPlanner(); }
+function addCrew() {
+  if (PLAN.crew.length >= CREW_MAX) return;
+  const sp = DAYS.find(x => (x.kind === "travel" ? x.to : x.city) === "split") || DAYS[0];
+  PLAN.crew.push({ name: "", ap: "SPU", in: { d: sp.iso, t: "", f: "" }, out: { d: DAYS.at(-1).iso, t: "", f: "" } });
+  crewSaved(true);
+  calFull.querySelector(`[data-crew="${PLAN.crew.length - 1}"][data-f="name"]`)?.focus();
+}
+calFull.addEventListener("click", e => {
+  const t = e.target, a = t.closest("[data-fact]")?.dataset.fact;
+  if (a === "close") { setFull(false); return; }
+  if (a === "crew") { crewOpen = !crewOpen; if (crewOpen && !PLAN.crew.length) addCrew(); else renderFull(); return; }
+  const w = t.closest("[data-fw]"); if (w) { fWeek += +w.dataset.fw; renderFull(false); return; }
+  const wk = t.closest("[data-fwk]"); if (wk) { fWeek = +wk.dataset.fwk; renderFull(false); return; }
+  if (t.closest("[data-crew-add]")) { addCrew(); return; }
+  const del = t.closest("[data-crew-del]"); if (del) { PLAN.crew.splice(+del.dataset.crewDel, 1); crewSaved(true); return; }
+  const fd = t.closest("[data-fday]"); if (fd) { setFull(false); goDay(+fd.dataset.fday); return; }
+  const fs = t.closest("[data-fstop]");
+  if (fs) { const [i, si] = fs.dataset.fstop.split(":").map(Number); setFull(false); goDay(i); setTimeout(() => focusStop(si), 60); }
+});
+calFull.addEventListener("change", e => { // edits redraw the calendar, not the form, so focus stays put
+  const el = e.target.closest("[data-crew]"), m = el && PLAN.crew[+el.dataset.crew];
+  if (!m) return;
+  const [k, f] = el.dataset.f.split(".");
+  if (f) m[k] = crewEnd({ ...m[k], [f]: el.value }); else m[k] = k === "ap" ? (AIRPORTS.includes(el.value) ? el.value : "SPU") : el.value.slice(0, 24);
+  if (f === "f") el.value = m[k].f;
+  crewSaved(false);
+});
 
 function wrapHTML() {
   // a fade through the named cities' colors; one city is a solid line
@@ -2860,6 +3166,7 @@ function planChanged({ rerender = true } = {}) {
   buildMenu();
   invalidate();
   if (rerender) renderPlanner();
+  renderFull();
 }
 function flash(msg) { plMsg = msg; const s = calPanel.querySelector(".pl-status"); if (s) s.textContent = msg; }
 function copyText(text, okMsg) {
@@ -2917,6 +3224,7 @@ calPanel.addEventListener("click", e => {
   const act = t.closest("[data-act]")?.dataset.act;
   if (!act) return;
   const strip = () => { try { history.replaceState(null, "", location.pathname + location.hash); } catch (err) {} };
+  if (act === "full") { setFull(true); return; }
   if (act === "share") { plShare = !plShare; if (!plShare) { plImport = plResetAsk = false; } renderPlanner(); return; }
   if (act === "range") { plRange = plRange ? null : { y: DAYS[0].date.getFullYear(), m: DAYS[0].date.getMonth(), a: null }; renderPlanner(); }
   else if (act === "play") playDay();
@@ -3570,6 +3878,11 @@ addEventListener("keydown", e => {
     }
     else return;
     e.preventDefault(); return;
+  }
+  if (fullOn) { // the full-screen calendar: Esc closes it, arrows page the weeks
+    if (e.key === "Escape") { e.preventDefault(); setFull(false); }
+    else if (["ArrowRight", "ArrowLeft"].includes(e.key) && !e.target.closest?.("input, textarea, select")) { e.preventDefault(); fWeek += e.key === "ArrowRight" ? 1 : -1; renderFull(false); }
+    return;
   }
   if (e.target.closest("input, textarea, select, #menubar")) return;
   if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); stepAny(1); }
