@@ -561,11 +561,13 @@ body.dock #panel { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
 .fnote { font-size: 10.5px; font-style: italic; color: var(--ink-2); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .fwarn { color: #c0392b; font-size: 10.5px; font-weight: 600; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .flane { grid-column: 2 / -1; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px 4px; align-items: center; min-height: 22px; }
-.fcb { display: flex; gap: 8px; align-items: center; min-width: 0; font-size: 11.5px; padding: 3px 8px; border-radius: 4px; background: color-mix(in srgb, var(--c) 22%, var(--panel-solid)); border-left: 3px solid var(--c); white-space: nowrap; overflow: hidden; }
-.fcb span { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; }
-.fcb .r { margin-left: auto; }
-.fcb.cl { border-left-style: dashed; border-radius: 0 4px 4px 0; }
-.fcb.cr { border-radius: 4px 0 0 4px; }
+.fwho { all: unset; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: 1px; height: 36px; min-width: 0; padding: 2px 8px; border-radius: 4px; background: var(--chip); font: 500 11px/1.3 var(--f-body); color: var(--ink-2); cursor: pointer; overflow: hidden; }
+.fwho:hover, .fwho:focus-visible { background: color-mix(in srgb, var(--ink) 10%, var(--chip)); }
+.fwho.off { background: none; cursor: default; }
+.fwho b { color: var(--ink); font-weight: 700; }
+.fwl { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fwl:empty { display: none; }
+.fwa i { font-style: normal; font-weight: 800; }
 .fcadd { grid-column: 1 / -1; justify-self: start; font: 600 12px var(--f-body); color: var(--ink-2); background: none; border: 1px dashed var(--line); border-radius: 5px; padding: 4px 10px; cursor: pointer; }
 .fcadd:hover { color: var(--ink); background: var(--chip); }
 .fgut { position: relative; }
@@ -588,6 +590,17 @@ body.dock #panel { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
 .fwp::before { content: ""; position: absolute; left: 1px; top: 50%; width: 8px; height: 8px; margin-top: -5px; border-radius: 50%; background: var(--panel-solid); border: 2px solid var(--c); }
 .fwp .fn { flex: 1 1 0; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fwp .ft { font: 500 10.5px var(--f-mono); }
+.fwp.pin { color: var(--ink); font-weight: 600; cursor: grab; touch-action: none; }
+.fcard { cursor: grab; touch-action: none; }
+.fgrip { position: absolute; left: 0; right: 0; bottom: 0; height: 7px; cursor: ns-resize; }
+.fgrip::after { content: ""; position: absolute; left: 50%; bottom: 2px; width: 22px; height: 3px; margin-left: -11px; border-radius: 2px; background: var(--c); opacity: 0; transition: opacity .15s; }
+.fcard:hover .fgrip::after { opacity: .7; }
+.fcard[data-dur]::after { content: attr(data-dur); position: absolute; right: 5px; bottom: 6px; font: 700 10.5px var(--f-mono); background: var(--ink); color: var(--panel-solid); border-radius: 3px; padding: 1px 4px; }
+.fcard.lifted, .fwp.lifted { opacity: .35; }
+body.fdragging, body.fdragging * { user-select: none; -webkit-user-select: none; cursor: grabbing !important; }
+.fcol.drop-ok { box-shadow: inset 0 0 0 2px var(--a); }
+.fcol.drop-no { box-shadow: inset 0 0 0 2px #c0392b; }
+.fins { position: absolute; left: 14px; right: 4px; height: 3px; margin-top: -2px; border-radius: 2px; background: var(--ink); z-index: 6; pointer-events: none; }
 .fwp:hover .fn, .fwp:focus-visible .fn { color: var(--ink); text-decoration: underline; }
 .fwp:focus-visible { outline: none; }
 .fride { position: absolute; left: 4px; right: 4px; z-index: 2; min-height: 34px; box-sizing: border-box; display: flex; flex-direction: column; gap: 1px; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--line); overflow: hidden;
@@ -1648,7 +1661,7 @@ const HOME_AIRPORTS = [
   ["IAD", "Washington", 38.95, -77.46], ["BWI", "Baltimore", 39.18, -76.67], ["ATL", "Atlanta", 33.64, -84.43], ["MIA", "Miami", 25.80, -80.29],
   ["MCO", "Orlando", 28.43, -81.31], ["CLT", "Charlotte", 35.21, -80.94], ["RDU", "Raleigh", 35.88, -78.79], ["ORD", "Chicago", 41.98, -87.90],
   ["DTW", "Detroit", 42.21, -83.35], ["MSP", "Minneapolis", 44.88, -93.22], ["DFW", "Dallas", 32.90, -97.04], ["IAH", "Houston", 29.99, -95.34],
-  ["AUS", "Austin", 30.19, -97.67], ["DEN", "Denver", 39.86, -104.67], ["PHX", "Phoenix", 33.43, -112.01], ["LAS", "Las Vegas", 36.08, -115.15],
+  ["AUS", "Austin", 30.19, -97.67], ["DEN", "Denver", 39.86, -104.67], ["PHX", "Phoenix", 33.43, -112.01], ["TUS", "Tucson", 32.12, -110.94],["LAS", "Las Vegas", 36.08, -115.15],
   ["LAX", "Los Angeles", 33.94, -118.41], ["SFO", "San Francisco", 37.62, -122.38], ["SEA", "Seattle", 47.45, -122.31], ["PDX", "Portland", 45.59, -122.60],
   ["SAN", "San Diego", 32.73, -117.19], ["SLC", "Salt Lake City", 40.79, -111.98], ["YYZ", "Toronto", 43.68, -79.63], ["YUL", "Montreal", 45.47, -73.74],
   ["YVR", "Vancouver", 49.19, -123.18], ["LHR", "London", 51.47, -0.45], ["LGW", "London Gatwick", 51.15, -0.18], ["MAN", "Manchester", 53.35, -2.27],
@@ -1731,6 +1744,7 @@ function fullBodyHTML(w0) {
   });
   // 06:00 to midnight, earlier when a day starts earlier
   const h0 = Math.min(360, ...info.filter(o => o.clk).map(o => Math.floor(o.clk.start / 60) * 60)), h1 = 1440, span = h1 - h0;
+  fSpan = span;
   const y = m => (Math.max(h0, Math.min(h1, m)) - h0) / span * 100;
   const box = (a, b) => `top:${y(a)}%;height:${Math.max(0, y(b) - y(a))}%`;
   const head = o => {
@@ -1742,8 +1756,14 @@ function fullBodyHTML(w0) {
       ${o.wx ? `<span class="fm" title="Typical for the date (1991–2020 averages), not a forecast">${o.wx.hi}° / ${o.wx.lo}° · ${o.wx.rain}% rain${o.wx.sea != null ? ` · sea ${o.wx.sea}°` : ""}</span>` : ""}
       ${note ? `<span class="fnote" title="${esc(note)}">${esc(note)}</span>` : ""}${o.clk.warn.map(w => `<span class="fwarn" title="${esc(w)}">⚠ ${esc(w)}</span>`).join("")}</div>`;
   };
-  const tagList = o => PLAN.crew.flatMap(m => [["in", "lands"], ["out", "leaves"]].filter(([k]) => m[k].d === isoDate(o.d) && m[k].t).map(([k, v]) => ({ t: toMin(m[k].t), html:
-    `<span class="fcw" style="top:${y(toMin(m[k].t))}%;--c:var(--${AIR_CITY[m[k].ap]})" title="${esc(`${m.name || "Someone"} ${v} ${m[k].ap} at ${m[k].t}`)}">✈ ${crewName(m)} ${v} ${m[k].ap} ${m[k].t}</span>` })));
+  // ✈ tags: everyone on the same flight time and airport shares one ("✈ 10 land SPU 14:20"), hover for names
+  const tagList = o => {
+    const g = new Map();
+    for (const m of PLAN.crew) for (const [k, v] of [["in", "land"], ["out", "leave"]]) if (m[k].d === isoDate(o.d) && m[k].t) {
+      const id = `${k}|${m[k].ap}|${m[k].t}`; if (!g.has(id)) g.set(id, { k, v, ap: m[k].ap, t: m[k].t, ms: [] }); g.get(id).ms.push(m.name || "Someone");
+    }
+    return [...g.values()].map(q => ({ t: toMin(q.t), html: `<span class="fcw" style="top:${y(toMin(q.t))}%;--c:var(--${AIR_CITY[q.ap]})" title="${esc(`${q.ms.join(", ")} ${q.ms.length > 1 ? q.v : `${q.v}s`} ${q.ap} at ${q.t}`)}">✈ ${q.ms.length > 1 ? `${q.ms.length} ${q.v}` : `${esc(q.ms[0])} ${q.v}s`} ${q.ap} ${q.t}</span>` }));
+  };
   const tags = o => tagList(o).map(v => v.html).join("");
   // a day: one route rail down the left (dotted on foot), waypoints on it for home, stations and airports, cards
   // for the places and for trains and flights, and the longer rides named in words beside the rail
@@ -1756,7 +1776,9 @@ function fullBodyHTML(w0) {
         const a = clk.at[i]; if (!a) return;
         const s = e.stop, c = PC[s.city] ? s.city : homeOf(s.place), len = a.leave - a.arr, tm = `${clockStr(a.arr)}${len ? ` – ${clockStr(a.leave)}` : ""}`;
         if (len) rail.push(`<i class="frail" style="${box(a.arr, a.leave)};--c:${cc(c)}"></i>`);
-        if (s.kind === "place") items.push({ t: a.arr, b: a.leave, html: `<button class="fcard" style="${box(a.arr, a.leave)};--c:${cc(c)}" data-fstop="${x.i}:${i}" title="${esc(`${tm} · ${s.name}`)}">${pinBadge(s.place)}<span class="fn">${esc(s.name)}</span><span class="ft">${tm}</span></button>` });
+        const drag = s.kind === "place" ? ` data-pkey="${keyOf(s.place)}" data-iso="${x.iso}"` : "";
+        if (s.kind === "place" && s.place.type !== "home") items.push({ t: a.arr, b: a.leave, html: `<button class="fcard" style="${box(a.arr, a.leave)};--c:${cc(c)}" data-fstop="${x.i}:${i}"${drag} title="${esc(`${tm} · ${s.name} · drag to move, drag the bottom edge to change how long`)}">${pinBadge(s.place)}<span class="fn">${esc(s.name)}</span><span class="ft">${tm}</span><span class="fgrip" aria-hidden="true"></span></button>` });
+        else if (s.kind === "place") items.push({ t: a.arr, wp: true, html: `<button class="fwp pin" style="top:${y(a.arr)}%;--c:${cc(c)}" data-fstop="${x.i}:${i}"${drag} title="${esc(`${tm} · ${s.name} · drag to move`)}"><span class="fn">⌂ ${esc(s.name)}</span><span class="ft">${tm}</span></button>` });
         else items.push({ t: a.arr, wp: true, html: `<button class="fwp" style="top:${y(a.arr)}%;--c:${cc(c)}" data-fstop="${x.i}:${i}" title="${esc(`${tm} · ${s.name}`)}"><span class="fn">${s.kind === "home" ? "⌂" : HUB_ICON[s.kind]} ${esc(s.kind === "home" && s.place ? s.place.name : s.name)}</span><span class="ft">${clockStr(a.arr)}</span></button>` });
         return;
       }
@@ -1775,23 +1797,26 @@ function fullBodyHTML(w0) {
       }
     });
     const bands = `<i class="fband night" style="${box(h0, sun.rise)}"></i><i class="fband gold" style="${box(sun.rise, sun.rise6)}"></i><i class="fband gold" style="${box(sun.set6, sun.set)}"></i><i class="fband night" style="${box(sun.set, h1)}"></i>`;
-    return `<div class="fcol" style="--a:var(--${dayCity(x)})">${bands}${rail.join("")}${[...items, ...tagList(o)].sort((p, q) => p.t - q.t).map(v => v.html).join("")}</div>`;
+    return `<div class="fcol" data-iso="${x.iso}" style="--a:var(--${dayCity(x)})">${bands}${rail.join("")}${[...items, ...tagList(o)].sort((p, q) => p.t - q.t).map(v => v.html).join("")}</div>`;
   };
-  // who's here: a bar per person from landing to leaving, clipped to the week
-  const bars = PLAN.crew.map((m, j) => {
-    const a = m.in.d ? parseISO(m.in.d) : DAYS[0].date, b = m.out.d ? parseISO(m.out.d) : DAYS.at(-1).date;
-    const s = Math.round((a - w0) / 864e5), e = Math.round((b - w0) / 864e5);
-    if (e < 0 || s > 6 || b < a) return "";
-    const l = s >= 0 && m.in.d ? `✈ lands ${m.in.ap}${m.in.t ? ` ${m.in.t}` : ""}` : "";
-    const r = e <= 6 && m.out.d ? `leaves ${m.out.ap}${m.out.t ? ` ${m.out.t}` : ""} ✈` : "";
-    const f = crewFare(m);
-    return `<div class="fcb${s < 0 ? " cl" : ""}${e > 6 ? " cr" : ""}" style="grid-column:${Math.max(0, s) + 1} / ${Math.min(6, e) + 2};grid-row:${j + 1};--c:var(--${AIR_CITY[m.in.ap]})"${f ? ` title="${esc(`From ${m.home}: flights ${fareText(f)} (rough estimate)`)}"` : ""}><b>${crewName(m)}</b><span>${l}</span><span class="r">${r}</span></div>`;
-  }).join("");
-  const lane = PLAN.crew.length ? bars || `<span class="muted small">No one lands or leaves this week.</span>` : `<button class="fcadd" data-fact="crew">+ Add who's coming and their flights</button>`;
+  // who's here: one cell a day, the same height however many come. Hover for everyone; click to edit
+  const first = DAYS[0].iso, last = DAYS.at(-1).iso, who = o => {
+    if (!o.x) return `<div class="fwho off"></div>`;
+    const iso = o.x.iso, nm = m => m.name || "Someone";
+    const here = PLAN.crew.filter(m => (m.in.d || first) <= iso && iso <= (m.out.d || last));
+    const lands = PLAN.crew.filter(m => m.in.d === iso), leaves = PLAN.crew.filter(m => m.out.d === iso);
+    const names = ms => { const n = ms.map(m => esc(nm(m))); return n.length > 3 ? `${n.slice(0, 2).join(", ")} +${n.length - 2}` : n.join(", "); };
+    const go = (ms, k, arrow) => ms.length ? ` <span class="fwa"><i style="color:var(--${AIR_CITY[ms[0][k].ap]})">${arrow}</i> ${names(ms)}</span>` : "";
+    const tip = [`Here (${here.length}): ${here.map(nm).join(", ") || "no one"}`,
+      lands.length && `Lands: ${lands.map(m => `${nm(m)} ${m.in.ap}${m.in.t ? ` ${m.in.t}` : ""}`).join(", ")}`,
+      leaves.length && `Leaves: ${leaves.map(m => `${nm(m)} ${m.out.ap}${m.out.t ? ` ${m.out.t}` : ""}`).join(", ")}`].filter(Boolean).join("\n");
+    return `<button class="fwho" data-fact="crew" title="${esc(tip)}"><span class="fwl"><b>${here.length}</b> here${go(lands, "in", "↓")}</span><span class="fwl">${go(leaves, "out", "↑")}</span></button>`;
+  };
+  const lane = PLAN.crew.length ? info.map(who).join("") : `<div class="flane"><button class="fcadd" data-fact="crew">+ Add who's coming and their flights</button></div>`;
   const hours = [];
   for (let m = Math.ceil(h0 / 60) * 60; m < h1; m += 60) hours.push(`<span style="top:${y(m)}%">${clockStr(m)}</span>`);
   return `<div class="fgl"></div>${info.map(head).join("")}
-    <div class="fgl">Who's here</div><div class="flane">${lane}</div>
+    <div class="fgl">Who's here</div>${lane}
     <div class="fgut">${hours.join("")}</div>${info.map(col).join("")}
     <div class="fgl" title="${TRANSIT_ONLY}">Transit only</div>${info.map(o => o.x ? `<div class="ffoot" title="${TRANSIT_ONLY}">${statText(o.st)}</div>` : `<div class="ffoot off"></div>`).join("")}`;
 }
@@ -1839,6 +1864,7 @@ function addCrew() {
   calFull.querySelector(`[data-crew="${PLAN.crew.length - 1}"][data-f="name"]`)?.focus();
 }
 calFull.addEventListener("click", e => {
+  if (fEat) { fEat = false; return; } // the end of a drag
   const t = e.target, a = t.closest("[data-fact]")?.dataset.fact;
   if (a === "close") { setFull(false); return; }
   if (a === "crew") { crewOpen = !crewOpen; if (crewOpen && !PLAN.crew.length) addCrew(); else renderFull(); return; }
@@ -1860,6 +1886,72 @@ calFull.addEventListener("change", e => { // edits redraw the calendar, not the 
   const fare = el.closest("tr")?.querySelector(".fare"); // the fare follows the airports, without redrawing the form
   if (fare && (k === "home" || f === "ap" || f === "d")) { const tmp = document.createElement("div"); tmp.innerHTML = crewHTML(); const j = +el.dataset.crew; fare.innerHTML = tmp.querySelectorAll(".fare")[j]?.innerHTML || ""; const tot = tmp.querySelector(".ftot"), cur = calFull.querySelector(".ftot"); if (cur && tot) cur.replaceWith(tot); else if (tot) calFull.querySelector(".fcrewf .ghost")?.before(tot); else cur?.remove(); }
 });
+
+// drag a place in the full calendar: onto another day or up and down its own (the order of the day), or by its
+// bottom edge to change how long it gets
+let fdrag = null, fEat = false, fSpan = 1080;
+calFull.addEventListener("pointerdown", e => {
+  const card = e.target.closest("[data-pkey]");
+  if (!card || e.button !== 0) return;
+  const grip = e.target.closest(".fgrip") && card.classList.contains("fcard");
+  fdrag = { size: !!grip, card, key: card.dataset.pkey, from: card.dataset.iso, p: placeBy[card.dataset.pkey], x0: e.clientX, y0: e.clientY, on: false, h0: card.offsetHeight, col: card.closest(".fcol") };
+  card.setPointerCapture(e.pointerId);
+});
+function fClear() { calFull.querySelectorAll(".fcol.drop-ok, .fcol.drop-no").forEach(c => c.classList.remove("drop-ok", "drop-no")); calFull.querySelectorAll(".fins").forEach(l => l.remove()); }
+calFull.addEventListener("pointermove", e => {
+  const d = fdrag; if (!d) return;
+  if (!d.on) {
+    if (Math.hypot(e.clientX - d.x0, e.clientY - d.y0) < 4) return;
+    d.on = true; document.body.classList.add("fdragging");
+    if (!d.size) { ghost.innerHTML = `${pinBadge(d.p)}<span>${esc(d.p.name)}</span>`; ghost.style.setProperty("--c", `var(--${homeOf(d.p)})`); ghost.hidden = false; d.card.classList.add("lifted"); }
+  }
+  if (d.size) { // minutes from pixels, snapped to the time menu's steps
+    const per = d.col.clientHeight / fSpan, want = Math.max(0, d.h0 + e.clientY - d.y0) / per;
+    d.min = DUR_OPTS.reduce((a, b) => Math.abs(b - want) < Math.abs(a - want) ? b : a);
+    d.card.style.height = `${d.min * per}px`; d.card.dataset.dur = fmtDur(d.min); return;
+  }
+  ghost.style.transform = `translate(${e.clientX + 12}px, ${e.clientY + 10}px)`;
+  fClear(); d.target = null;
+  const col = document.elementsFromPoint(e.clientX, e.clientY).find(el => el.matches?.(".fcol[data-iso]"));
+  if (!col) return;
+  const x = DAYS.find(z => z.iso === col.dataset.iso), on = pinsOn(x);
+  const ok = canPin(x, d.p) && (x.iso === d.from || on.includes(d.key) || on.length < PIN_MAX);
+  col.classList.add(ok ? "drop-ok" : "drop-no"); if (!ok) return;
+  const cards = [...col.querySelectorAll("[data-pkey]")].filter(c => c.dataset.pkey !== d.key), cr = col.getBoundingClientRect();
+  const n = cards.filter(c => { const b = c.getBoundingClientRect(); return e.clientY > b.top + b.height / 2; }).length;
+  const yy = n ? cards[n - 1].getBoundingClientRect().bottom + 1 : cards[0] ? cards[0].getBoundingClientRect().top - 2 : e.clientY;
+  const line = document.createElement("i"); line.className = "fins"; line.style.top = `${yy - cr.top}px`; col.append(line);
+  d.target = { x, after: n ? cards[n - 1].dataset.pkey : null };
+});
+function endFdrag(apply) {
+  const d = fdrag; fdrag = null;
+  if (!d) return;
+  ghost.hidden = true; document.body.classList.remove("fdragging"); fClear();
+  if (!d.on) return; // a click: it opens the day as before
+  fEat = true; setTimeout(() => { fEat = false; }, 300);
+  if (apply && d.size && d.min) {
+    const x = DAYS.find(z => z.iso === d.from), dflt = DETAIL[d.p.city] && d.p.type === "sight" ? 60 : DUR_DEFAULT[d.p.type] ?? 60;
+    if (d.min === dflt) { delete PLAN.durs[x.iso]?.[d.key]; if (PLAN.durs[x.iso] && !Object.keys(PLAN.durs[x.iso]).length) delete PLAN.durs[x.iso]; }
+    else (PLAN.durs[x.iso] ||= {})[d.key] = d.min;
+    plMsg = `${d.p.name}: ${fmtDur(d.min)}.`; planChanged(); return;
+  }
+  if (apply && !d.size && d.target) {
+    const { x, after } = d.target, iso = x.iso, key = d.key;
+    if (d.from !== iso) {
+      movedOff(key, d.from);
+      const dur = PLAN.durs[d.from]?.[key]; // its time goes with it
+      if (dur != null) { delete PLAN.durs[d.from][key]; if (!Object.keys(PLAN.durs[d.from]).length) delete PLAN.durs[d.from]; (PLAN.durs[iso] ||= {})[key] = dur; }
+    }
+    const arr = PLAN.pins[iso] || (PLAN.pins[iso] = []), k = arr.indexOf(key);
+    if (k >= 0) arr.splice(k, 1);
+    arr.splice(after ? arr.indexOf(after) + 1 : 0, 0, key);
+    plMsg = d.from === iso ? "" : `${d.p.name} moved to ${fmtDay(x.date)}.`; planChanged(); return;
+  }
+  renderFull(false); // put it back
+}
+calFull.addEventListener("pointerup", () => endFdrag(true));
+calFull.addEventListener("pointercancel", () => endFdrag(false));
+document.addEventListener("keydown", e => { if (fdrag && e.key === "Escape") { e.stopPropagation(); endFdrag(false); } }, true);
 
 function wrapHTML() {
   // a fade through the named cities' colors; one city is a solid line
