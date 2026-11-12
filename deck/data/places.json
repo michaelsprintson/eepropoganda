@@ -793,6 +793,7 @@
     "kind": "nature",
     "time": "~2 h by speedboat",
     "blurb": "A sea cave that glows electric blue when the late-morning sun shines in under the water. Speedboat tours pair it with Vis and Hvar.",
+    "detail": "bisevo",
     "xy": [
      225.1,
      965.901
@@ -803,6 +804,7 @@
     "kind": "nature",
     "time": "~3 h by bus",
     "blurb": "Sixteen terraced turquoise lakes linked by waterfalls, walked on wooden boardwalks. Croatia's best-known national park.",
+    "detail": "plitvice",
     "xy": [
      178.9906,
      668.6695
@@ -813,6 +815,7 @@
     "kind": "daytrip",
     "time": "~3 h 30 by bus",
     "blurb": "An Ottoman old town in Bosnia and Herzegovina around the arched Old Bridge, where divers leap into the river. Bring passports.",
+    "detail": "mostar",
     "xy": [
      424.6879,
      911.4129
@@ -912,6 +915,118 @@
     "xy": [
      219.6651,
      830.8823
+    ]
+   }
+  ]
+ },
+ "bisevo": {
+  "detail": true,
+  "parent": "split",
+  "local": "Biševo & Vis",
+  "en": "Blue Cave & Vis",
+  "sights": [
+   {
+    "name": "Blue Cave",
+    "blurb": "Small boats slip in through a low opening. Around midday, sun through an underwater gap lights the water a glowing blue. The visit inside is about 10 minutes.",
+    "xy": [
+     225.1,
+     965.901
+    ]
+   },
+   {
+    "name": "Stiniva cove",
+    "blurb": "A pebble beach behind a narrow gap in the cliffs on the south coast of Vis. Tours stop here for a swim.",
+    "xy": [
+     241.7452,
+     959.6273
+    ]
+   },
+   {
+    "name": "Komiža",
+    "blurb": "A fishing town under Mount Hum on Vis, where the boats tie up for lunch on the harbor.",
+    "xy": [
+     232.7124,
+     956.1026
+    ]
+   }
+  ]
+ },
+ "plitvice": {
+  "detail": true,
+  "parent": "split",
+  "local": "Plitvička jezera",
+  "en": "Plitvice Lakes",
+  "sights": [
+   {
+    "name": "Veliki slap",
+    "blurb": "The Big Waterfall, 78 m high and the tallest in Croatia, at the end of the Lower Lakes canyon.",
+    "xy": [
+     178.9906,
+     668.6695
+    ]
+   },
+   {
+    "name": "Lower Lakes boardwalks",
+    "blurb": "Wooden walkways run right across the water of the narrow lower canyon, past falls and caves.",
+    "xy": [
+     179.3053,
+     669.6499
+    ]
+   },
+   {
+    "name": "Lake Kozjak boat",
+    "blurb": "The park's largest lake. An electric boat, included in the ticket, crosses it between the Lower and Upper Lakes.",
+    "xy": [
+     179.6247,
+     671.4722
+    ]
+   },
+   {
+    "name": "Upper Lakes",
+    "blurb": "Terraced lakes stepping down through beech forest, joined by dozens of small cascades under the boardwalks.",
+    "xy": [
+     178.8237,
+     673.0144
+    ]
+   }
+  ]
+ },
+ "mostar": {
+  "detail": true,
+  "parent": "split",
+  "local": "Mostar",
+  "en": "Mostar",
+  "sights": [
+   {
+    "name": "Stari Most",
+    "blurb": "The 16th-century Ottoman bridge, rebuilt in 2004 after the war. In summer, divers jump 20 m into the Neretva.",
+    "xy": [
+     424.6879,
+     911.4129
+    ]
+   },
+   {
+    "name": "Kujundžiluk",
+    "blurb": "The cobbled old bazaar on the east bank, lined with copper workshops and souvenir stalls.",
+    "xy": [
+     424.7351,
+     911.3281
+    ]
+   },
+   {
+    "name": "Koski Mehmed Pasha Mosque",
+    "blurb": "Climb the minaret for the classic view of the Old Bridge. The courtyard terrace overlooks the river.",
+    "xy": [
+     424.6594,
+     911.1974
+    ]
+   },
+   {
+    "name": "Crooked Bridge",
+    "blurb": "A small stone arch over the Radobolja stream, said to be a trial run for the Old Bridge.",
+    "xy": [
+     424.4756,
+     911.4892
     ]
    }
   ]

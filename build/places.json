@@ -559,21 +559,24 @@
     "q": "Modra špilja, Biševo",
     "kind": "nature",
     "time": "~2 h by speedboat",
-    "blurb": "A sea cave that glows electric blue when the late-morning sun shines in under the water. Speedboat tours pair it with Vis and Hvar."
+    "blurb": "A sea cave that glows electric blue when the late-morning sun shines in under the water. Speedboat tours pair it with Vis and Hvar.",
+    "detail": "bisevo"
    },
    {
     "name": "Plitvice Lakes",
     "q": "Veliki slap, Plitvice",
     "kind": "nature",
     "time": "~3 h by bus",
-    "blurb": "Sixteen terraced turquoise lakes linked by waterfalls, walked on wooden boardwalks. Croatia's best-known national park."
+    "blurb": "Sixteen terraced turquoise lakes linked by waterfalls, walked on wooden boardwalks. Croatia's best-known national park.",
+    "detail": "plitvice"
    },
    {
     "name": "Mostar",
     "q": "Stari most, Mostar",
     "kind": "daytrip",
     "time": "~3 h 30 by bus",
-    "blurb": "An Ottoman old town in Bosnia and Herzegovina around the arched Old Bridge, where divers leap into the river. Bring passports."
+    "blurb": "An Ottoman old town in Bosnia and Herzegovina around the arched Old Bridge, where divers leap into the river. Bring passports.",
+    "detail": "mostar"
    }
   ]
  },
@@ -643,6 +646,85 @@
     "name": "Visovac monastery",
     "q": "Visovac",
     "blurb": "A Franciscan monastery on a tiny island in the river, reached on the boat tour."
+   }
+  ]
+ },
+ "bisevo": {
+  "detail": true,
+  "parent": "split",
+  "local": "Biševo & Vis",
+  "en": "Blue Cave & Vis",
+  "sights": [
+   {
+    "name": "Blue Cave",
+    "q": "Modra špilja, Biševo",
+    "blurb": "Small boats slip in through a low opening. Around midday, sun through an underwater gap lights the water a glowing blue. The visit inside is about 10 minutes."
+   },
+   {
+    "name": "Stiniva cove",
+    "q": "Stiniva, Vis",
+    "blurb": "A pebble beach behind a narrow gap in the cliffs on the south coast of Vis. Tours stop here for a swim."
+   },
+   {
+    "name": "Komiža",
+    "q": "Komiža",
+    "blurb": "A fishing town under Mount Hum on Vis, where the boats tie up for lunch on the harbor."
+   }
+  ]
+ },
+ "plitvice": {
+  "detail": true,
+  "parent": "split",
+  "local": "Plitvička jezera",
+  "en": "Plitvice Lakes",
+  "sights": [
+   {
+    "name": "Veliki slap",
+    "q": "Veliki slap, Plitvice",
+    "blurb": "The Big Waterfall, 78 m high and the tallest in Croatia, at the end of the Lower Lakes canyon."
+   },
+   {
+    "name": "Lower Lakes boardwalks",
+    "q": "Milanovac, Plitvice",
+    "blurb": "Wooden walkways run right across the water of the narrow lower canyon, past falls and caves."
+   },
+   {
+    "name": "Lake Kozjak boat",
+    "q": "Jezero Kozjak",
+    "blurb": "The park's largest lake. An electric boat, included in the ticket, crosses it between the Lower and Upper Lakes."
+   },
+   {
+    "name": "Upper Lakes",
+    "q": "Galovac, Plitvice",
+    "blurb": "Terraced lakes stepping down through beech forest, joined by dozens of small cascades under the boardwalks."
+   }
+  ]
+ },
+ "mostar": {
+  "detail": true,
+  "parent": "split",
+  "local": "Mostar",
+  "en": "Mostar",
+  "sights": [
+   {
+    "name": "Stari Most",
+    "q": "Stari most, Mostar",
+    "blurb": "The 16th-century Ottoman bridge, rebuilt in 2004 after the war. In summer, divers jump 20 m into the Neretva."
+   },
+   {
+    "name": "Kujundžiluk",
+    "q": "Kujundžiluk, Mostar",
+    "blurb": "The cobbled old bazaar on the east bank, lined with copper workshops and souvenir stalls."
+   },
+   {
+    "name": "Koski Mehmed Pasha Mosque",
+    "q": "Koski Mehmed-pašina džamija, Mostar",
+    "blurb": "Climb the minaret for the classic view of the Old Bridge. The courtyard terrace overlooks the river."
+   },
+   {
+    "name": "Crooked Bridge",
+    "q": "Kriva ćuprija, Mostar",
+    "blurb": "A small stone arch over the Radobolja stream, said to be a trial run for the Old Bridge."
    }
   ]
  },

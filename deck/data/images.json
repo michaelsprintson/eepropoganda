@@ -699,8 +699,9 @@
   "img": "img/vienna-s4.webp",
   "thumb": "img/vienna-s4-t.webp",
   "full": "img/full/vienna-s4.webp",
-  "credit": "Thomas Ledl · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Wien_Riesenrad.jpg"
+  "credit": "Photo: reisroutes.be",
+  "link": "https://www.reisroutes.be/userfiles/fotos/riesenrad-in-praterpark_2878_xl.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.reisroutes.be%2Fuserfiles%2Ffotos%2Friesenrad-in-praterpark_2878_xl.jpg&f=1&nofb=1&ipt=39ef4ea1c737203dae2d7290dc95aa5f2605a52dd03c4dadf70700b962aa4cc7&ipo=images"
  },
  "Naschmarkt": {
   "img": "img/vienna-s5.webp",
@@ -713,15 +714,17 @@
   "img": "img/vienna-s6.webp",
   "thumb": "img/vienna-s6-t.webp",
   "full": "img/full/vienna-s6.webp",
-  "credit": "Daniel-tbs · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:G%C3%A4nseh%C3%A4ufel_Zentralbereich.jpg"
+  "credit": "Photo: viennainsider.com",
+  "link": "https://viennainsider.com/wp-content/uploads/2018/08/bad-gan.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fviennainsider.com%2Fwp-content%2Fuploads%2F2018%2F08%2Fbad-gan.jpg&f=1&nofb=1&ipt=003ba8eaadf524ed663f6f1432b8954ff4902264350e327e36facda52e3577f5&ipo=images"
  },
  "Film Festival on Rathausplatz": {
   "img": "img/vienna-s7.webp",
   "thumb": "img/vienna-s7-t.webp",
   "full": "img/full/vienna-s7.webp",
-  "credit": "Thomas Ledl · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Wien_Rathaus_hochaufl%C3%B6send.jpg"
+  "credit": "Photo: vienna.at",
+  "link": "https://www.vienna.at/2019/06/Film-Festival-2018_040_cstadtwienmarketing-4-3-180037362802-3736x2802.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.vienna.at%2F2019%2F06%2FFilm-Festival-2018_040_cstadtwienmarketing-4-3-180037362802-3736x2802.jpg&f=1&nofb=1&ipt=75071b17fc3a3b85bf07510c8ee0d68bc10883bac625a9ab7a9a693d279a434b&ipo=images"
  },
  "Vyšehrad": {
   "img": "img/prague-s4.webp",
@@ -741,15 +744,17 @@
   "img": "img/prague-s6.webp",
   "thumb": "img/prague-s6-t.webp",
   "full": "img/full/prague-s6.webp",
-  "credit": "Ivan Korostelev · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Pet%C5%99%C3%ADnsk%C3%A1_rozhledna,_Prague.jpg"
+  "credit": "Photo: avantgarde-prague.com",
+  "link": "https://www.avantgarde-prague.com/media/filer_public_thumbnails/filer_public/65/a4/65a4c602-f568-4b42-b3c1-7cc63033f170/9_petrin_observation_tower_prague.jpg__1280x1024_q85_subsampling-2.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.avantgarde-prague.com%2Fmedia%2Ffiler_public_thumbnails%2Ffiler_public%2F65%2Fa4%2F65a4c602-f568-4b42-b3c1-7cc63033f170%2F9_petrin_observation_tower_prague.jpg__1280x1024_q85_subsampling-2.jpg&f=1&nofb=1&ipt=8114b31797bad040871caa1029b164d258ce3dc9c89470c02b0c5cc8558f7276&ipo=images"
  },
  "St. Domnius bell tower": {
   "img": "img/split-s4.webp",
   "thumb": "img/split-s4-t.webp",
   "full": "img/full/split-s4.webp",
-  "credit": "Berthold Werner · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Split_BW_2024-10-02_13-14-50_(cropped).jpg"
+  "credit": "Photo: somtoseeks.com",
+  "link": "https://www.somtoseeks.com/wp-content/uploads/2023/01/Bell-Tower-at-Saint-Domnius-Cathedral-split-croatia-1.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.somtoseeks.com%2Fwp-content%2Fuploads%2F2023%2F01%2FBell-Tower-at-Saint-Domnius-Cathedral-split-croatia-1.jpg&f=1&nofb=1&ipt=90c546464934cb969edf569647b536449dfeece60faaaf1ca62f6731e71a2fc6&ipo=images"
  },
  "Bačvice beach": {
   "img": "img/split-s6.webp",
@@ -762,21 +767,101 @@
   "img": "img/split-s7.webp",
   "thumb": "img/split-s7-t.webp",
   "full": "img/full/split-s7.webp",
-  "credit": "Elbert Hampton · CC0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Kasjuni_Beach_-_Split_-_Croatia_2023_07.jpg"
+  "credit": "Photo: checkyeti.imgix.net",
+  "link": "https://checkyeti.imgix.net/images/prod/products/27521/given2fly-adventures-split-gallery-1-9",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcheckyeti.imgix.net%2Fimages%2Fprod%2Fproducts%2F27521%2Fgiven2fly-adventures-split-gallery-1-9&f=1&nofb=1&ipt=7553e01cc13cdb98549c7f5e08bc0c34044182e6733b01abdc2d4797da6cea84&ipo=images"
  },
  "Meštrović Gallery": {
   "img": "img/split-s5.webp",
   "thumb": "img/split-s5-t.webp",
   "full": "img/full/split-s5.webp",
-  "credit": "Bgag · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Ivan_Me%C5%A1trovi%C4%87_Gallery,_Split_01.jpg"
+  "credit": "Photo: gkd.hr",
+  "link": "https://gkd.hr/wp-content/uploads/2023/11/IMG_2660-1024x683.jpg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fgkd.hr%2Fwp-content%2Fuploads%2F2023%2F11%2FIMG_2660-1024x683.jpg&f=1&nofb=1&ipt=e58a65fbc137a99cfc69135027b56df7e5b91c2b585314985b9c9ccc4859b279&ipo=images"
  },
  "Náplavka riverbank": {
   "img": "img/prague-s7.webp",
   "thumb": "img/prague-s7-t.webp",
   "full": "img/full/prague-s7.webp",
-  "credit": "Txllxt TxllxT · CC BY-SA 4.0 · Wikimedia Commons",
-  "link": "https://commons.wikimedia.org/wiki/File:Praha_-_Ra%C5%A1%C3%ADnovo_n%C3%A1b%C5%99e%C5%BE%C3%AD_-_View_North.jpg"
+  "credit": "Photo: discoverwalks.com",
+  "link": "https://www.discoverwalks.com/blog/wp-content/uploads/2024/01/pexels-helena-jankovicova-kovacova-9460557.jpeg",
+  "user": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.discoverwalks.com%2Fblog%2Fwp-content%2Fuploads%2F2024%2F01%2Fpexels-helena-jankovicova-kovacova-9460557.jpeg&f=1&nofb=1&ipt=f63e4ed1254d51c48ec9957348ec5f21f2163cffdad7ae1355844ba0e3b9fd18&ipo=images"
+ },
+ "Blue Cave": {
+  "img": "img/bisevo-s0.webp",
+  "thumb": "img/bisevo-s0-t.webp",
+  "full": "img/full/bisevo-s0.webp",
+  "credit": "Pierre-Selim Huard · CC BY 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Bi%C5%A1evo_-_Blue_Cave_-_2021-07-30_11-56-09_2642.jpg"
+ },
+ "Stiniva cove": {
+  "img": "img/bisevo-s1.webp",
+  "thumb": "img/bisevo-s1-t.webp",
+  "full": "img/full/bisevo-s1.webp",
+  "credit": "dronepicr · CC BY 2.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Aerial_view_of_the_Adriatic_Sea_at_Stiniva_Bay_on_Vis_island_in_Croatia_(48608804397).jpg"
+ },
+ "Komiža": {
+  "img": "img/bisevo-s2.webp",
+  "thumb": "img/bisevo-s2-t.webp",
+  "full": "img/full/bisevo-s2.webp",
+  "credit": "dronepicr · CC BY 2.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Aerial_view_of_Komiza_on_Vis_island,_Croatia_(48608309188).jpg"
+ },
+ "Veliki slap": {
+  "img": "img/plitvice-s0.webp",
+  "thumb": "img/plitvice-s0-t.webp",
+  "full": "img/full/plitvice-s0.webp",
+  "credit": "Falk2 · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:J32_078_Veliki_slap_mit_Aussichtspunkt.jpg"
+ },
+ "Lower Lakes boardwalks": {
+  "img": "img/plitvice-s1.webp",
+  "thumb": "img/plitvice-s1-t.webp",
+  "full": "img/full/plitvice-s1.webp",
+  "credit": "Someone35 · CC BY-SA 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:A_bridge_in_Plitvice_lakes_national_park,_Croatia.jpg"
+ },
+ "Lake Kozjak boat": {
+  "img": "img/plitvice-s2.webp",
+  "thumb": "img/plitvice-s2-t.webp",
+  "full": "img/full/plitvice-s2.webp",
+  "credit": "Berthold Werner · CC BY-SA 3.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Plitvice_Lakes_National_Park_BW_2014-10-13_14-08-48.jpg"
+ },
+ "Upper Lakes": {
+  "img": "img/plitvice-s3.webp",
+  "thumb": "img/plitvice-s3-t.webp",
+  "full": "img/full/plitvice-s3.webp",
+  "credit": "Wekn reven i susej eht · CC0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Plitvice_upper_lake_view,_July_2011.jpg"
+ },
+ "Stari Most": {
+  "img": "img/mostar-s0.webp",
+  "thumb": "img/mostar-s0-t.webp",
+  "full": "img/full/mostar-s0.webp",
+  "credit": "Ramirez · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Mostar_Old_Town_Panorama_2007.jpg"
+ },
+ "Kujundžiluk": {
+  "img": "img/mostar-s1.webp",
+  "thumb": "img/mostar-s1-t.webp",
+  "full": "img/full/mostar-s1.webp",
+  "credit": "Berthold Werner · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Mostar_BW_2024-10-01_12-51-16.jpg"
+ },
+ "Koski Mehmed Pasha Mosque": {
+  "img": "img/mostar-s2.webp",
+  "thumb": "img/mostar-s2-t.webp",
+  "full": "img/full/mostar-s2.webp",
+  "credit": "Bernard Gagnon · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Koski_Mehmed_Pasha_Mosque,_Mostar_01.jpg"
+ },
+ "Crooked Bridge": {
+  "img": "img/mostar-s3.webp",
+  "thumb": "img/mostar-s3-t.webp",
+  "full": "img/full/mostar-s3.webp",
+  "credit": "Berthold Werner · CC BY-SA 4.0 · Wikimedia Commons",
+  "link": "https://commons.wikimedia.org/wiki/File:Mostar_BW_2024-10-01_13-12-23.jpg"
  }
 }

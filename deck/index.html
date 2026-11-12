@@ -591,6 +591,10 @@ body.dock #panel { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
 .fwp .fn { flex: 1 1 0; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fwp .ft { font: 500 10.5px var(--f-mono); }
 .fwp.pin { color: var(--ink); font-weight: 600; cursor: grab; touch-action: none; }
+.fwp.fstart { cursor: ns-resize; touch-action: none; }
+.fwp.fstart::before { box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 22%, transparent); }
+.fwp.fstart.moving { z-index: 6; color: var(--ink); }
+.fwp.fstart.moving[data-dur]::after { content: attr(data-dur); position: absolute; right: 2px; top: -16px; font: 700 10.5px var(--f-mono); background: var(--ink); color: var(--panel-solid); border-radius: 3px; padding: 1px 4px; white-space: nowrap; }
 .fcard { cursor: grab; touch-action: none; }
 .fgrip { position: absolute; left: 0; right: 0; bottom: 0; height: 7px; cursor: ns-resize; }
 .fgrip::after { content: ""; position: absolute; left: 50%; bottom: 2px; width: 22px; height: 3px; margin-left: -11px; border-radius: 2px; background: var(--c); opacity: 0; transition: opacity .15s; }
@@ -834,7 +838,7 @@ const SEASON = {
 const EAT_TITLE = { vienna: "Schnitzel, ramen & tapas", prague: "Pilsner, pho & pasta", split: "Fish, octopus & Croatian wine" };
 
 let PLACES = [];        // flattened places with code + city
-const DETAIL = {};      // day-trip zoom-in areas (salzburg, lednice) -> {en, local, parent}
+const DETAIL = {};      // day-trip zoom-in areas (lednice, krka, ...) -> {en, local, parent}
 let HOODS = {};         // city -> [{name, blurb, rings, label}] historic neighborhood outlines
 const placeBy = {};     // `${city}:${code}`
 
@@ -1065,8 +1069,12 @@ function normalizePlan(p) {
 // CJK ideographs (U+4E00 up). A default plan is one character; each pinned place adds under one; notes ride along as
 // UTF-8 bytes. Trailing zero bits read back as "nothing more", so they are trimmed.
 const CODE_BASE = 0x4E00, CODE_BITS = 14, CODE_EPOCH = Date.UTC(2025, 0, 1);
-// fixed order, never reorder: append new cities at the end (4 bits, so up to 16)
-const CODE_CITIES = ["prague", "vienna", "split", "zagreb", "lednice", "wachau", "kahlenberg", "hallstatt", "karlstejn", "kutnahora", "bohemian", "trogir", "hvar", "krka"];
+// fixed order, never reorder: append new cities at the end. 4 bits; 15 is an escape that adds 4 more bits
+// (15 + n), so up to 31. Codes from before index 15 existed never wrote a 15, so they read the same.
+const CODE_CITIES = ["prague", "vienna", "split", "zagreb", "lednice", "wachau", "kahlenberg", "hallstatt", "karlstejn", "kutnahora", "bohemian", "trogir", "hvar", "krka",
+  "bisevo", "plitvice", "mostar"];
+const putCity = (put, c) => { if (c < 15) put(c, 4); else { put(15, 4); put(c - 15, 4); } };
+const getCity = get => { const c = get(4); return c < 15 ? c : 15 + get(4); };
 const dayNo = iso => { const [y, m, d] = iso.split("-").map(Number); return Math.round((Date.UTC(y, m - 1, d) - CODE_EPOCH) / 864e5); };
 const dayIso = n => new Date(CODE_EPOCH + n * 864e5).toISOString().slice(0, 10);
 const pinBits = code => code === "HOME" ? [3, 7] : code === "CF" ? [1, 7] : /^[A-H]$/.test(code) ? [0, code.charCodeAt(0) - 65]
@@ -1092,7 +1100,7 @@ function toCode(p) {
     const off = dayNo(iso) - start + 32, pins = ks.map(k => { const [c, code] = k.split(":"); return [CODE_CITIES.indexOf(c), pinBits(code)]; }).filter(([c, b]) => c >= 0 && b);
     if (off < 0 || off > 127 || !pins.length) continue;
     put(1, 1); put(off, 7); put(pins.length - 1, 3);
-    for (const [c, [k, i]] of pins) { put(c, 4); put(k, 2); put(i, 3); }
+    for (const [c, [k, i]] of pins) { putCity(put, c); put(k, 2); put(i, 3); }
   }
   put(0, 1);
   for (const [iso, text] of Object.entries(p.notes)) {
@@ -1161,7 +1169,7 @@ function fromCode(s) {
   if (get(1)) NIGHT_ORDER.forEach(c => { const n = get(4); p.stays[c] = n ? `H${n}` : null; });
   while (get(1)) {
     const iso = dayIso(start + get(7) - 32), n = get(PB) + 1;
-    p.pins[iso] = Array.from({ length: n }, () => { const c = get(4), k = get(2), i = get(3); return `${CODE_CITIES[c]}:${pinCode(k, i)}`; });
+    p.pins[iso] = Array.from({ length: n }, () => { const c = getCity(get), k = get(2), i = get(3); return `${CODE_CITIES[c]}:${pinCode(k, i)}`; });
   }
   while (get(1)) {
     const iso = dayIso(start + get(7) - 32), len = get(11);
@@ -1779,6 +1787,7 @@ function fullBodyHTML(w0) {
         const drag = s.kind === "place" ? ` data-pkey="${keyOf(s.place)}" data-iso="${x.iso}"` : "";
         if (s.kind === "place" && s.place.type !== "home") items.push({ t: a.arr, b: a.leave, html: `<button class="fcard" style="${box(a.arr, a.leave)};--c:${cc(c)}" data-fstop="${x.i}:${i}"${drag} title="${esc(`${tm} · ${s.name} · drag to move, drag the bottom edge to change how long`)}">${pinBadge(s.place)}<span class="fn">${esc(s.name)}</span><span class="ft">${tm}</span><span class="fgrip" aria-hidden="true"></span></button>` });
         else if (s.kind === "place") items.push({ t: a.arr, wp: true, html: `<button class="fwp pin" style="top:${y(a.arr)}%;--c:${cc(c)}" data-fstop="${x.i}:${i}"${drag} title="${esc(`${tm} · ${s.name} · drag to move`)}"><span class="fn">⌂ ${esc(s.name)}</span><span class="ft">${tm}</span></button>` });
+        else if (i === 0 && s.kind === "home" && s.place) items.push({ t: a.arr, wp: true, html: `<button class="fwp fstart" style="top:${y(a.arr)}%;--c:${cc(c)}" data-fstop="${x.i}:${i}" data-fstart="${x.iso}" data-min="${a.arr}" title="${esc(`${tm} · ${s.place.name} · drag up or down to change when the day starts${PLAN.starts[x.iso] ? "" : " (now set for you)"}`)}"><span class="fn">⌂ ${esc(s.place.name)}</span><span class="ft">${clockStr(a.arr)}</span></button>` });
         else items.push({ t: a.arr, wp: true, html: `<button class="fwp" style="top:${y(a.arr)}%;--c:${cc(c)}" data-fstop="${x.i}:${i}" title="${esc(`${tm} · ${s.name}`)}"><span class="fn">${s.kind === "home" ? "⌂" : HUB_ICON[s.kind]} ${esc(s.kind === "home" && s.place ? s.place.name : s.name)}</span><span class="ft">${clockStr(a.arr)}</span></button>` });
         return;
       }
@@ -1891,8 +1900,14 @@ calFull.addEventListener("change", e => { // edits redraw the calendar, not the 
 // bottom edge to change how long it gets
 let fdrag = null, fEat = false, fSpan = 1080;
 calFull.addEventListener("pointerdown", e => {
+  if (e.button !== 0) return;
+  const st = e.target.closest("[data-fstart]");
+  if (st) { // the morning's Airbnb: up or down moves when the day starts
+    fdrag = { start: true, card: st, iso: st.dataset.fstart, m0: +st.dataset.min, top0: st.offsetTop, x0: e.clientX, y0: e.clientY, on: false, col: st.closest(".fcol") };
+    st.setPointerCapture(e.pointerId); return;
+  }
   const card = e.target.closest("[data-pkey]");
-  if (!card || e.button !== 0) return;
+  if (!card) return;
   const grip = e.target.closest(".fgrip") && card.classList.contains("fcard");
   fdrag = { size: !!grip, card, key: card.dataset.pkey, from: card.dataset.iso, p: placeBy[card.dataset.pkey], x0: e.clientX, y0: e.clientY, on: false, h0: card.offsetHeight, col: card.closest(".fcol") };
   card.setPointerCapture(e.pointerId);
@@ -1903,7 +1918,14 @@ calFull.addEventListener("pointermove", e => {
   if (!d.on) {
     if (Math.hypot(e.clientX - d.x0, e.clientY - d.y0) < 4) return;
     d.on = true; document.body.classList.add("fdragging");
-    if (!d.size) { ghost.innerHTML = `${pinBadge(d.p)}<span>${esc(d.p.name)}</span>`; ghost.style.setProperty("--c", `var(--${homeOf(d.p)})`); ghost.hidden = false; d.card.classList.add("lifted"); }
+    if (d.start) d.card.classList.add("moving");
+    else if (!d.size) { ghost.innerHTML = `${pinBadge(d.p)}<span>${esc(d.p.name)}</span>`; ghost.style.setProperty("--c", `var(--${homeOf(d.p)})`); ghost.hidden = false; d.card.classList.add("lifted"); }
+  }
+  if (d.start) { // 15-minute steps, from 04:00 to 14:00
+    const per = d.col.clientHeight / fSpan;
+    d.min = Math.max(240, Math.min(840, Math.round((d.m0 + (e.clientY - d.y0) / per) / 15) * 15));
+    d.card.style.top = `${d.top0 + (d.min - d.m0) * per}px`;
+    d.card.querySelector(".ft").textContent = clockStr(d.min); d.card.dataset.dur = `Day starts ${clockStr(d.min)}`; return;
   }
   if (d.size) { // minutes from pixels, snapped to the time menu's steps
     const per = d.col.clientHeight / fSpan, want = Math.max(0, d.h0 + e.clientY - d.y0) / per;
@@ -1929,6 +1951,10 @@ function endFdrag(apply) {
   ghost.hidden = true; document.body.classList.remove("fdragging"); fClear();
   if (!d.on) return; // a click: it opens the day as before
   fEat = true; setTimeout(() => { fEat = false; }, 300);
+  if (apply && d.start && d.min != null && d.min !== d.m0) {
+    PLAN.starts[d.iso] = `${String(Math.floor(d.min / 60)).padStart(2, "0")}:${String(d.min % 60).padStart(2, "0")}`;
+    plMsg = `${fmtDay(DAYS.find(z => z.iso === d.iso).date)} starts at ${clockStr(d.min)}.`; planChanged(); return;
+  }
   if (apply && d.size && d.min) {
     const x = DAYS.find(z => z.iso === d.from), dflt = DETAIL[d.p.city] && d.p.type === "sight" ? 60 : DUR_DEFAULT[d.p.type] ?? 60;
     if (d.min === dflt) { delete PLAN.durs[x.iso]?.[d.key]; if (PLAN.durs[x.iso] && !Object.keys(PLAN.durs[x.iso]).length) delete PLAN.durs[x.iso]; }
@@ -4149,7 +4175,7 @@ cv.addEventListener("pointerup", ev => endMapDrag(ev, true));
 cv.addEventListener("pointercancel", ev => endMapDrag(ev, false));
 
 // ---------- boot ----------
-const DATA_V = "40"; // bump when data files change so browsers don't reuse stale copies
+const DATA_V = "43"; // bump when data files change so browsers don't reuse stale copies
 async function boot() {
   readTheme(); resize();
   invalidate();

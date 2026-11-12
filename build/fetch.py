@@ -32,11 +32,14 @@ CITIES = {
     "trogir": {"bbox": (43.508, 16.232, 43.527, 16.268), "core": (43.514, 16.244, 43.52, 16.256)},
     "hvar": {"bbox": (43.15, 16.365, 43.185, 16.46), "core": (43.168, 16.435, 43.176, 16.448)},
     "krka": {"bbox": (43.79, 15.895, 43.875, 15.99), "core": (43.812, 15.918, 43.82, 15.93)},
+    "bisevo": {"bbox": (42.96, 15.99, 43.065, 16.2), "core": (43.04, 16.085, 43.048, 16.098)},  # Biševo to Komiža and Stiniva on Vis
+    "plitvice": {"bbox": (44.855, 15.575, 44.915, 15.64), "core": (44.898, 15.603, 44.906, 15.615)},
+    "mostar": {"bbox": (43.325, 17.795, 43.35, 17.83), "core": (43.333, 17.808, 43.342, 17.82)},
     "zagreb": {"bbox": (45.785, 15.935, 45.865, 16.01),  # the centre and north to the Sljeme gondola
                  "core": (45.805, 15.965, 45.818, 15.985)},
 }
 
-COASTAL = ["split", "trogir", "hvar"]
+COASTAL = ["split", "trogir", "hvar", "bisevo"]
 OVERPASS = "https://overpass-api.de/api/interpreter"
 MIRRORS = ["https://overpass.private.coffee/api/interpreter"]
 
@@ -63,7 +66,7 @@ out geom;"""
 
 # day trips are mostly countryside: forests mapped as multipolygons, and the trails, funiculars and
 # cable cars that reach the sights (city maps leave these out to stay small)
-TRAIL_MAPS = ["lednice", "wachau", "kahlenberg", "hallstatt", "karlstejn", "kutnahora", "bohemian"]
+TRAIL_MAPS = ["lednice", "wachau", "kahlenberg", "hallstatt", "karlstejn", "kutnahora", "bohemian", "plitvice"]
 
 
 def trail_query(b):

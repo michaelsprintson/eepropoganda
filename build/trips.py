@@ -48,10 +48,9 @@ TRIPS = {
     "krka": ("split", [("road", ["Autobusni kolodvor Split", "Skradin"])]),
     # the catamaran, harbour to harbour: found through the water, so it never cuts across an island
     "hvar": ("split", [("sea", [(16.4425, 43.5025), (16.4405, 43.1715)])]),
-    # day trips with no zoom-in map of their own are keyed <city>-<code>, as the deck's tripId() names them
-    "split-T4": ("split", [("sea", [(16.4425, 43.5025), (16.0221, 42.9802)])]),  # speedboat to the Blue Cave, Biševo
-    "split-T5": ("split", [("road", ["Autobusni kolodvor Split", "Veliki slap, Plitvice"])]),
-    "split-T6": ("split", [("road", ["Autobusni kolodvor Split", "Stari most, Mostar"])]),
+    "bisevo": ("split", [("sea", [(16.4425, 43.5025), (16.0221, 42.9802)])]),  # speedboat to the Blue Cave, Biševo
+    "plitvice": ("split", [("road", ["Autobusni kolodvor Split", "Veliki slap, Plitvice"])]),
+    "mostar": ("split", [("road", ["Autobusni kolodvor Split", "Stari most, Mostar"])]),
     # a sight off the city map, reached by road to the gondola and the gondola up (OSM way 666115844)
     "place:zagreb-B": ("zagreb", [("road", ["Trg bana Josipa Jelačića, Zagreb", "Žičara Sljeme, lower station"]), ("lift", "sljeme_gondola")]),
     # airport transfers, to where the city's own streets take over
